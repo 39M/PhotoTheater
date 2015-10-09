@@ -1,4 +1,2 @@
-libraries:
-- name: "django"
-  version: "1.4"
-
+name: pylabs
+version: 9
