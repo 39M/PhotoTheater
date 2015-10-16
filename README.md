@@ -1,2 +1,2 @@
-# Photo-Management-System
-HIT Software Engineering Project, a photo management system.
+# Photo Management System
+HIT software engineering course project, a photo management system.
