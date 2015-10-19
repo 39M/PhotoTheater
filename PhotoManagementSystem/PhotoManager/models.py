@@ -33,9 +33,9 @@ class Photo(models.Model):
     # photo emotion
     emotion = models.CharField(max_length=16)
     # photo origin file
-    origin_source = models.ImageField()
+    origin_source = models.ImageField(upload_to='photos/%Y/%m/%d')
     # photo newest file
-    source = models.ImageField()
+    source = models.ImageField(upload_to='photos/%Y/%m/%d')
 
 
 class Album(models.Model):
