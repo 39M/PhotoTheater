@@ -15,7 +15,13 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib import admin
+from django.contrib.auth.decorators import login_required
+from PhotoManager import views
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
+    url(r'^$', views.Index.as_view()),
+    url(r'^signup/$', views.SignUp.as_view()),
+    url(r'^signin/$', views.SignIn.as_view()),
+    url(r'^signout/$', login_required(views.SignOut.as_view())),
 ]
