@@ -2,7 +2,10 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.views.generic import View
 from django.contrib import auth
+from django.template import Context
+from django.template.context_processors import csrf
 from PhotoManager.models import User, Album, Photo, Comment
+
 
 class Index(View):
     def get(self, request):
@@ -56,3 +59,10 @@ class SignOut(View):
     def get(self, request):
         auth.logout(request)
         return HttpResponse('SignOut get')
+
+
+class Test(View):
+    def get(self, request):
+        context = Context(request.GET)
+        context.update(csrf(request))
+        return render(request, request.GET['v'] + '.html', context)
