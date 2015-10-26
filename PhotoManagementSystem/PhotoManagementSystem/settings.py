@@ -28,7 +28,10 @@ if 'SERVER_SOFTWARE' in os.environ:
 else:
     DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'localhost',
+    'pmsys.sinaapp.com',
+]
 
 
 # Application definition
