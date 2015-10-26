@@ -23,7 +23,10 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '$6#w&i!ng7e34urp0*g2l^1@@y=!bph3!4*#i$o-#fqi^d=$up'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+if 'SERVER_SOFTWARE' in os.environ:
+    DEBUG = False
+else:
+    DEBUG = True
 
 ALLOWED_HOSTS = []
 
@@ -76,6 +79,7 @@ WSGI_APPLICATION = 'PhotoManagementSystem.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
+# SQLite
 
 DATABASES = {
     'default': {
@@ -83,6 +87,32 @@ DATABASES = {
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
+
+# MySQL
+'''
+if 'SERVER_SOFTWARE' in os.environ:
+    from sae.const import (
+        MYSQL_HOST, MYSQL_PORT, MYSQL_USER, MYSQL_PASS, MYSQL_DB
+    )
+else:
+    # Make `python manage.py syncdb` works happy!
+    MYSQL_HOST = 'localhost'
+    MYSQL_PORT = '3306'
+    MYSQL_USER = 'root'
+    MYSQL_PASS = 'root'
+    MYSQL_DB = 'pmsys'
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': MYSQL_DB,
+        'USER': MYSQL_USER,
+        'PASSWORD': MYSQL_PASS,
+        'HOST': MYSQL_HOST,
+        'PORT': MYSQL_PORT,
+    }
+}
+'''
 
 
 # Internationalization
@@ -92,7 +122,7 @@ LANGUAGE_CODE = 'zh-hans'
 
 TIME_ZONE = 'UTC'
 
-USE_I18N = True
+USE_I18N = False
 
 USE_L10N = True
 
@@ -103,6 +133,12 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
 STATIC_URL = '/static/'
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'static').replace('\\', '/')
+
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, "static_dev"),
+)
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
