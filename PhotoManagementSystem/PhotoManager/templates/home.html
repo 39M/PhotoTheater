@@ -1,5 +1,153 @@
 {% extends "base.html" %}
 {% block content %}
-    {% include 'includes/upload.html' %}
+    {% load staticfiles %}
+    <link rel="stylesheet" type="text/css" href="{% static 'diyUpload/css/webuploader.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'diyUpload/css/diyUpload.css' %}">
+    <script type="text/javascript" src="{% static 'diyUpload/js/webuploader.html5only.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'diyUpload/js/diyUpload.js' %}"></script>
+    <div class="row">
+        <div class="col-md-12">
 
+            <ul class="chat-box timeline">
+                {% include 'includes/upload.html' %}
+                <li class="arrow-box-left gray">
+                    <div class="avatar"><img class="avatar-small" src="../../images/avatars/avatar3.jpg"></div>
+                    <div class="info">
+                    <span class="name">
+                    <span class="label label-purple">Adding Photos</span> <strong
+                            class="indent">User</strong> Comment <strong> &nbsp;</strong>
+                    </span>
+                        <span class="time"><i class="icon-time"></i> 12 minutes ago</span>
+                    </div>
+                    <div class="content">
+                        <ul class="thumbnails padded">
+                            <li class="col-md-3">
+                                <a href="#" class="thumbnail">
+                                    <img src="http://placehold.it/240x100" alt="">
+                                </a>
+                            </li>
+                            <li class="col-md-3">
+                                <a href="#" class="thumbnail">
+                                    <img src="http://placehold.it/240x100" alt="">
+                                </a>
+                            </li>
+                            <li class="col-md-3">
+                                <a href="#" class="thumbnail">
+                                    <img src="http://placehold.it/240x100" alt="">
+                                </a>
+                            </li>
+                            <li class="col-md-3">
+                                <a href="#" class="thumbnail">
+                                    <img src="http://placehold.it/240x100" alt="">
+                                </a>
+                            </li>
+                            <li class="col-md-3">
+                                <a href="#" class="thumbnail">
+                                    <img src="http://placehold.it/240x100" alt="">
+                                </a>
+                            </li>
+                            <li class="col-md-3">
+                                <a href="#" class="thumbnail">
+                                    <img src="http://placehold.it/240x100" alt="">
+                                </a>
+                            </li>
+
+                        </ul>
+                    </div>
+                </li>
+                <li class="arrow-box-left gray">
+                    <div class="avatar"><img class="avatar-small" src="../../images/avatars/avatar3.jpg"></div>
+                    <div class="info">
+                    <span class="name">
+                    <span class="label label-purple">Adding Photos</span> <strong
+                            class="indent">User</strong> Comment <strong> &nbsp;</strong>
+                    </span>
+                        <span class="time"><i class="icon-time"></i> 12 minutes ago</span>
+                    </div>
+                    <div class="content">
+                        <ul class="thumbnails padded">
+                            <li class="col-md-3">
+                                <a href="#" class="thumbnail">
+                                    <img src="http://placehold.it/240x100" alt="">
+                                </a>
+                            </li>
+                            <li class="col-md-3">
+                                <a href="#" class="thumbnail">
+                                    <img src="http://placehold.it/240x100" alt="">
+                                </a>
+                            </li>
+                            <li class="col-md-3">
+                                <a href="#" class="thumbnail">
+                                    <img src="http://placehold.it/240x100" alt="">
+                                </a>
+                            </li>
+                            <li class="col-md-3">
+                                <a href="#" class="thumbnail">
+                                    <img src="http://placehold.it/240x100" alt="">
+                                </a>
+                            </li>
+                            <li class="col-md-3">
+                                <a href="#" class="thumbnail">
+                                    <img src="http://placehold.it/240x100" alt="">
+                                </a>
+                            </li>
+                            <li class="col-md-3">
+                                <a href="#" class="thumbnail">
+                                    <img src="http://placehold.it/240x100" alt="">
+                                </a>
+                            </li>
+
+                        </ul>
+                    </div>
+                </li>
+                <li class="arrow-box-left gray">
+                    <div class="avatar"><img class="avatar-small" src="../../images/avatars/avatar3.jpg"></div>
+                    <div class="info">
+                    <span class="name">
+                    <span class="label label-purple">Adding Photos</span> <strong
+                            class="indent">User</strong> Comment <strong> &nbsp;</strong>
+                    </span>
+                        <span class="time"><i class="icon-time"></i> 12 minutes ago</span>
+                    </div>
+                    <div class="content">
+                        <ul class="thumbnails padded">
+                            <li class="col-md-3">
+                                <a href="#" class="thumbnail">
+                                    <img src="http://placehold.it/240x100" alt="">
+                                </a>
+                            </li>
+                            <li class="col-md-3">
+                                <a href="#" class="thumbnail">
+                                    <img src="http://placehold.it/240x100" alt="">
+                                </a>
+                            </li>
+                            <li class="col-md-3">
+                                <a href="#" class="thumbnail">
+                                    <img src="http://placehold.it/240x100" alt="">
+                                </a>
+                            </li>
+                            <li class="col-md-3">
+                                <a href="#" class="thumbnail">
+                                    <img src="http://placehold.it/240x100" alt="">
+                                </a>
+                            </li>
+                            <li class="col-md-3">
+                                <a href="#" class="thumbnail">
+                                    <img src="http://placehold.it/240x100" alt="">
+                                </a>
+                            </li>
+                            <li class="col-md-3">
+                                <a href="#" class="thumbnail">
+                                    <img src="http://placehold.it/240x100" alt="">
+                                </a>
+                            </li>
+
+                        </ul>
+                    </div>
+                </li>
+            </ul>
+
+
+        </div>
+    </div>
 {% endblock %}

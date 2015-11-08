@@ -1,83 +1,77 @@
-{% load staticfiles %}
-<link rel="stylesheet" type="text/css" href="{% static 'diyUpload/css/webuploader.css' %}">
-<link rel="stylesheet" type="text/css" href="{% static 'diyUpload/css/diyUpload.css' %}">
-<script type="text/javascript" src="{% static 'diyUpload/js/webuploader.html5only.min.js' %}"></script>
-<script type="text/javascript" src="{% static 'diyUpload/js/diyUpload.js' %}"></script>
-<div class="row">
-    <div class="col-md-12">
-
-        <div class="box">
-            <div class="box-header">
-                <span class="title">有什么想分享的瞬间？</span>
-            </div>
-
-            <div class="box-content">
-
+<li class="arrow-box-left gray">
+    <div class="avatar"><img class="avatar-small" src="../../images/avatars/avatar1.jpg"></div>
+    <div class="info">
+                    <span class="name">
+                    <span class="label label-green">上传照片</span> <strong
+                            class="indent">^_^</strong> 分享一个瞬间？<strong>Photo Theater</strong>
+                    </span>
+        <span class="time"><i class="icon-time"></i>{ date }} </span>
+    </div>
+    <div class="content">
+        <div class="box-content">
+            <div class="row">
                 <form class="fill-up">
-
-                    <div class="row">
-                        <div class="col-lg-6">
-                            <style>
-                                #box{ margin:50px auto; width:540px; min-height:400px; background:#EEEEEE}
-                            </style>
-                            <div id="box">
-                                <div id="up_photo"></div>
-                            </div>
-
-                        </div>
-                        <script language="JavaScript">
-                            $(function(){
-                                   $('#up_photo').diyUpload({
-                                    url: 'server/fileupload.php',
-                                    success: function (data) {
-                                        console.info(data);
-                                    },
-                                    error: function (err) {
-                                        console.info(err);
-                                    }
-                                });
-                            });
-
-                        </script>
-                        <div class="col-lg-6">
-
-                            <ul class="padded separate-sections">
-                                <label>选择相册</label>
-
-
-                                <li>
-                                    <label>新建</label><input type="checkbox" class="iButton-icons" checked="checked"/><label>选择</label>
-                                </li>
-                                <li>
-
-                                    <select class="chzn-select" name="colors">
-                                        <option value="Aero blue">Aero blue</option>
-                                        <option value="Air Force blue (RAF)">Air Force blue (RAF)</option>
-                                        <option value="Air Force blue (USAF)">Air Force blue (USAF)</option>
-
-                                    </select>
-                                </li>
-
-                                <li class="input">
-                                    <label>Tags:</label>
-                                    <textarea class="tags" placeholder="Adding tags ">tag1,tag2,tag3</textarea>
-                                </li>
-                                <li class="input">
-                                  <textarea placeholder="记录每一刻……" rows="6"></textarea>
-                                </li>
-                            </ul>
-                            <div class="form-actions">
-                                <button type="submit" class="btn btn-blue">Save changes</button>
-                                <button type="button" class="btn btn-default">Cancel</button>
-                            </div>
+                    <div class="col-lg-6">
+                        <style>
+                            #box {
+                                margin: 50px auto;
+                                width: 540px;
+                                min-height: 400px;
+                                background: #EEEEEE
+                            }
+                        </style>
+                        <div id="box">
+                            <div id="up_photo"></div>
                         </div>
 
                     </div>
+                    <script language="JavaScript">
+                        $(function () {
+                            $('#up_photo').diyUpload({
+                                url: 'server/fileupload.php',
+                                success: function (data) {
+                                    console.info(data);
+                                },
+                                error: function (err) {
+                                    console.info(err);
+                                }
+                            });
+                        });
 
+                    </script>
+                    <div class="col-lg-6">
+
+                        <ul class="padded separate-sections">
+                            <label>新建/选择相册</label>
+                            <li>
+                                <label>新建相册</label><input type="checkbox" class="iButton-icons" checked="checked"/>
+                            </li>
+                            <li>
+
+                                <select class="chzn-select" name="colors">
+                                    <option value="Aero blue">Aero blue</option>
+                                    <option value="Air Force blue (RAF)">Air Force blue (RAF)</option>
+                                    <option value="Air Force blue (USAF)">Air Force blue (USAF)</option>
+
+                                </select>
+                            </li>
+
+                            <li class="input">
+                                <label>标签</label>
+                                <textarea class="tags" placeholder="增加标签……">tag1,tag2,tag3</textarea>
+                            </li>
+                            <li class="input">
+                                <label>添加照片心情文件</label>
+                                <textarea placeholder="记录每一刻……" rows="4"></textarea>
+                            </li>
+                        </ul>
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-blue">&nbsp;&nbsp;&nbsp;保&nbsp;&nbsp;存&nbsp;&nbsp;&nbsp;</button>
+                        </div>
+                    </div>
                 </form>
-
             </div>
         </div>
-
     </div>
-</div>
+</li>
+
