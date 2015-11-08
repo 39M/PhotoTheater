@@ -4846,8 +4846,8 @@ body.modal-open {
   display: none !important; }
 
 /* line 30, /home/andrei/core-admin-release/core-admin/source/stylesheets/bootstrap/_utilities.scss */
-.show {
-  display: block !important; }
+/*.show {*/
+  /*display: block !important; }*/
 
 /* line 33, /home/andrei/core-admin-release/core-admin/source/stylesheets/bootstrap/_utilities.scss */
 .invisible {
