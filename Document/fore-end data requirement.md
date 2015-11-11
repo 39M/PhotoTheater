@@ -77,4 +77,43 @@
 
 ```
 
+- html 继承[] 引用[]
 
+``` js 
+{
+    "CONFIG":{          // 从配置文件统一配置
+        "SITE":{
+            "TITLE":""  // 网站名称
+        },
+        
+    }
+    
+}
+
+```
+
+- login,signup 继承[html]
+
+
+- timeline 继承[base] 引用[]
+``` js 
+{
+    "timeLine":
+    [
+    {
+        timeGroup:"2013",
+        timeItem:
+        [
+        {
+            updateGroup:"4月",
+            photoList:
+            [
+                "url1","url2",....
+            ]
+        }
+        ]
+    }
+    ]
+}
+
+```
