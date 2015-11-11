@@ -1,0 +1,65 @@
+{% extends "html.html" %}
+{%  block body %}
+
+<nav class="navbar navbar-default navbar-inverse navbar-static-top" role="navigation">
+  <!-- Brand and toggle get grouped for better mobile display -->
+  <div class="navbar-header">
+    <a class="navbar-brand" href="#">{{ CONFIG.SITE.TITLE }}</a>
+  </div>
+</nav>
+<div class="container">
+  
+<div class="col-md-4 col-md-offset-4">
+
+  <div class="padded">
+
+    <div class="login box" style="margin-top: 80px;">
+
+      <div class="box-header">
+        <span class="title">Sign Up</span>
+      </div>
+
+      <div class="box-content padded">
+        <form class="separate-sections" action="">
+
+          <div class="input-group addon-left">
+          <span class="input-group-addon" href="#">
+            <i class="icon-user"></i>
+          </span>
+            <input type="text" placeholder="username" name="username" >
+          </div>
+
+          <div class="input-group addon-left">
+          <span class="input-group-addon" href="#">
+            <i class="icon-key"></i>
+          </span>
+            <input type="password" placeholder="password" name="password">
+          </div>
+
+          <div class="input-group addon-left">
+          <span class="input-group-addon" href="#">
+            <i class="icon-key"></i>
+          </span>
+            <input type="password" placeholder="confirm password" name="password_confirm">
+          </div>
+
+          <div>
+            <a class="btn btn-blue btn-block" href="http://beer2code.com/themes/core-admin-3/pages/dashboard/dashboard.html">
+                Sign Up <i class="icon-ok"></i>
+            </a>
+          </div>
+
+        </form>
+
+        <div>
+          <a href="login.html">
+              Already have an account? <strong>Sign In</strong>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+{% endblock %}
