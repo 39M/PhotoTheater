@@ -1,0 +1,163 @@
+{% load staticfiles %}
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>jQuery全屏相册插件zoomVisualizer - 站长素材</title>
+<link rel="stylesheet" media="screen" type="text/css" href="{% static 'filter/zoom-visualizer.css' %}">
+<script src="{% static 'filter/js/jquery.min.js' %}"></script>
+<script src="{% static 'filter/js/jquery-ui.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'filter/js/ZoomVisualizer.js' %}"></script>
+<script type="text/javascript">
+jQuery(document).ready(function() {
+    $(window).ZoomVisualizer({
+        added: added,
+        removed: removed,
+        object: '#zoom-visualizer',
+        resizeInitial: true,
+        centerThumbs: true,
+        loader: "img/ajax-loader-overlay.gif",
+        sliderOrientation: "vertical",
+        positionZoom: {
+            left: 10,
+            right: 10,
+            top:10,
+            bottom:10
+        }
+    });
+
+    function added() {
+        console.log("相册打开了！");
+    }
+
+    function removed() {
+        console.log("相册关闭了！");
+    }
+});
+</script>
+<style type="text/css">
+.clear {
+	clear: both !important;
+	float: none !important;
+	margin: 0px !important;
+	padding: 0px !important;
+	height: 0px !important;
+	width: 0px !important
+}
+.clearfix:after {
+	content: ".";
+	display: block;
+	clear: both;
+	visibility: hidden;
+	line-height: 0;
+	height: 0;
+}
+.clearfix {
+	display: inline-block;
+}
+html[xmlns] .clearfix {
+	display: block;
+}
+* html .clearfix {
+	height: 1%;
+}
+img {
+	display: block;
+}
+input, textarea {
+	color: #999999;
+}
+select {
+	color: #999999;
+}
+.oldBrowser {
+	display: none !important
+}
+.center {
+	width: 1000px;
+	margin: 0 auto;
+	text-align: left
+}
+body {
+	background: #f7f6f6;
+	font-family: 'Roboto', sans-serif;
+	font-size: 14px;
+	line-height: 20px;
+	color: #555;
+	font-weight: 100;
+}
+</style>
+</head>
+
+<body>
+<!--<h1>jQuery zoomVisualizer Plugin Demo</h1>-->
+<div id="zoom-visualizer">
+  <div class="lightbox-ofertas-bg"></div>
+  <div class="lightbox">
+    <div class="header">
+      <div class="inside">
+        <div id="wrapper-fechar" class="tooltip-content">
+          <div class="tooltip">
+            <p>Close</p>
+            <span></span> </div>
+          <a href="" class="fechar tooltip-caller"></a>
+          <div class="clear"></div>
+        </div>
+        <div id="zoom">
+          <div>
+            <div class="tooltip-content">
+              <div class="tooltip">
+                <p>Zoom Out</p>
+                <span></span> </div>
+              <a href="#" class="zoom-out tooltip-caller"></a> </div>
+            <div id="wrapper-barra-zoom" class="tooltip-content">
+              <div class="tooltip">
+                <p>Zoom</p>
+                <span></span> </div>
+              <div class="tooltip-caller wrapper-barra"> <span id="barra"> <strong id="scroll" class="ui-draggable" style="position: relative; left: 0px;"> </strong> </span> </div>
+            </div>
+            <div class="tooltip-content">
+              <div class="tooltip">
+                <p>Zoom In</p>
+                <span></span> </div>
+              <a href="#" class="zoom-in tooltip-caller"></a> </div>
+            <div class="clear"></div>
+          </div>
+        </div>
+        <div class="clear"></div>
+      </div>
+    </div>
+
+    <div class="content"> <a href="" id="next"></a>
+      <div class="wrapper" style="width: 1415px; height: 362px;">
+      	<img src="{% static 'filter/example/origin.jpg' %}" class="dragme">
+      </div>
+      <a href="" id="before"></a>
+    </div>
+
+    <div class="footer">
+      <a href="#" id="aba-lista"><span>Hide Thumbnails</span></a>
+      <div id="listagem-imagens">
+        <div>
+            <a class="item-zoom-image ativo" href="{% static 'filter/example/origin.jpg' %}" alt="0">
+              <img style="width: 80px" src="{% static 'filter/example/origin.jpg' %}"> </a>
+            <a class="item-zoom-image" href="{% static 'filter/example/black.jpg' %}" alt="1">
+              <img style="width: 80px" src="{% static 'filter/example/black.jpg' %}"> </a>
+            <a class="item-zoom-image" href="{% static 'filter/example/old.jpg' %}" alt="2">
+              <img style="width: 80px" src="{% static 'filter/example/old.jpg' %}"> </a>
+            <a class="item-zoom-image" href="{% static 'filter/example/printer.jpg' %}" alt="2">
+              <img style="width: 80px" src="{% static 'filter/example/printer.jpg' %}"> </a>
+            <a class="item-zoom-image" href="{% static 'filter/example/uncolor.jpg' %}" alt="2">
+              <img style="width: 80px" src="{% static 'filter/example/uncolor.jpg' %}"> </a>
+            <div class="clear"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>
