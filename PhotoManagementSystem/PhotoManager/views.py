@@ -158,12 +158,10 @@ class SignUp(View):
     def get(self, request):
         if request.user.is_authenticated():
             return HttpResponse('Signed In')
-        return render(request, 'signup.html', {})
+        return render(request, 'signup.html')
 
     def post(self, request):
-        print request.POST
-        return render(request, 'signup.html', {})
-
+        # print request.POST
         username = request.POST['username']
         if User.objects.filter(username=username):
             return HttpResponse('User exist')
@@ -172,24 +170,22 @@ class SignUp(View):
         if len(password) < 6:
             return HttpResponse('Password too short')
 
-        password_repeat = request.POST['password_repeat']
+        password_repeat = request.POST['password_confirm']
         if password != password_repeat:
             return HttpResponse('Password error')
 
         User.objects.create_user(username=username, password=password)
-        return HttpResponse('SignUp post')
+        return HttpResponse('Sign up success')
 
 
 class SignIn(View):
     def get(self, request):
         if request.user.is_authenticated():
             return HttpResponse('Signed In')
-
-        return render(request, 'login.html', {})
+        return render(request, 'login.html')
 
     def post(self, request):
-        print request.POST
-        return render(request, 'login.html', {})
+        # print request.POST
         username = request.POST['username']
         password = request.POST['password']
         user = auth.authenticate(username=username, password=password)
