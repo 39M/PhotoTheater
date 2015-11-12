@@ -11,7 +11,7 @@ h5{font-size:18px;margin-bottom:20px;color:#666;}
 h5 span{font-size:12px;color:#ccc;font-weight:normal;}
 blockquote:before,blockquote:after,q:before,q:after{content:"";}
 html{-webkit-text-size-adjust:none;-ms-text-size-adjust:none;}
-body{font:normal 14px/24px "Helvetica Neue",Helvetica,STheiti,"Microsoft Yahei","冬青黑体简体中文 w3",宋体,Arial,Tahoma,sans-serif,serif;word-wrap:break-word;background: #F0F0F0;}
+body{word-wrap:break-word;background: #F0F0F0;}
 input,button,textarea,select,option,optiongroup{font-family:inherit;font-size:inherit;}
 code,pre{font-family:"Microsoft YaHei",Consolas,"Courier New",monospace;}
 .bw0{border: none !important;}
