@@ -158,9 +158,12 @@ class SignUp(View):
     def get(self, request):
         if request.user.is_authenticated():
             return HttpResponse('Signed In')
-        return HttpResponse('SignUp get')
+        return render(request, 'signup.html', {})
 
     def post(self, request):
+        print request.POST
+        return render(request, 'signup.html', {})
+
         username = request.POST['username']
         if User.objects.filter(username=username):
             return HttpResponse('User exist')
@@ -181,9 +184,12 @@ class SignIn(View):
     def get(self, request):
         if request.user.is_authenticated():
             return HttpResponse('Signed In')
-        return HttpResponse('SignIn get')
+
+        return render(request, 'login.html', {})
 
     def post(self, request):
+        print request.POST
+        return render(request, 'login.html', {})
         username = request.POST['username']
         password = request.POST['password']
         user = auth.authenticate(username=username, password=password)
