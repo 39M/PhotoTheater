@@ -1,6 +1,7 @@
+# coding=utf-8
 from django.conf.urls import include, url
 from django.shortcuts import render, redirect
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.views.generic import *
 from django.views.generic.edit import *
 from django.contrib import auth
@@ -140,6 +141,15 @@ class Home(View):
         context = {
 
         }
+        data = request.GET
+        if 'noticeType' in data and 'noticeTitle' in data and 'noticeText' in data:
+            context.update({
+                'noticeType': data['noticeType'],
+                'noticeTitle': data['noticeTitle'],
+                'noticeText': data['noticeText'],
+            })
+
+        context.update(csrf(request))
         return render(request, 'home.html', context)
 
     def post(self, request):
@@ -157,46 +167,116 @@ class Index(View):
 class SignUp(View):
     def get(self, request):
         if request.user.is_authenticated():
-            return HttpResponse('Signed In')
-        return render(request, 'signup.html')
+            return HttpResponseRedirect('/home/')
+        context = Context({})
+        context.update(csrf(request))
+        return render(request, 'signup.html', context)
 
     def post(self, request):
         # print request.POST
         username = request.POST['username']
-        if User.objects.filter(username=username):
-            return HttpResponse('User exist')
-
         password = request.POST['password']
-        if len(password) < 6:
-            return HttpResponse('Password too short')
+        password_confirm = request.POST['password_confirm']
+        noticeType = ''
+        noticeTitle = ''
+        noticeText = ''
+        fail = False
 
-        password_repeat = request.POST['password_confirm']
-        if password != password_repeat:
-            return HttpResponse('Password error')
+        if len(username) < 3:
+            noticeType = 'warn'
+            noticeTitle = '注册失败'
+            noticeText = '用户名长度至少3位'
+            fail = True
+
+        if not fail and User.objects.filter(username=username):
+            noticeType = 'warn'
+            noticeTitle = '注册失败'
+            noticeText = '您选择的用户名已被使用'
+            fail = True
+
+        if not fail and len(password) < 6:
+            noticeType = 'warn'
+            noticeTitle = '注册失败'
+            noticeText = '密码长度至少6位'
+            fail = True
+
+        if not fail and password != password_confirm:
+            noticeType = 'warn'
+            noticeTitle = '注册失败'
+            noticeText = '两次密码输入不一致'
+            fail = True
+
+        if fail:
+            context = Context({
+                'noticeType': noticeType,
+                'noticeTitle': noticeTitle,
+                'noticeText': noticeText,
+                'username': username,
+                'password': password,
+                'password_confirm': password_confirm,
+            })
+            context.update(csrf(request))
+            return render(request, 'signup.html', context)
 
         User.objects.create_user(username=username, password=password)
-        return HttpResponse('Sign up success')
+        noticeType = 'success'
+        noticeTitle = '注册成功'
+        noticeText = '请登录后使用'
+        return HttpResponseRedirect(
+            '/signin/?noticeType=%s&noticeTitle=%s&noticeText=%s' % (noticeType, noticeTitle, noticeText))
 
 
 class SignIn(View):
     def get(self, request):
         if request.user.is_authenticated():
-            return HttpResponse('Signed In')
-        return render(request, 'login.html')
+            return HttpResponseRedirect('/home/')
+        data = request.GET
+        if 'noticeType' in data and 'noticeTitle' in data and 'noticeText' in data:
+            context = Context({
+                'noticeType': data['noticeType'],
+                'noticeTitle': data['noticeTitle'],
+                'noticeText': data['noticeText'],
+            })
+        else:
+            context = Context({})
+        context.update(csrf(request))
+        return render(request, 'login.html', context)
 
     def post(self, request):
         # print request.POST
         username = request.POST['username']
         password = request.POST['password']
+        noticeType = ''
+        noticeTitle = ''
+        noticeText = ''
+
         user = auth.authenticate(username=username, password=password)
         if user is not None:
             if user.is_active:
                 auth.login(request, user)
-                return HttpResponse('Sign in success')
+                noticeType = 'success'
+                noticeTitle = '登录成功'
+                noticeText = ' '
+                return HttpResponseRedirect(
+                    '/home/?noticeType=%s&noticeTitle=%s&noticeText=%s' % (noticeType, noticeTitle, noticeText))
             else:
-                return HttpResponse('Account disabled')
+                noticeType = 'warn'
+                noticeTitle = '登录失败'
+                noticeText = '账户被禁用'
         else:
-            return HttpResponse('Invalid sign in')
+            noticeType = 'warn'
+            noticeTitle = '登录失败'
+            noticeText = '用户名和密码不匹配'
+
+        context = Context({
+            'noticeType': noticeType,
+            'noticeTitle': noticeTitle,
+            'noticeText': noticeText,
+            'username': username,
+            'password': password,
+        })
+        context.update(csrf(request))
+        return render(request, 'login.html', context)
 
 
 class SignOut(View):
@@ -210,5 +290,3 @@ class Test(View):
         context = Context(request.GET)
         context.update(csrf(request))
         return render(request, request.GET['v'] + '.html', context)
-
-
