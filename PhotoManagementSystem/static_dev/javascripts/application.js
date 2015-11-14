@@ -57015,6 +57015,8 @@ $.fn.metadata = function( opts ){
     $.extend($.gritter.options, {
       position: 'top-right'
     });
+
+
     $(".growl-info").click(function(e) {
       e.preventDefault();
       return Growl.info({

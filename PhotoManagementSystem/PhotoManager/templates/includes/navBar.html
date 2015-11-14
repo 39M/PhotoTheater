@@ -1,3 +1,4 @@
+{% load staticfiles %}
 <!-- navBar.html -->
 <nav class="navbar navbar-default navbar-inverse navbar-static-top" role="navigation">
   <!-- Brand and toggle get grouped for better mobile display -->
@@ -51,7 +52,7 @@
             <li class="dropdown">
               <a href="dashboard.html#" class="dropdown-toggle dropdown-avatar" data-toggle="dropdown">
               <span>
-                <img class="menu-avatar" src="../../images/avatars/avatar1.jpg" /> <span>John Smith <i class="icon-caret-down"></i></span>
+                <img class="menu-avatar" src="{% static 'images/avatar1.png' %}" /> <span>John Smith <i class="icon-caret-down"></i></span>
                 <span class="badge badge-dark-red">5</span>
               </span>
               </a>
@@ -61,7 +62,7 @@
 
                 <li class="with-image">
                   <div class="avatar">
-                    <img src="../../images/avatars/avatar1.jpg" />
+                    <img src="{% static 'images/avatar1.png' %}" />
                   </div>
                   <span>John Smith
 {#                  {{ User.name }}#}
@@ -70,9 +71,9 @@
 
                 <li class="divider"></li>
 
-                <li><a href="dashboard.html#"><i class="icon-user"></i> <span>Profile</span></a></li>
-                <li><a href="dashboard.html#"><i class="icon-cog"></i> <span>Settings</span></a></li>
-                <li><a href="dashboard.html#"><i class="icon-off"></i> <span>Logout</span></a></li>
+                <li><a href=""><i class="icon-user"></i> <span>Profile</span></a></li>
+                <li><a href=""><i class="icon-cog"></i> <span>Settings</span></a></li>
+                <li><a href="/test?v=login#"><i class="icon-off"></i> <span>Logout</span></a></li>
               </ul>
             </li>
           </ul>

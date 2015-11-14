@@ -23,5 +23,16 @@
 
 
 {% endblock %}
+<script>
+    var noticeType = "{{ noticeType }}";// allow in [info,warn,error,success]
+    var noticeTitle = "{{ noticeTitle }}";
+    var noticeText = "{{ noticeText }}";
+    $(function(){
+        Growl[noticeType]({
+            title: noticeTitle,
+            text: noticeText
+        });
+    })
+</script>
 </body>
 </html>
