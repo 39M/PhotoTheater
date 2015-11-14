@@ -24,19 +24,19 @@
       </div>
 
       <div class="box-content padded">
-        <form id="form" method="post" class="separate-sections">
+        <form id="form" method="post" class="separate-sections"> {% csrf_token %}
           <div class="input-group addon-left">
             <span class="input-group-addon" href="#">
               <i class="icon-user"></i>
             </span>
-            <input type="text" placeholder="username">
+            <input type="text" placeholder="username" name="username">
           </div>
 
           <div class="input-group addon-left">
             <span class="input-group-addon" href="#">
               <i class="icon-key"></i>
             </span>
-            <input type="password" placeholder="password">
+            <input type="password" placeholder="password" name="password">
           </div>
 
           <div>
