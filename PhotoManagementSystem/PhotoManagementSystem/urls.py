@@ -24,8 +24,7 @@ from PhotoManager.models import *
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
 
-    url(r'^$', views.Index.as_view()),
-    url(r'^home/$', views.Home.as_view()),
+    url(r'^home/$', login_required(views.Home.as_view())),
     url(r'^signup/$', views.SignUp.as_view()),
     url(r'^signin/$', views.SignIn.as_view()),
     url(r'^signout/$', login_required(views.SignOut.as_view())),
