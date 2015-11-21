@@ -12,6 +12,9 @@ class Comment(models.Model):
     # comment update date
     update_date = models.DateTimeField()
 
+    def __str__(self):
+        return self.content
+
 
 class Photo(models.Model):
     # photo album
@@ -37,6 +40,9 @@ class Photo(models.Model):
     # photo newest file
     source = models.ImageField(upload_to='photos/%Y/%m/%d')
 
+    def __str__(self):
+        return self.name
+
 
 class Album(models.Model):
     # album owner
@@ -47,3 +53,6 @@ class Album(models.Model):
     create_date = models.DateTimeField()
     # album update date
     update_date = models.DateTimeField()
+
+    def __str__(self):
+        return self.name
