@@ -1,12 +1,13 @@
+# coding=utf-8
 from django.conf.urls import include, url
 from django.shortcuts import render, redirect
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.views.generic import *
 from django.views.generic.edit import *
 from django.contrib import auth
-from django.template import Context
+from django.template import Context, RequestContext
 from django.template.context_processors import csrf
-from PhotoManager.models import User, Album, Photo, Comment
+from PhotoManager.models import *
 
 
 class RestView(object):
@@ -92,117 +93,178 @@ class RestView(object):
         return Delete
 
 
-def gallery(request):
-    context_extras = {
-        'SlideShow': [
-            # Images info
-        ]
-    }
-    return context_extras
+def set_title(self, title):
+    self.context.update({
+
+    })
 
 
-def side_bar(request):
-    context_extras = {
-        'runTime': {
-            'ViewName': ''
-        }
-    }
+class BaseView(View):
+    def __init__(self, **kwargs):
+        super(BaseView, self).__init__(**kwargs)
+        self.context = {}
 
-    context_extras.update(gallery(request))
-    return context_extras
-
-
-def nav_bar(request):
-    context_extras = {
-        'user': {
-
-        }
-    }
-    return context_extras
-
-
-def base(request):
-    context_extras = {
-        'CONFIG': {
-            'SITE': {
-                'TITLE': 'WEBSITE_TITLE'
-            },
-        }
-    }
-
-    context_extras.update(side_bar(request))
-    context_extras.update(nav_bar(request))
-    return context_extras
-
-
-class Home(View):
     def get(self, request):
-        context = {
+        self.context = {}
+        self.set_base(self)
 
-        }
-        return render(request, 'home.html', context)
+    def set_gallery(self, request):
+        self.context.update({
+            'SlideShow': [
+                # Images info
+            ]
+        })
+
+    def set_side_bar(self, request):
+        self.set_gallery(request)
+
+        self.context.update({
+            'runTime': {
+                'ViewName': ''
+            }
+        })
+
+    def set_nav_bar(self, request):
+        self.context.update({
+            'user': {
+
+            }
+        })
+
+    def set_base(self, request):
+        self.set_side_bar(request)
+        self.set_nav_bar(request)
+
+        self.context.update({
+            'CONFIG': {
+                'SITE': {
+                    'TITLE': 'WEBSITE_TITLE'
+                },
+            }
+        })
+
+
+class Home(BaseView):
+    def get(self, request):
+        super(Home, self).get(request)
+        data = request.GET
+        if 'noticeType' in data and 'noticeTitle' in data and 'noticeText' in data:
+            self.context.update({
+                'noticeType': data['noticeType'],
+                'noticeTitle': data['noticeTitle'],
+                'noticeText': data['noticeText'],
+            })
+
+        self.context.update(csrf(request))
+        print self.context
+        return render(request, 'home.html', self.context)
 
     def post(self, request):
-        context = {
-
-        }
-        return render(request, 'home.html', context)
-
-
-class Index(View):
-    def get(self, request):
-        return HttpResponse('Index')
+        return render(request, 'home.html', self.context)
 
 
 class SignUp(View):
     def get(self, request):
         if request.user.is_authenticated():
-            return HttpResponse('Signed In')
-        return render(request, 'signup.html')
+            return HttpResponseRedirect('/home/')
+        context = RequestContext({})
+        context.update(csrf(request))
+        return render(request, 'signup.html', context)
 
     def post(self, request):
         # print request.POST
         username = request.POST['username']
-        if User.objects.filter(username=username):
-            return HttpResponse('User exist')
-
         password = request.POST['password']
-        if len(password) < 6:
-            return HttpResponse('Password too short')
+        password_confirm = request.POST['password_confirm']
 
-        password_repeat = request.POST['password_confirm']
-        if password != password_repeat:
-            return HttpResponse('Password error')
+        if len(username) < 3:
+            noticeText = '用户名长度至少3位'
+        elif User.objects.filter(username=username):
+            noticeText = '您选择的用户名已被使用'
+        elif len(password) < 6:
+            noticeText = '密码长度至少6位'
+        elif password != password_confirm:
+            noticeText = '两次密码输入不一致'
+        else:
+            User.objects.create_user(username=username, password=password)
+            noticeType = 'success'
+            noticeTitle = '注册成功'
+            noticeText = ' '
+            return HttpResponseRedirect(
+                '/signin/?noticeType=%s&noticeTitle=%s&noticeText=%s' % (noticeType, noticeTitle, noticeText))
 
-        User.objects.create_user(username=username, password=password)
-        return HttpResponse('Sign up success')
+        # Sign up fail, return warning info
+        noticeType = 'warn'
+        noticeTitle = '注册失败'
+        context = Context({
+            'noticeType': noticeType,
+            'noticeTitle': noticeTitle,
+            'noticeText': noticeText,
+            'username': username,
+            'password': password,
+            'password_confirm': password_confirm,
+        })
+        context.update(csrf(request))
+        return render(request, 'signup.html', context)
 
 
 class SignIn(View):
     def get(self, request):
         if request.user.is_authenticated():
-            return HttpResponse('Signed In')
-        return render(request, 'login.html')
+            return HttpResponseRedirect('/home/')
+        data = request.GET
+        if 'noticeType' in data and 'noticeTitle' in data and 'noticeText' in data:
+            context = Context({
+                'noticeType': data['noticeType'],
+                'noticeTitle': data['noticeTitle'],
+                'noticeText': data['noticeText'],
+            })
+        else:
+            context = Context({})
+        context.update(csrf(request))
+        return render(request, 'login.html', context)
 
     def post(self, request):
         # print request.POST
         username = request.POST['username']
         password = request.POST['password']
+
         user = auth.authenticate(username=username, password=password)
         if user is not None:
             if user.is_active:
                 auth.login(request, user)
-                return HttpResponse('Sign in success')
+                noticeType = 'success'
+                noticeTitle = '登录成功'
+                noticeText = ' '
+                return HttpResponseRedirect(
+                    '/home/?noticeType=%s&noticeTitle=%s&noticeText=%s' % (noticeType, noticeTitle, noticeText))
             else:
-                return HttpResponse('Account disabled')
+                noticeText = '账户被禁用'
         else:
-            return HttpResponse('Invalid sign in')
+            noticeText = '用户名和密码不匹配'
+
+        # Log in fail
+        noticeType = 'warn'
+        noticeTitle = '登录失败'
+        context = Context({
+            'noticeType': noticeType,
+            'noticeTitle': noticeTitle,
+            'noticeText': noticeText,
+            'username': username,
+            'password': password,
+        })
+        context.update(csrf(request))
+        return render(request, 'login.html', context)
 
 
 class SignOut(View):
     def get(self, request):
         auth.logout(request)
-        return HttpResponse('SignOut get')
+        noticeType = 'success'
+        noticeTitle = '已退出登录'
+        noticeText = ' '
+        return HttpResponseRedirect(
+            '/signin/?noticeType=%s&noticeTitle=%s&noticeText=%s' % (noticeType, noticeTitle, noticeText))
 
 
 class Test(View):
@@ -210,5 +272,3 @@ class Test(View):
         context = Context(request.GET)
         context.update(csrf(request))
         return render(request, request.GET['v'] + '.html', context)
-
-

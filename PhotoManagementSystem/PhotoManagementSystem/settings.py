@@ -15,7 +15,6 @@ import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.8/howto/deployment/checklist/
 
@@ -32,7 +31,6 @@ ALLOWED_HOSTS = [
     'localhost',
     'pmsys.sinaapp.com',
 ]
-
 
 # Application definition
 
@@ -79,7 +77,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'PhotoManagementSystem.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
 # SQLite
@@ -115,7 +112,6 @@ DATABASES = {
     }
 }'''
 
-
 # SQLite and MySQL
 
 if 'SERVER_SOFTWARE' in os.environ:
@@ -141,6 +137,12 @@ else:
         }
     }
 
+# Login
+LOGIN_REDIRECT_URL = '/home/'
+
+LOGIN_URL = '/signin/'
+
+LOGOUT_URL = '/signout/'
 
 
 # Internationalization
@@ -155,7 +157,6 @@ USE_I18N = False
 USE_L10N = True
 
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
