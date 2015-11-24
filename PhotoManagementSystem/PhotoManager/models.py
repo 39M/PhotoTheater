@@ -8,9 +8,9 @@ class Comment(models.Model):
     # comment content
     content = models.TextField()
     # comment date
-    date = models.DateTimeField()
+    date = models.DateTimeField(blank=True)
     # comment update date
-    update_date = models.DateTimeField()
+    update_date = models.DateTimeField(blank=True)
 
     def __str__(self):
         return self.content
@@ -22,23 +22,25 @@ class Photo(models.Model):
     # photo name
     name = models.CharField(max_length=64)
     # photo date
-    shot_date = models.DateTimeField()
+    shot_date = models.DateTimeField(null=True)
     # photo upload date
     upload_date = models.DateTimeField()
     # photo update date
     update_date = models.DateTimeField()
     # photo location latitude
-    latitude = models.FloatField()
+    latitude = models.FloatField(null=True)
     # photo location longitude
-    longitude = models.FloatField()
+    longitude = models.FloatField(null=True)
     # photo location text
-    location_text = models.TextField()
+    location_text = models.TextField(default='', blank=True)
     # photo emotion
-    emotion = models.CharField(max_length=16)
-    # photo origin file
-    origin_source = models.ImageField(upload_to='photos/%Y/%m/%d')
+    emotion = models.CharField(max_length=16, default='', blank=True)
     # photo newest file
     source = models.ImageField(upload_to='photos/%Y/%m/%d')
+    # photo origin file
+    origin_source = models.ImageField(upload_to='photos/%Y/%m/%d/origin')
+    # photo thumb
+    thumb = models.ImageField(upload_to='photos/%Y/%m/%d/thumb')
 
     def __str__(self):
         return self.name
