@@ -61,3 +61,4 @@ target/
 
 # site-package
 PhotoManagementSystem/site-packages/
+PhotoManagementSystem/tools/
