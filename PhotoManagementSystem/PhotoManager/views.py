@@ -8,6 +8,7 @@ from django.contrib import auth
 from django.template import Context, RequestContext
 from django.template.context_processors import csrf
 from PhotoManager.models import *
+from config import *
 
 
 class RestView(object):
@@ -93,12 +94,6 @@ class RestView(object):
         return Delete
 
 
-def set_title(self, title):
-    self.context.update({
-
-    })
-
-
 class BaseView(View):
     def __init__(self, **kwargs):
         super(BaseView, self).__init__(**kwargs)
@@ -106,28 +101,35 @@ class BaseView(View):
 
     def get(self, request):
         self.context = {}
-        self.set_base(self)
+        self.set_base(request)
 
     def set_gallery(self, request):
+        photo_list = []
+        for photo in Photo.objects.filter(album__user__username=request.user.username)[:5]:
+            photo_list.append({
+                'id': photo.id,
+                'scr': photo.source.url,
+                'location': photo.location_text,
+                'description': photo.name,
+            })
+
         self.context.update({
-            'SlideShow': [
-                # Images info
-            ]
+            'SlideShow': photo_list
         })
 
     def set_side_bar(self, request):
         self.set_gallery(request)
 
-        self.context.update({
-            'runTime': {
-                'ViewName': ''
-            }
-        })
+        # self.context.update({
+        #     'runTime': {
+        #         'ViewName': ''
+        #     }
+        # })
 
     def set_nav_bar(self, request):
         self.context.update({
             'user': {
-
+                'name': request.user.username,
             }
         })
 
@@ -138,7 +140,7 @@ class BaseView(View):
         self.context.update({
             'CONFIG': {
                 'SITE': {
-                    'TITLE': 'WEBSITE_TITLE'
+                    'TITLE': WEBSITE_TITLE
                 },
             }
         })
@@ -155,19 +157,45 @@ class Home(BaseView):
                 'noticeText': data['noticeText'],
             })
 
+        self.context = Context(self.context)
         self.context.update(csrf(request))
         print self.context
         return render(request, 'home.html', self.context)
 
     def post(self, request):
+        print request
         return render(request, 'home.html', self.context)
+
+
+class PhotoUpload(View):
+    def get(self, request):
+        print '000'
+        return HttpResponse("1")
+
+    def post(self, request):
+        print request
+        return HttpResponse("000")
+
+
+def postTest(request):
+    print request
+    return HttpResponse("000")
+
+
+class TimeLine(BaseView):
+    def get(self, request):
+        super(TimeLine, self).get(request)
+        self.context = Context(self.context)
+        self.context.update(csrf(request))
+        print self.context
+        return render(request, '', self.context)
 
 
 class SignUp(View):
     def get(self, request):
         if request.user.is_authenticated():
             return HttpResponseRedirect('/home/')
-        context = RequestContext({})
+        context = Context({})
         context.update(csrf(request))
         return render(request, 'signup.html', context)
 
