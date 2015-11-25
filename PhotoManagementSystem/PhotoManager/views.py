@@ -191,6 +191,12 @@ class PhotoUpload(View):
 class TimeLine(BaseView):
     def get(self, request):
         super(TimeLine, self).get(request)
+
+        photo_list = Photo.objects.filter(album__user=request.user)
+        self.context.update({
+            'photo_list': photo_list
+        })
+
         self.context = Context(self.context)
         self.context.update(csrf(request))
         print self.context
@@ -200,6 +206,12 @@ class TimeLine(BaseView):
 class Map(BaseView):
     def get(self, request):
         super(Map, self).get(request)
+
+        photo_list = Photo.objects.filter(album__user=request.user)
+        self.context.update({
+            'photo_list': photo_list
+        })
+
         self.context = Context(self.context)
         self.context.update(csrf(request))
         print self.context
