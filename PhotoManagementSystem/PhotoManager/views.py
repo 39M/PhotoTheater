@@ -12,7 +12,7 @@ from config import *
 
 
 class RestView(object):
-    ''' Restful API for Model CRUD operation '''
+    """ Restful API for Model CRUD operation """
 
     def __init__(self, model=None, field=None, success_url=None):
         self.model = model
@@ -144,6 +144,10 @@ class BaseView(View):
                 },
             }
         })
+
+
+def index(request):
+    return HttpResponseRedirect('/home/')
 
 
 class Home(BaseView):
