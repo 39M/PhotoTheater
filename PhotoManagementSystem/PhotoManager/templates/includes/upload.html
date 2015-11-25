@@ -11,7 +11,7 @@
     <div class="content">
         <div class="box-content">
             <div class="row">
-                <form class="fill-up">
+                <form class="fill-up" method="post" action="/test/showReq">{% csrf_token %}
                     <div class="col-lg-6">
                         <style>
                             #box {
@@ -45,11 +45,31 @@
                         <ul class="padded separate-sections">
                             <label>新建/选择相册</label>
                             <li>
-                                <label>新建相册</label><input type="checkbox" class="iButton-icons" checked="checked"/>
-                            </li>
-                            <li>
+                                <label>新建相册</label>
+                                <input id="selectnewalbum" type="checkbox" class="iButton-icons" checked="checked" name="newalbum" new='true' onchange="selectchanged()"/>
+                                <script>
+                                     function selectchanged(){
+                                         console.log($('#selectnewalbum').attr('new'))
+                                         if ('true' === $('#selectnewalbum').attr('new')) {
+                                             $('#newalbum').hide();
+                                             $('#oldalbum').show();
+                                             $('#selectnewalbum').attr('new','false');
+                                         }else{
+                                             $('#newalbum').show();
+                                             $('#oldalbum').hide();
+                                             $('#selectnewalbum').attr('new','true');
+                                         }
 
-                                <select class="chzn-select" name="colors">
+                                     }
+                                </script>
+                            </li>
+                            <li id="newalbum">
+                                <input type="text" placeholder="相册名称" name="newalbumname"/>
+                            </li>
+                            <li id="oldalbum" style="display: none;">
+
+                                <select class="chzn-select" name="album">
+                                    
                                     <option value="Aero blue">Aero blue</option>
                                     <option value="Air Force blue (RAF)">Air Force blue (RAF)</option>
                                     <option value="Air Force blue (USAF)">Air Force blue (USAF)</option>
@@ -62,7 +82,7 @@
                                 <textarea class="tags" placeholder="增加标签……">tag1,tag2,tag3</textarea>
                             </li>
                             <li class="input">
-                                <label>添加照片心情文件</label>
+                                <label>添加照片心情</label>
                                 <textarea placeholder="记录每一刻……" rows="4"></textarea>
                             </li>
                         </ul>
