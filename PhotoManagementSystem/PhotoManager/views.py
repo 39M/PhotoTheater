@@ -1,12 +1,14 @@
 # coding=utf-8
 from django.conf.urls import include, url
-from django.shortcuts import render, redirect
-from django.http import HttpResponse, HttpResponseRedirect
-from django.views.generic import *
-from django.views.generic.edit import *
 from django.contrib import auth
+from django.core.files.storage import default_storage
+from django.core.files.base import ContentFile
+from django.http import HttpResponse
+from django.shortcuts import render, redirect
 from django.template import Context, RequestContext
 from django.template.context_processors import csrf
+from django.views.generic import *
+from django.views.generic.edit import *
 from PhotoManager.models import *
 from config import *
 
@@ -105,7 +107,7 @@ class BaseView(View):
 
     def set_gallery(self, request):
         photo_list = []
-        for photo in Photo.objects.filter(album__user__username=request.user.username)[:5]:
+        for photo in Photo.objects.filter(album__user=request.user)[:5]:
             photo_list.append({
                 'id': photo.id,
                 'scr': photo.source.url,
@@ -147,7 +149,7 @@ class BaseView(View):
 
 
 def index(request):
-    return HttpResponseRedirect('/home/')
+    return redirect('/home/')
 
 
 class Home(BaseView):
@@ -161,6 +163,11 @@ class Home(BaseView):
                 'noticeText': data['noticeText'],
             })
 
+        albums = Album.objects.filter(user=request.user)
+        self.context.update({
+            'Albums': albums
+        })
+
         self.context = Context(self.context)
         self.context.update(csrf(request))
         print self.context
@@ -173,17 +180,12 @@ class Home(BaseView):
 
 class PhotoUpload(View):
     def get(self, request):
-        print '000'
-        return HttpResponse("1")
+        return redirect('/home/')
 
     def post(self, request):
-        print request
-        return HttpResponse("000")
-
-
-def postTest(request):
-    print request
-    return HttpResponse("000")
+        data = request.FILES['file']
+        default_storage.save('temp/' + data.name, ContentFile(data.read()))
+        return HttpResponse("OK")
 
 
 class TimeLine(BaseView):
@@ -192,13 +194,23 @@ class TimeLine(BaseView):
         self.context = Context(self.context)
         self.context.update(csrf(request))
         print self.context
-        return render(request, '', self.context)
+        return render(request, 'timelineSimple.html', self.context)
+
+
+class Map(BaseView):
+    def get(self, request):
+        super(Map, self).get(request)
+        self.context = Context(self.context)
+        self.context.update(csrf(request))
+        print self.context
+        return render(request, 'map.html', self.context)
+
 
 
 class SignUp(View):
     def get(self, request):
         if request.user.is_authenticated():
-            return HttpResponseRedirect('/home/')
+            return redirect('/home/')
         context = Context({})
         context.update(csrf(request))
         return render(request, 'signup.html', context)
@@ -222,7 +234,7 @@ class SignUp(View):
             noticeType = 'success'
             noticeTitle = '注册成功'
             noticeText = ' '
-            return HttpResponseRedirect(
+            return redirect(
                 '/signin/?noticeType=%s&noticeTitle=%s&noticeText=%s' % (noticeType, noticeTitle, noticeText))
 
         # Sign up fail, return warning info
@@ -243,7 +255,7 @@ class SignUp(View):
 class SignIn(View):
     def get(self, request):
         if request.user.is_authenticated():
-            return HttpResponseRedirect('/home/')
+            return redirect('/home/')
         data = request.GET
         if 'noticeType' in data and 'noticeTitle' in data and 'noticeText' in data:
             context = Context({
@@ -268,7 +280,7 @@ class SignIn(View):
                 noticeType = 'success'
                 noticeTitle = '登录成功'
                 noticeText = ' '
-                return HttpResponseRedirect(
+                return redirect(
                     '/home/?noticeType=%s&noticeTitle=%s&noticeText=%s' % (noticeType, noticeTitle, noticeText))
             else:
                 noticeText = '账户被禁用'
@@ -295,7 +307,7 @@ class SignOut(View):
         noticeType = 'success'
         noticeTitle = '已退出登录'
         noticeText = ' '
-        return HttpResponseRedirect(
+        return redirect(
             '/signin/?noticeType=%s&noticeTitle=%s&noticeText=%s' % (noticeType, noticeTitle, noticeText))
 
 
