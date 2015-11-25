@@ -66,7 +66,30 @@
 				showDiyProgress( percentage.toFixed(2), $diyBar);
 				
 			});
-			
+			//changed liu 2015年11月25日
+			function getCookie(name) {
+				var cookieValue = null;
+				if (document.cookie && document.cookie != '') {
+					var cookies = document.cookie.split(';');
+					for (var i = 0; i < cookies.length; i++) {
+						var cookie = jQuery.trim(cookies[i]);
+						// Does this cookie string begin with the name we want?
+						if (cookie.substring(0, name.length + 1) == (name + '=')) {
+							cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+							break;
+						}
+					}
+				}
+				return cookieValue;
+			}
+
+			webUploader.on('uploadBeforeSend', function(obj, data, headers) {
+				_.extend(headers, {
+					"Access-Control-Request-Method": "POST",
+					"X-CSRFToken" : getCookie('csrftoken')
+
+				});
+			});
 			//全部上传结束后触发;
 			webUploader.on('uploadFinished', function(){
 				$fileInput.next('.parentFileBox').children('.diyButton').remove();
