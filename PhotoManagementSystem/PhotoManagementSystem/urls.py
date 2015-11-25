@@ -27,12 +27,13 @@ urlpatterns = [
 
     url(r'^$', views.index),
     url(r'^home/$', login_required(views.Home.as_view())),
+    url(r'^timeline/$', login_required(views.TimeLine.as_view())),
+    url(r'^map/$', login_required(views.Map.as_view())),
     url(r'^signup/$', views.SignUp.as_view()),
     url(r'^signin/$', views.SignIn.as_view()),
     url(r'^signout/$', login_required(views.SignOut.as_view())),
 
-    # url(r'^uploadPhoto/$', views.PhotoUpload.as_view()),
-    url(r'^uploadPhoto/$', views.postTest),
+    url(r'^uploadPhoto$', views.PhotoUpload.as_view()),
     url(r'^test/$', views.Test.as_view()),
     url(r'^test/album/', include(views.RestView(model=Album, field=["user", "name", "create_date", "update_date"]).urlGroup())),
     url(r'^test/photo/', include(views.RestView(model=Photo, field=["album", "name", "shot_date", "upload_date", "update_date", "latitude", "longitude", "location_text", "emotion", "origin_source", "source"]).urlGroup())),
