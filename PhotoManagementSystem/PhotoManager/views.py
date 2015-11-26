@@ -14,8 +14,12 @@ from django.views.generic.edit import *
 from PIL import Image, ExifTags
 from PhotoManager.models import *
 from config import *
+from datetime import datetime
 import os
 import json
+from pytz import timezone
+
+TIME_ZONE = timezone('Asia/Shanghai')
 
 
 class RestView(object):
@@ -102,6 +106,8 @@ class RestView(object):
 
 
 class BaseView(View):
+    """ Base view """
+
     def __init__(self, **kwargs):
         super(BaseView, self).__init__(**kwargs)
         self.context = {}
@@ -153,13 +159,18 @@ class BaseView(View):
         })
 
 
+# Redirect to home
 def index(request):
     return redirect('/home/')
 
 
 class Home(BaseView):
+    """ Home view """
+
     def get(self, request):
         super(Home, self).get(request)
+
+        # Check notice info
         data = request.GET
         if 'noticeType' in data and 'noticeTitle' in data and 'noticeText' in data:
             self.context.update({
@@ -168,11 +179,13 @@ class Home(BaseView):
                 'noticeText': data['noticeText'],
             })
 
-        album_list = Album.objects.filter(user=request.user)
+        # Send album list
+        album_list = Album.objects.filter(user=request.user).order_by('name')
         self.context.update({
             'album_list': album_list
         })
 
+        # Send photo list
         photo_list = Photo.objects.filter(album__user=request.user).order_by('-shot_date')
         self.context.update({
             'photo_list': photo_list
@@ -187,6 +200,11 @@ class Home(BaseView):
         data = request.POST
         print data
         user = request.user
+
+        if not data['photo_list']:
+            noticeText = '未选择任何照片！'
+
+        # New album or select album
         if 'newalbum' in data:
             album = Album.objects.create(
                 user=user,
@@ -195,37 +213,53 @@ class Home(BaseView):
         else:
             album = Album.objects.get(id=data['albumname'])
 
+        # Create photos
         photo_list = json.loads(data['photo_list'])
-        print photo_list
         for name in photo_list:
             photo = Photo(
                 album=album,
                 name=name.split('.')[0],
-                emotion=data['emotion'],
-                description=data['comment'],
             )
+
+            if 'emotion' in data:
+                photo.emotion = data['emotion']
+
+            if 'comment' in data:
+                photo.description = data['comment']
+
+            # Save image source
             img = File(open('media/temp/' + name, 'rb'))
             img.name = name.replace('_' + name.split('_')[-1], '')
             photo.origin_source = img
             photo.source = img
-            # img.close()
 
+            # PIL processing
             img = Image.open('media/temp/' + name)
-            # exif = {
-            #     ExifTags.TAGS[k]: v
-            #     for k, v in img._getexif().items()
-            #     if k in ExifTags.TAGS
-            # }
-            # print exif
+            # Get shot date
+            try:
+                exif = {
+                    ExifTags.TAGS[k]: v
+                    for k, v in img._getexif().items()
+                    if k in ExifTags.TAGS
+                    }
+                print exif
+                shot_date = datetime.strptime(exif['DateTime'], '%Y:%m:%d %H:%M:%S')
+            except:
+                shot_date = datetime.strptime('1970:01:01', '%Y:%m:%d')
 
-            img.thumbnail((240, 100), Image.ANTIALIAS)
-            img.save('media/temp/' + name + '.thumbnail', 'JPEG')
-            # img.close()
+            photo.shot_date = TIME_ZONE.localize(shot_date)
 
-            img = File(open('media/temp/' + name + '.thumbnail', 'rb'))
-            img.name = name.replace('_' + name.split('_')[-1], '')
-            photo.thumb = img
-            # img.close()
+            try:
+                # Create thumb
+                img.thumbnail((240, 100), Image.ANTIALIAS)
+                img.save('media/temp/' + name + '.thumbnail', 'JPEG')
+                # Save thumb
+                img = File(open('media/temp/' + name + '.thumbnail', 'rb'))
+                img.name = name.replace('_' + name.split('_')[-1], '')
+                photo.thumb = img
+            except:
+                print 'Photo ' + name + ' created failed'
+                continue
 
             photo.save()
 
@@ -233,10 +267,13 @@ class Home(BaseView):
 
 
 class PhotoUpload(View):
+    """ Handle photo upload post """
+
     def get(self, request):
         return redirect('/home/')
 
     def post(self, request):
+        # Save file with hash code for later verification
         hash_code = '_' + str(request.POST['hash'])
         data = request.FILES['file']
         default_storage.save('temp/' + data.name + hash_code, ContentFile(data.read()))
@@ -245,9 +282,12 @@ class PhotoUpload(View):
 
 
 class TimeLine(BaseView):
+    """ Time line view """
+
     def get(self, request):
         super(TimeLine, self).get(request)
 
+        # Send photo list data
         photo_list = Photo.objects.filter(album__user=request.user).order_by('-shot_date')
         self.context.update({
             'photo_list': photo_list
@@ -260,9 +300,12 @@ class TimeLine(BaseView):
 
 
 class Map(BaseView):
+    """ Map view """
+
     def get(self, request):
         super(Map, self).get(request)
 
+        # Send photo list data
         photo_list = Photo.objects.filter(album__user=request.user).order_by('-shot_date')
         self.context.update({
             'photo_list': photo_list
@@ -275,19 +318,23 @@ class Map(BaseView):
 
 
 class SignUp(View):
+    """ Sign up view """
+
     def get(self, request):
+        # Check if had signed in
         if request.user.is_authenticated():
             return redirect('/home/')
+
         context = Context({})
         context.update(csrf(request))
         return render(request, 'signup.html', context)
 
     def post(self, request):
-        # print request.POST
         username = request.POST['username']
         password = request.POST['password']
         password_confirm = request.POST['password_confirm']
 
+        # Validate sign up
         if len(username) < 3:
             noticeText = u'用户名长度至少3位'
         elif User.objects.filter(username=username):
@@ -321,9 +368,14 @@ class SignUp(View):
 
 
 class SignIn(View):
+    """ Sign in view """
+
     def get(self, request):
+        # Check if had signed in
         if request.user.is_authenticated():
             return redirect('/home/')
+
+        # Check notice info
         data = request.GET
         if 'noticeType' in data and 'noticeTitle' in data and 'noticeText' in data:
             context = Context({
@@ -333,15 +385,17 @@ class SignIn(View):
             })
         else:
             context = Context({})
+
         context.update(csrf(request))
         return render(request, 'login.html', context)
 
     def post(self, request):
-        # print request.POST
         username = request.POST['username']
         password = request.POST['password']
 
         user = auth.authenticate(username=username, password=password)
+
+        # Validate sign in
         if user is not None:
             if user.is_active:
                 auth.login(request, user)
@@ -355,7 +409,7 @@ class SignIn(View):
         else:
             noticeText = u'用户名和密码不匹配'
 
-        # Log in fail
+        # Sign in fail
         noticeType = 'warn'
         noticeTitle = u'登录失败'
         context = Context({
@@ -370,6 +424,8 @@ class SignIn(View):
 
 
 class SignOut(View):
+    """ Sign out view """
+
     def get(self, request):
         auth.logout(request)
         noticeType = 'success'
@@ -380,6 +436,8 @@ class SignOut(View):
 
 
 class Test(View):
+    """ Test view for develop test """
+
     def get(self, request):
         context = Context(request.GET)
         context.update(csrf(request))
