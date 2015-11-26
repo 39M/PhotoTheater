@@ -95,7 +95,7 @@
 				$('#photo_list').val(JSON.stringify(s));
 				console.log("[Debug] Uploading " +obj.file.name +' hash: '+obj.file.__hash);
 				//
-				data.name += "_" +obj.file.__hash;
+				data['hash'] = obj.file.__hash;
 
 			});
 			//全部上传结束后触发;
