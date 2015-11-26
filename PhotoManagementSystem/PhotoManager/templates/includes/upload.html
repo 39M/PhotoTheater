@@ -66,13 +66,13 @@
                                 </script>
                             </li>
                             <li id="newalbum">
-                                <input type="text" placeholder="新建相册名称" name="newalbum"/>
+                                <input type="text" placeholder="新建相册名称" name="newalbumname"/>
                             </li>
                             <li id="oldalbum" style="display: none;">
 
-                                <select class="chzn-select" name="album">
+                                <select class="chzn-select" name="albumname">
                                     {% for Album in album_list %}
-                                        <option value="{{ Album.name }}">{{ Album.name }}</option>
+                                        <option value="{{ Album.id }}">{{ Album.name }}</option>
                                     {% endfor %}
                                 </select>
                             </li>
