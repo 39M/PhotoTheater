@@ -234,24 +234,25 @@ class SignUp(View):
         password_confirm = request.POST['password_confirm']
 
         if len(username) < 3:
-            noticeText = '用户名长度至少3位'
+            noticeText = u'用户名长度至少3位'
         elif User.objects.filter(username=username):
-            noticeText = '您选择的用户名已被使用'
+            noticeText = u'您选择的用户名已被使用'
         elif len(password) < 6:
-            noticeText = '密码长度至少6位'
+            noticeText = u'密码长度至少6位'
         elif password != password_confirm:
-            noticeText = '两次密码输入不一致'
+            noticeText = u'两次密码输入不一致'
         else:
-            User.objects.create_user(username=username, password=password)
+            user = User.objects.create_user(username=username, password=password)
+            Album.objects.create(user=user, name='Default')
             noticeType = 'success'
-            noticeTitle = '注册成功'
+            noticeTitle = u'注册成功'
             noticeText = ' '
             return redirect(
                 '/signin/?noticeType=%s&noticeTitle=%s&noticeText=%s' % (noticeType, noticeTitle, noticeText))
 
         # Sign up fail, return warning info
         noticeType = 'warn'
-        noticeTitle = '注册失败'
+        noticeTitle = u'注册失败'
         context = Context({
             'noticeType': noticeType,
             'noticeTitle': noticeTitle,
@@ -290,18 +291,18 @@ class SignIn(View):
             if user.is_active:
                 auth.login(request, user)
                 noticeType = 'success'
-                noticeTitle = '登录成功'
+                noticeTitle = u'登录成功'
                 noticeText = ' '
                 return redirect(
                     '/home/?noticeType=%s&noticeTitle=%s&noticeText=%s' % (noticeType, noticeTitle, noticeText))
             else:
-                noticeText = '账户被禁用'
+                noticeText = u'账户被禁用'
         else:
-            noticeText = '用户名和密码不匹配'
+            noticeText = u'用户名和密码不匹配'
 
         # Log in fail
         noticeType = 'warn'
-        noticeTitle = '登录失败'
+        noticeTitle = u'登录失败'
         context = Context({
             'noticeType': noticeType,
             'noticeTitle': noticeTitle,
@@ -317,7 +318,7 @@ class SignOut(View):
     def get(self, request):
         auth.logout(request)
         noticeType = 'success'
-        noticeTitle = '已退出登录'
+        noticeTitle = u'已退出登录'
         noticeText = ' '
         return redirect(
             '/signin/?noticeType=%s&noticeTitle=%s&noticeText=%s' % (noticeType, noticeTitle, noticeText))

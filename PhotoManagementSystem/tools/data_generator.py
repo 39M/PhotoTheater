@@ -11,10 +11,15 @@ Album.objects.all().delete()
 
 user = User.objects.filter(username='admin')[0]
 
-for i in range(5):
+Album.objects.create(
+    user=user,
+    name='Default',
+)
+
+for i in range(4):
     a = Album(
         user=user,
-        name='Album'+str(i+1),
+        name='Album' + str(i + 1),
         # create_date=timezone.now(),
         # update_date=timezone.now(),
     )
