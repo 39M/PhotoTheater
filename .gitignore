@@ -63,3 +63,4 @@ target/
 PhotoManagementSystem/site-packages/
 PhotoManagementSystem/tools/
 PhotoManagementSystem/db.sqlite3
+*.sqlite3
