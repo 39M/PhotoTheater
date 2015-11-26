@@ -93,76 +93,7 @@
                                     }
                                 </style>
                                 <ul class="clearfix">
-                                    <li onmouseover="this.className='current'"
-                                        onmouseout="this.className=$('moodid').value==1?this.className:''"
-                                        onclick="check(this, 1)" class="">
-                                        <input type="radio" name='emotion' value='开心'/><span>开心</span>
-                                        <img id="mood_1" src="{% static "images/mood00.png" %}" title="记上一笔，hold住我的快乐！"
-                                             alt="开心">
-                                    </li>
-                                    <li onmouseover="this.className='current'"
-                                        onmouseout="this.className=$('moodid').value==2?this.className:''"
-                                        onclick="check(this, 2)" class="">
-                                        <input type="radio" name='emotion' value='得意'/><span>得意</span>
-                                        <img id="mood_2" src="{% static "images/mood01.png" %}" title="晃着大脑袋，给你讲诉我的故事！~"
-                                             alt="得意">
-                                    </li>
-                                    <li onmouseover="this.className='current'"
-                                        onmouseout="this.className=$('moodid').value==3?this.className:''"
-                                        onclick="check(this, 3)" class="">
-                                        <input type="radio" name='emotion' value='无聊'/><span>无聊</span>
-                                        <img id="mood_3" src="{% static "images/mood02.png" %}"
-                                             title="为了维护宇宙和平，打起精神来！~~" alt="无聊">
-                                    </li>
-                                    <li onmouseover="this.className='current'"
-                                        onmouseout="this.className=$('moodid').value==4?this.className:''"
-                                        onclick="check(this, 4)" class="">
-                                        <input type="radio" name='emotion' value='郁闷'/><span>郁闷</span>
-                                        <img id="mood_4" src="{% static "images/mood03.png" %}" title="没有开心，哪来的幸福？要开心哦"
-                                             alt="郁闷">
-                                    </li>
-                                    <li onmouseover="this.className='current'"
-                                        onmouseout="this.className=$('moodid').value==5?this.className:''"
-                                        onclick="check(this, 5)">
-                                        <input type="radio" name='emotion' value='伤心'/><span>伤心</span>
-                                        <img id="mood_5" src="{% static "images/mood04.png" %}" title="格式化自己，只为删除那些不愉快！"
-                                             alt="伤心">
-                                    </li>
-                                    <li onmouseover="this.className='current'"
-                                        onmouseout="this.className=$('moodid').value==6?this.className:''"
-                                        onclick="check(this, 6)">
-                                        <input type="radio" name='emotion' value='狂喜'/><span>狂喜</span>
-                                        <img id="mood_6" src="{% static "images/mood10.png" %}" title="哈哈~~我hold不住了！"
-                                             alt="狂喜">
-                                    </li>
-                                    <li onmouseover="this.className='current'"
-                                        onmouseout="this.className=$('moodid').value==7?this.className:''"
-                                        onclick="check(this, 7)" class="">
-                                        <input type="radio" name='emotion' value='大哭'/><span>大哭</span>
-                                        <img id="mood_7" src="{% static "images/mood11.png" %}"
-                                             title="人生太多事，今天就在这里大哭一次，希望在明天！" alt="大哭">
-                                    </li>
-                                    <li onmouseover="this.className='current'"
-                                        onmouseout="this.className=$('moodid').value==8?this.className:''"
-                                        onclick="check(this, 8)" class="">
-                                        <input type="radio" name='emotion' value='无憾'/><span>无憾</span>
-                                        <img id="mood_8" src="{% static "images/mood12.png" %}" title="为了明天的无憾，今天来烧香拜佛~"
-                                             alt="无憾">
-                                    </li>
-                                    <li onmouseover="this.className='current'"
-                                        onmouseout="this.className=$('moodid').value==9?this.className:''"
-                                        onclick="check(this, 9)">
-                                        <input type="radio" name='emotion' value='牛逼'/><span>牛逼</span>
-                                        <img id="mood_9" src="{% static "images/mood13.png" %}"
-                                             title="今天人人都太牛逼，真是太强大了~~~" alt="牛逼">
-                                    </li>
-                                    <li onmouseover="this.className='current'"
-                                        onmouseout="this.className=$('moodid').value==10?this.className:''"
-                                        onclick="check(this, 10)" class="">
-                                        <input type="radio" name='emotion' value='傻眼'/><span>傻眼</span>
-                                        <img id="mood_10" src="{% static "images/mood14.png" %}"
-                                             title="人生太多无奈，今天的事让我真是傻眼呀！" alt="傻眼">
-                                    </li>
+                                    {% include 'includes/emotion.html' %}
 
                                 </ul>
                             </li>

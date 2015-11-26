@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
 <head>
-{% load staticfiles %}
+    {% load staticfiles %}
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, maximum-scale=1, initial-scale=1, user-scalable=0">
 
@@ -27,11 +27,13 @@
     var noticeType = "{{ noticeType }}";// allow in [info,warn,error,success]
     var noticeTitle = "{{ noticeTitle }}";
     var noticeText = "{{ noticeText }}";
-    $(function(){
-        Growl[noticeType]({
-            title: noticeTitle,
-            text: noticeText
-        });
+    $(function () {
+        if (noticeType) {
+            Growl[noticeType]({
+                title: noticeTitle,
+                text: noticeText
+            });
+        }
     })
 </script>
 </body>

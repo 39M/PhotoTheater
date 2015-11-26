@@ -4,235 +4,33 @@
     <link href="{% static 'timeline/css/about.css' %}" rel="stylesheet" type="text/css">
     <div style="width: 80%;    margin-left: 10%;">
         <ul class="event_year">
-            <li class="current"><label for="2013">2013</label></li>
-            <li><label for="2012">2012</label></li>
-            <li><label for="2011">2011</label></li>
-            <li><label for="2010">2010</label></li>
+
+            {% regroup photo_list by shot_date|date:"Y" as objects_by_Year %}
+            {% for year in objects_by_Year %}
+            <li class="current"><label for="{{ year.grouper }}">{{ year.grouper }}</label></li>
+            {% endfor %}
         </ul>
 
         <ul class="event_list">
-            <div>
-                <h3 id="2013">2013</h3>
-                <li>
-                    <span>5月</span>
-
-                    <p><span>
-
-                        <span style="width: 255px; padding-left: 0px;border: none; ">
-                            <span style="width: 103px;border: none;">
-                             location <br>
-                              motion <br>
-                            <input style='width:60px;height:60px' value="desc"/>
-                            </span>
-                            <img src="" style="width: 120px;height: 128px;" class="img-thumbnail">
-
-                        </span>
-                        <span style="width: 255px; padding-left: 0px;border: none; ">
-                            <span style="width: 103px;border: none;">
-                             location <br>
-                              motion <br>
-                            <input style='width:60px;height:60px' value="desc"/>
-                            </span>
-                            <img src="" style="width: 120px;height: 128px;" class="img-thumbnail">
-
-                        </span>
-                        <span style="width: 255px; padding-left: 0px;border: none; ">
-                            <span style="width: 103px;border: none;">
-                             location <br>
-                              motion <br>
-                            <input style='width:60px;height:60px' value="desc"/>
-                            </span>
-                            <img src="" style="width: 120px;height: 128px;" class="img-thumbnail">
-
-                        </span>
-                    </span>
-                    </p>
-                </li>
-                <li>
-                    <span>4月</span>
-
-                    <p><span>
-                        <img src="" style="width: 120px;height: 128px;" class="img-thumbnail">
-                        <img src="" style="width: 120px;height: 128px;" class="img-thumbnail">
-                        <img src="" style="width: 120px;height: 128px;" class="img-thumbnail">
-                        <img src="" style="width: 120px;height: 128px;" class="img-thumbnail">
-                        <img src="" style="width: 120px;height: 128px;" class="img-thumbnail">
-                        <img src="" style="width: 120px;height: 128px;" class="img-thumbnail">
-                        <img src="" style="width: 120px;height: 128px;" class="img-thumbnail">
-                        <img src="" style="width: 120px;height: 128px;" class="img-thumbnail">
-
-                    </span></p>
-                </li>
-                <li>
-                    <span>3月</span>
-
-                    <p><span>
-                        <img src="" style="width: 120px;height: 128px;" class="img-thumbnail">
-                        <img src="" style="width: 120px;height: 128px;" class="img-thumbnail">
-                    </span></p>
-                </li>
-
+            {% regroup photo_list by shot_date|date:"Y" as objects_by_Year %}
+            {% for year in objects_by_Year %}
+                <div>
+                <h3 id="{{ year.grouper }}">{{ year.grouper }}</h3>
+                {% for yeardata in year.list %}
+                    {% regroup year.list by shot_date|date:"M" as objects_by_Month %}
+                    {% for month in objects_by_Month %}
+                        <li>
+                        <span>{{ month.grouper }}</span>
+                        <p><span>
+                            {% for photo in month.list %}
+                                <img src="{{ photo.thumb }}" style="width: 120px;height: 128px;" class="img-thumbnail">
+                            {% endfor %}
+                        </span></p>
+                        </li>
+                    {% endfor %}
+                {% endfor %}
             </div>
-            <div>
-                <h3 id="2012">2012</h3>
-                <li>
-                    <span>9月</span>
-
-                    <p><span>
-                        <img src="" style="width: 120px;height: 128px;" class="img-thumbnail">
-                        <img src="" style="width: 120px;height: 128px;" class="img-thumbnail">
-                        <img src="" style="width: 120px;height: 128px;" class="img-thumbnail">
-                        <img src="" style="width: 120px;height: 128px;" class="img-thumbnail">
-                        <img src="" style="width: 120px;height: 128px;" class="img-thumbnail">
-                        <img src="" style="width: 120px;height: 128px;" class="img-thumbnail">
-                        <img src="" style="width: 120px;height: 128px;" class="img-thumbnail">
-                        <img src="" style="width: 120px;height: 128px;" class="img-thumbnail">
-
-                    </span></p>
-                </li>
-
-            </div>
-            <div>
-                <h3 id="2011">2011</h3>
-                <li><span>3月13日</span>
-
-                    <p><span>
-                        <img src="" style="width: 120px;height: 128px;" class="img-thumbnail">
-                        <img src="" style="width: 120px;height: 128px;" class="img-thumbnail">
-                        <img src="" style="width: 120px;height: 128px;" class="img-thumbnail">
-                        <img src="" style="width: 120px;height: 128px;" class="img-thumbnail">
-                        <img src="" style="width: 120px;height: 128px;" class="img-thumbnail">
-                        <img src="" style="width: 120px;height: 128px;" class="img-thumbnail">
-                        <img src="" style="width: 120px;height: 128px;" class="img-thumbnail">
-                        <img src="" style="width: 120px;height: 128px;" class="img-thumbnail">
-
-                    </span></p>
-                </li>
-                <li><span>3月26日</span>
-
-                    <p><span>
-                        <img src="" style="width: 120px;height: 128px;" class="img-thumbnail">
-                        <img src="" style="width: 120px;height: 128px;" class="img-thumbnail">
-                        <img src="" style="width: 120px;height: 128px;" class="img-thumbnail">
-                        <img src="" style="width: 120px;height: 128px;" class="img-thumbnail">
-                        <img src="" style="width: 120px;height: 128px;" class="img-thumbnail">
-                        <img src="" style="width: 120px;height: 128px;" class="img-thumbnail">
-                        <img src="" style="width: 120px;height: 128px;" class="img-thumbnail">
-                        <img src="" style="width: 120px;height: 128px;" class="img-thumbnail">
-
-                    </span></p></li>
-                <li><span>4月-11月</span>
-
-                    <p><span>
-                        <img src="" style="width: 120px;height: 128px;" class="img-thumbnail">
-                        <img src="" style="width: 120px;height: 128px;" class="img-thumbnail">
-                        <img src="" style="width: 120px;height: 128px;" class="img-thumbnail">
-                        <img src="" style="width: 120px;height: 128px;" class="img-thumbnail">
-                        <img src="" style="width: 120px;height: 128px;" class="img-thumbnail">
-                        <img src="" style="width: 120px;height: 128px;" class="img-thumbnail">
-                        <img src="" style="width: 120px;height: 128px;" class="img-thumbnail">
-                        <img src="" style="width: 120px;height: 128px;" class="img-thumbnail">
-
-                    </span></p></li>
-                <li><span>6月11日</span>
-
-                    <p><span>
-                        <img src="" style="width: 120px;height: 128px;" class="img-thumbnail">
-                        <img src="" style="width: 120px;height: 128px;" class="img-thumbnail">
-                        <img src="" style="width: 120px;height: 128px;" class="img-thumbnail">
-                        <img src="" style="width: 120px;height: 128px;" class="img-thumbnail">
-                        <img src="" style="width: 120px;height: 128px;" class="img-thumbnail">
-                        <img src="" style="width: 120px;height: 128px;" class="img-thumbnail">
-                        <img src="" style="width: 120px;height: 128px;" class="img-thumbnail">
-                        <img src="" style="width: 120px;height: 128px;" class="img-thumbnail">
-
-                    </span></p></li>
-                <li><span>9月10日</span>
-
-                    <p><span>
-                        <img src="" style="width: 120px;height: 128px;" class="img-thumbnail">
-                        <img src="" style="width: 120px;height: 128px;" class="img-thumbnail">
-                        <img src="" style="width: 120px;height: 128px;" class="img-thumbnail">
-                        <img src="" style="width: 120px;height: 128px;" class="img-thumbnail">
-                        <img src="" style="width: 120px;height: 128px;" class="img-thumbnail">
-                        <img src="" style="width: 120px;height: 128px;" class="img-thumbnail">
-                        <img src="" style="width: 120px;height: 128px;" class="img-thumbnail">
-                        <img src="" style="width: 120px;height: 128px;" class="img-thumbnail">
-
-                    </span></p></li>
-            </div>
-
-            <div>
-                <h3 id="2010">2010</h3>
-                <li><span>3月13日</span>
-
-                    <p><span>
-                        <img src="" style="width: 120px;height: 128px;" class="img-thumbnail">
-                        <img src="" style="width: 120px;height: 128px;" class="img-thumbnail">
-                        <img src="" style="width: 120px;height: 128px;" class="img-thumbnail">
-                        <img src="" style="width: 120px;height: 128px;" class="img-thumbnail">
-                        <img src="" style="width: 120px;height: 128px;" class="img-thumbnail">
-                        <img src="" style="width: 120px;height: 128px;" class="img-thumbnail">
-                        <img src="" style="width: 120px;height: 128px;" class="img-thumbnail">
-                        <img src="" style="width: 120px;height: 128px;" class="img-thumbnail">
-
-                    </span></p>
-                </li>
-                <li><span>3月26日</span>
-
-                    <p><span>
-                        <img src="" style="width: 120px;height: 128px;" class="img-thumbnail">
-                        <img src="" style="width: 120px;height: 128px;" class="img-thumbnail">
-                        <img src="" style="width: 120px;height: 128px;" class="img-thumbnail">
-                        <img src="" style="width: 120px;height: 128px;" class="img-thumbnail">
-                        <img src="" style="width: 120px;height: 128px;" class="img-thumbnail">
-                        <img src="" style="width: 120px;height: 128px;" class="img-thumbnail">
-                        <img src="" style="width: 120px;height: 128px;" class="img-thumbnail">
-                        <img src="" style="width: 120px;height: 128px;" class="img-thumbnail">
-
-                    </span></p></li>
-                <li><span>4月-11月</span>
-
-                    <p><span>
-                        <img src="" style="width: 120px;height: 128px;" class="img-thumbnail">
-                        <img src="" style="width: 120px;height: 128px;" class="img-thumbnail">
-                        <img src="" style="width: 120px;height: 128px;" class="img-thumbnail">
-                        <img src="" style="width: 120px;height: 128px;" class="img-thumbnail">
-                        <img src="" style="width: 120px;height: 128px;" class="img-thumbnail">
-                        <img src="" style="width: 120px;height: 128px;" class="img-thumbnail">
-                        <img src="" style="width: 120px;height: 128px;" class="img-thumbnail">
-                        <img src="" style="width: 120px;height: 128px;" class="img-thumbnail">
-
-                    </span></p></li>
-                <li><span>6月11日</span>
-
-                    <p><span>
-                        <img src="" style="width: 120px;height: 128px;" class="img-thumbnail">
-                        <img src="" style="width: 120px;height: 128px;" class="img-thumbnail">
-                        <img src="" style="width: 120px;height: 128px;" class="img-thumbnail">
-                        <img src="" style="width: 120px;height: 128px;" class="img-thumbnail">
-                        <img src="" style="width: 120px;height: 128px;" class="img-thumbnail">
-                        <img src="" style="width: 120px;height: 128px;" class="img-thumbnail">
-                        <img src="" style="width: 120px;height: 128px;" class="img-thumbnail">
-                        <img src="" style="width: 120px;height: 128px;" class="img-thumbnail">
-
-                    </span></p></li>
-                <li><span>9月10日</span>
-
-                    <p><span>
-                        <img src="" style="width: 120px;height: 128px;" class="img-thumbnail">
-                        <img src="" style="width: 120px;height: 128px;" class="img-thumbnail">
-                        <img src="" style="width: 120px;height: 128px;" class="img-thumbnail">
-                        <img src="" style="width: 120px;height: 128px;" class="img-thumbnail">
-                        <img src="" style="width: 120px;height: 128px;" class="img-thumbnail">
-                        <img src="" style="width: 120px;height: 128px;" class="img-thumbnail">
-                        <img src="" style="width: 120px;height: 128px;" class="img-thumbnail">
-                        <img src="" style="width: 120px;height: 128px;" class="img-thumbnail">
-
-                    </span></p></li>
-            </div>
-
-
+            {% endfor %}
         </ul>
 
         <div class="clearfix"></div>

@@ -1,16 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title></title>
-</head>
-<body style="margin: 0px; height: 824px;">
+{% extends 'html.html' %}
+{% block body %}
     <script>
-        document.getElementsByTagName("body").
+
     </script>
     <iframe height="100%" style="border: 0px;" width="80%" src="/test?v=filter"></iframe>
     <style>
-        .info{
+        .info {
             display: block;
             width: 20%;
             position: absolute;
@@ -19,7 +14,64 @@
             left: 80%;
             background: #303030;
         }
+
+        body {
+            margin: 0px;
+            height: 824px;
+        }
     </style>
-    <div class="info"></div>
-</body>
-</html>
+    <div class="info">
+
+
+        <ul class="padded separate-sections">
+
+            <li class="input">
+                <input type="text" placeholder="照片名称" name="name" value="{{ name }}">
+            </li>
+
+            <li class="input">
+                <input type="text" placeholder="">
+            </li>
+
+            <li class="input">
+                <input type="text" placeholder=""/>
+            </li>
+            <li>
+                <label>位置选择：</label>
+
+            </li>
+            <li>
+                <style>
+                    .clearfix li {
+                        float: left;
+                        width: 20%;
+                        margin-bottom: 5px;
+                        text-align: center;
+                        list-style: none;
+                    }
+                    .padded ,.separate-sections{
+                        color: whitesmoke;
+                    }
+                    .padded input[type='text']{
+                        width: 100%;
+                    }
+                    .input .clearfix input {
+                        width: 20% !important;
+                    }
+                </style>
+                <ul class="clearfix">
+                    {% include "includes/emotion.html" %}
+                </ul>
+            </li>
+            <li>
+                <input class="datepicker fill-up" type="text" placeholder="拍摄日期">
+            </li>
+            <li>
+
+                <button class="btn btn-sm btn-blue">保存</button>
+                <button class="btn btn-sm btn-red">删除</button>
+            </li>
+        </ul>
+
+    </div>
+{% endblock %}
