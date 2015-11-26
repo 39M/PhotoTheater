@@ -163,9 +163,9 @@ class Home(BaseView):
                 'noticeText': data['noticeText'],
             })
 
-        albums = Album.objects.filter(user=request.user)
+        album_list = Album.objects.filter(user=request.user)
         self.context.update({
-            'Albums': albums
+            'album_list': album_list
         })
 
         self.context = Context(self.context)
