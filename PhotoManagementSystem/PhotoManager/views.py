@@ -1,6 +1,8 @@
 # coding=utf-8
+from django.conf import settings
 from django.conf.urls import include, url
 from django.contrib import auth
+from django.core.files import File
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
 from django.http import HttpResponse
@@ -9,8 +11,11 @@ from django.template import Context, RequestContext
 from django.template.context_processors import csrf
 from django.views.generic import *
 from django.views.generic.edit import *
+from PIL import Image, ExifTags
 from PhotoManager.models import *
 from config import *
+import os
+import json
 
 
 class RestView(object):
@@ -168,14 +173,63 @@ class Home(BaseView):
             'album_list': album_list
         })
 
+        photo_list = Photo.objects.filter(album__user=request.user).order_by('-shot_date')
+        self.context.update({
+            'photo_list': photo_list
+        })
+
         self.context = Context(self.context)
         self.context.update(csrf(request))
         print self.context
         return render(request, 'home.html', self.context)
 
     def post(self, request):
-        print request
-        return render(request, 'home.html', self.context)
+        data = request.POST
+        print data
+        user = request.user
+        if 'newalbum' in data:
+            album = Album.objects.create(
+                user=user,
+                name=data['newalbumname'],
+            )
+        else:
+            album = Album.objects.get(id=data['albumname'])
+
+        photo_list = json.loads(data['photo_list'])
+        print photo_list
+        for name in photo_list:
+            photo = Photo(
+                album=album,
+                name=name.split('.')[0],
+                emotion=data['emotion'],
+                description=data['comment'],
+            )
+            img = File(open('media/temp/' + name, 'rb'))
+            img.name = name.replace('_' + name.split('_')[-1], '')
+            photo.origin_source = img
+            photo.source = img
+            # img.close()
+
+            img = Image.open('media/temp/' + name)
+            # exif = {
+            #     ExifTags.TAGS[k]: v
+            #     for k, v in img._getexif().items()
+            #     if k in ExifTags.TAGS
+            # }
+            # print exif
+
+            img.thumbnail((240, 100), Image.ANTIALIAS)
+            img.save('media/temp/' + name + '.thumbnail', 'JPEG')
+            # img.close()
+
+            img = File(open('media/temp/' + name + '.thumbnail', 'rb'))
+            img.name = name.replace('_' + name.split('_')[-1], '')
+            photo.thumb = img
+            # img.close()
+
+            photo.save()
+
+        return redirect('/home/')
 
 
 class PhotoUpload(View):
@@ -183,8 +237,10 @@ class PhotoUpload(View):
         return redirect('/home/')
 
     def post(self, request):
+        hash_code = '_' + str(request.POST['hash'])
         data = request.FILES['file']
-        default_storage.save('temp/' + data.name, ContentFile(data.read()))
+        default_storage.save('temp/' + data.name + hash_code, ContentFile(data.read()))
+
         return HttpResponse("OK")
 
 
@@ -192,7 +248,7 @@ class TimeLine(BaseView):
     def get(self, request):
         super(TimeLine, self).get(request)
 
-        photo_list = Photo.objects.filter(album__user=request.user)
+        photo_list = Photo.objects.filter(album__user=request.user).order_by('-shot_date')
         self.context.update({
             'photo_list': photo_list
         })
@@ -207,7 +263,7 @@ class Map(BaseView):
     def get(self, request):
         super(Map, self).get(request)
 
-        photo_list = Photo.objects.filter(album__user=request.user)
+        photo_list = Photo.objects.filter(album__user=request.user).order_by('-shot_date')
         self.context.update({
             'photo_list': photo_list
         })
@@ -216,7 +272,6 @@ class Map(BaseView):
         self.context.update(csrf(request))
         print self.context
         return render(request, 'map.html', self.context)
-
 
 
 class SignUp(View):

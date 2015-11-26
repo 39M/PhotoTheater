@@ -38,9 +38,8 @@ for img in files:
     p = Photo(
         album=albums[random.randint(0, len(albums) - 1)],
         name=img.split('.')[0],
+        description=img.split('.')[0],
         shot_date=datetime.strptime(date_str, '%Y-%m-%d'),
-        # upload_date=timezone.now(),
-        # update_date=timezone.now(),
         latitude=random.uniform(45, 46),
         longitude=random.uniform(126, 127),
     )
