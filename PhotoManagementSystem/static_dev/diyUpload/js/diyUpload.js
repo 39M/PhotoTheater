@@ -89,6 +89,14 @@
 					"X-CSRFToken" : getCookie('csrftoken')
 
 				});
+				// photo added
+				var s = JSON.parse($('#photo_list').val());
+				s.push(obj.file.name+"_"+obj.file.__hash);
+				$('#photo_list').val(JSON.stringify(s));
+				console.log("[Debug] Uploading " +obj.file.name +' hash: '+obj.file.__hash);
+				//
+				data.name += "_" +obj.file.__hash;
+
 			});
 			//全部上传结束后触发;
 			webUploader.on('uploadFinished', function(){

@@ -3,7 +3,7 @@
 <nav class="navbar navbar-default navbar-inverse navbar-static-top" role="navigation">
   <!-- Brand and toggle get grouped for better mobile display -->
   <div class="navbar-header">
-    <a class="navbar-brand" href="/">{ CONFIG.SITE.TITLE }}</a>
+    <a class="navbar-brand" href="/">{{ CONFIG.SITE.TITLE }}</a>
 
     
         <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse-primary">
@@ -52,7 +52,7 @@
             <li class="dropdown">
               <a href="dashboard.html#" class="dropdown-toggle dropdown-avatar" data-toggle="dropdown">
               <span>
-                <img class="menu-avatar" src="{% static 'images/avatar1.png' %}" /> <span>John Smith <i class="icon-caret-down"></i></span>
+                <img class="menu-avatar" src="{% static 'images/avatar1.png' %}" /> <span>{{ user.name }} <i class="icon-caret-down"></i></span>
                 <span class="badge badge-dark-red">5</span>
               </span>
               </a>
@@ -64,8 +64,8 @@
                   <div class="avatar">
                     <img src="{% static 'images/avatar1.png' %}" />
                   </div>
-                  <span>John Smith
-{#                  {{ User.name }}#}
+                  <span>
+                  {{ user.name }}
                   </span>
                 </li>
 
