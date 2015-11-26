@@ -201,17 +201,34 @@ class Home(BaseView):
         print data
         user = request.user
 
-        if not data['photo_list']:
-            noticeText = '未选择任何照片！'
-
-        # New album or select album
-        if 'newalbum' in data:
-            album = Album.objects.create(
-                user=user,
-                name=data['newalbumname'],
-            )
+        album = 0
+        valid = True
+        noticeText = ' '
+        if data['photo_list'] == '[]':
+            noticeText = u'未选择任何照片！'
+            valid = False
         else:
-            album = Album.objects.get(id=data['albumname'])
+            # New album or select album
+            if 'newalbum' in data:
+                if not data['newalbumname']:
+                    noticeText = u'相册名不能为空！'
+                    valid = False
+                elif Album.objects.filter(name=data['newalbumname']):
+                    noticeText = u'相册名已存在！'
+                    valid = False
+                else:
+                    album = Album.objects.create(
+                        user=user,
+                        name=data['newalbumname'],
+                    )
+            else:
+                print 'Album id = ' + data['albumname']
+                album = Album.objects.get(id=data['albumname'])
+
+        if not valid:
+            noticeType = 'warn'
+            noticeTitle = u'保存失败'
+            return redirect('/home/?noticeType=%s&noticeTitle=%s&noticeText=%s' % (noticeType, noticeTitle, noticeText))
 
         # Create photos
         photo_list = json.loads(data['photo_list'])
@@ -259,9 +276,16 @@ class Home(BaseView):
                 photo.thumb = img
             except:
                 print 'Photo ' + name + ' created failed'
+                valid = False
+                noticeText = '部分格式错误的照片上传失败！'
                 continue
 
             photo.save()
+
+        if not valid:
+            noticeType = 'warn'
+            noticeTitle = u'警告'
+            return redirect('/home/?noticeType=%s&noticeTitle=%s&noticeText=%s' % (noticeType, noticeTitle, noticeText))
 
         return redirect('/home/')
 
