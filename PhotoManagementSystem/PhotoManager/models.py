@@ -27,9 +27,9 @@ class Photo(models.Model):
     # photo album
     album = models.ForeignKey('Album')
     # photo name
-    name = models.CharField(max_length=64)
+    name = models.CharField(max_length=256)
     # photo date
-    shot_date = models.DateTimeField(null=True)
+    shot_date = models.DateTimeField()
     # photo upload date
     upload_date = models.DateTimeField(editable=False)
     # photo update date
@@ -42,6 +42,8 @@ class Photo(models.Model):
     location_text = models.TextField(default='')
     # photo emotion
     emotion = models.CharField(max_length=16, default='')
+    # photo description
+    description = models.CharField(max_length=1024, default='')
     # photo newest file
     source = models.ImageField(upload_to='photos/%Y/%m/%d')
     # photo origin file
