@@ -105,6 +105,15 @@ class RestView(object):
         return Delete
 
 
+def get_notice_info(data):
+    if 'noticeType' in data and 'noticeTitle' in data and 'noticeText' in data:
+        return {'noticeType': data['noticeType'],
+                'noticeTitle': data['noticeTitle'],
+                'noticeText': data['noticeText'], }
+    else:
+        return {}
+
+
 class BaseView(View):
     """ Base view """
 
@@ -115,6 +124,7 @@ class BaseView(View):
     def get(self, request):
         self.context = {}
         self.set_base(request)
+        self.context.update(get_notice_info(request.GET))
 
     def set_gallery(self, request):
         photo_list = []
@@ -169,15 +179,6 @@ class Home(BaseView):
 
     def get(self, request):
         super(Home, self).get(request)
-
-        # Check notice info
-        data = request.GET
-        if 'noticeType' in data and 'noticeTitle' in data and 'noticeText' in data:
-            self.context.update({
-                'noticeType': data['noticeType'],
-                'noticeTitle': data['noticeTitle'],
-                'noticeText': data['noticeText'],
-            })
 
         # Send album list
         album_list = Album.objects.filter(user=request.user).order_by('name')
@@ -400,16 +401,9 @@ class SignIn(View):
             return redirect('/home/')
 
         # Check notice info
-        data = request.GET
-        if 'noticeType' in data and 'noticeTitle' in data and 'noticeText' in data:
-            context = Context({
-                'noticeType': data['noticeType'],
-                'noticeTitle': data['noticeTitle'],
-                'noticeText': data['noticeText'],
-            })
-        else:
-            context = Context({})
+        context = get_notice_info(request.GET)
 
+        context = Context(context)
         context.update(csrf(request))
         return render(request, 'login.html', context)
 
@@ -426,8 +420,13 @@ class SignIn(View):
                 noticeType = 'success'
                 noticeTitle = u'登录成功'
                 noticeText = ' '
-                return redirect(
-                    '/home/?noticeType=%s&noticeTitle=%s&noticeText=%s' % (noticeType, noticeTitle, noticeText))
+
+                redirect_url = '/home/'
+                if 'next' in request.GET:
+                    redirect_url = request.GET['next']
+
+                return redirect(redirect_url + '?noticeType=%s&noticeTitle=%s&noticeText=%s' % (
+                    noticeType, noticeTitle, noticeText))
             else:
                 noticeText = u'账户被禁用'
         else:
