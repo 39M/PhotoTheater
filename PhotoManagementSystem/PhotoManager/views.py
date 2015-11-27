@@ -114,12 +114,20 @@ def get_notice_info(data):
         return {}
 
 
+def get_page_info(viewName):
+    context = {
+        'view': viewName
+    }
+    return context
+
+
 class BaseView(View):
     """ Base view """
 
     def __init__(self, **kwargs):
         super(BaseView, self).__init__(**kwargs)
         self.context = {}
+        self.simple_view = False
 
     def get(self, request):
         self.context = {}
@@ -157,8 +165,9 @@ class BaseView(View):
         })
 
     def set_base(self, request):
-        self.set_side_bar(request)
-        self.set_nav_bar(request)
+        if not self.simple_view:
+            self.set_side_bar(request)
+            self.set_nav_bar(request)
 
         self.context.update({
             'CONFIG': {
@@ -179,6 +188,7 @@ class Home(BaseView):
 
     def get(self, request):
         super(Home, self).get(request)
+        self.context.update(get_page_info('home'))
 
         # Send album list
         album_list = Album.objects.filter(user=request.user).order_by('name')
@@ -311,6 +321,7 @@ class TimeLine(BaseView):
 
     def get(self, request):
         super(TimeLine, self).get(request)
+        self.context.update(get_page_info('timeline'))
 
         # Send photo list data
         photo_list = Photo.objects.filter(album__user=request.user).order_by('-shot_date')
@@ -329,6 +340,7 @@ class Map(BaseView):
 
     def get(self, request):
         super(Map, self).get(request)
+        self.context.update(get_page_info('map'))
 
         # Send photo list data
         photo_list = Photo.objects.filter(album__user=request.user).order_by('-shot_date')
@@ -342,19 +354,27 @@ class Map(BaseView):
         return render(request, 'map.html', self.context)
 
 
-class SignUp(View):
+class SignUp(BaseView):
     """ Sign up view """
 
+    def __init__(self, **kwargs):
+        super(SignUp, self).__init__(**kwargs)
+        self.simple_view = True
+
     def get(self, request):
+        super(SignUp, self).get(request)
+
         # Check if had signed in
         if request.user.is_authenticated():
             return redirect('/home/')
 
-        context = Context({})
-        context.update(csrf(request))
-        return render(request, 'signup.html', context)
+        self.context = Context(self.context)
+        self.context.update(csrf(request))
+        return render(request, 'signup.html', self.context)
 
     def post(self, request):
+        super(SignUp, self).get(request)
+
         username = request.POST['username']
         password = request.POST['password']
         password_confirm = request.POST['password_confirm']
@@ -380,7 +400,7 @@ class SignUp(View):
         # Sign up fail, return warning info
         noticeType = 'warn'
         noticeTitle = u'注册失败'
-        context = Context({
+        self.context.update({
             'noticeType': noticeType,
             'noticeTitle': noticeTitle,
             'noticeText': noticeText,
@@ -388,26 +408,35 @@ class SignUp(View):
             'password': password,
             'password_confirm': password_confirm,
         })
-        context.update(csrf(request))
-        return render(request, 'signup.html', context)
+        self.context = Context(self.context)
+        self.context.update(csrf(request))
+        return render(request, 'signup.html', self.context)
 
 
-class SignIn(View):
+class SignIn(BaseView):
     """ Sign in view """
 
+    def __init__(self, **kwargs):
+        super(SignIn, self).__init__(**kwargs)
+        self.simple_view = True
+
     def get(self, request):
+        super(SignIn, self).get(request)
+
         # Check if had signed in
         if request.user.is_authenticated():
             return redirect('/home/')
 
         # Check notice info
-        context = get_notice_info(request.GET)
+        # context = get_notice_info(request.GET)
 
-        context = Context(context)
-        context.update(csrf(request))
-        return render(request, 'login.html', context)
+        self.context = Context(self.context)
+        self.context.update(csrf(request))
+        return render(request, 'login.html', self.context)
 
     def post(self, request):
+        super(SignIn, self).get(request)
+
         username = request.POST['username']
         password = request.POST['password']
 
@@ -435,15 +464,16 @@ class SignIn(View):
         # Sign in fail
         noticeType = 'warn'
         noticeTitle = u'登录失败'
-        context = Context({
+        self.context.update({
             'noticeType': noticeType,
             'noticeTitle': noticeTitle,
             'noticeText': noticeText,
             'username': username,
             'password': password,
         })
-        context.update(csrf(request))
-        return render(request, 'login.html', context)
+        self.context = Context(self.context)
+        self.context.update(csrf(request))
+        return render(request, 'login.html', self.context)
 
 
 class SignOut(View):
