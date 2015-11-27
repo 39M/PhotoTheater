@@ -29,10 +29,9 @@ for i in range(4):
     a.save()
 albums = Album.objects.filter(user=user)
 
-files = os.listdir('tools/')
-files.remove('data_generator.py')
+files = list(os.listdir(u'tools/'))
+files.remove(u'data_generator.py')
 for img in files:
-    img.decode('utf-8')
     year = str(random.randint(2010, 2015))
     month = str(random.randint(1, 12)).zfill(2)
     day = str(random.randint(1, 28)).zfill(2)
@@ -53,3 +52,4 @@ for img in files:
     # p.thumb.save(img, File(open('tools/'+img, 'r')))
     # p.origin_source.save(img, File(open('tools/'+img, 'r')))
     p.save()
+    tmp.close()
