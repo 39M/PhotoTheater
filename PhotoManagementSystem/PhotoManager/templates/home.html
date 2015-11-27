@@ -1,4 +1,7 @@
 {% extends "base.html" %}
+{% block title %}
+    照片上传
+{% endblock %}
 {% block content %}
     {% load staticfiles %}
     <link rel="stylesheet" type="text/css" href="{% static 'diyUpload/css/webuploader.css' %}">
@@ -10,141 +13,30 @@
 
             <ul class="chat-box timeline">
                 {% include 'includes/upload.html' %}
-                <li class="arrow-box-left gray">
-                    <div class="avatar"><img class="avatar-small" src="{% static 'images/avatar1.png' %}"></div>
-                    <div class="info">
+                {% regroup photo_list by upload_date|date:"Y-m-d" as objects %}
+                {% for object in objects %}
+                    <li class="arrow-box-left gray">
+                        <div class="avatar"><img class="avatar-small" src="{% static 'images/avatar1.png' %}"></div>
+                        <div class="info">
                     <span class="name">
                     <span class="label label-purple">Adding Photos</span> <strong
                             class="indent">User</strong> Comment <strong> &nbsp;</strong>
                     </span>
-                        <span class="time"><i class="icon-time"></i> 12 minutes ago</span>
-                    </div>
-                    <div class="content">
-                        <ul class="thumbnails padded">
-                            <li class="col-md-3">
-                                <a href="#" class="thumbnail">
-                                    <img src="http://placehold.it/240x100" alt="">
-                                </a>
-                            </li>
-                            <li class="col-md-3">
-                                <a href="#" class="thumbnail">
-                                    <img src="http://placehold.it/240x100" alt="">
-                                </a>
-                            </li>
-                            <li class="col-md-3">
-                                <a href="#" class="thumbnail">
-                                    <img src="http://placehold.it/240x100" alt="">
-                                </a>
-                            </li>
-                            <li class="col-md-3">
-                                <a href="#" class="thumbnail">
-                                    <img src="http://placehold.it/240x100" alt="">
-                                </a>
-                            </li>
-                            <li class="col-md-3">
-                                <a href="#" class="thumbnail">
-                                    <img src="http://placehold.it/240x100" alt="">
-                                </a>
-                            </li>
-                            <li class="col-md-3">
-                                <a href="#" class="thumbnail">
-                                    <img src="http://placehold.it/240x100" alt="">
-                                </a>
-                            </li>
-
-                        </ul>
-                    </div>
-                </li>
-                <li class="arrow-box-left gray">
-                    <div class="avatar"><img class="avatar-small" src="{% static 'images/avatar1.png' %}"></div>
-                    <div class="info">
-                    <span class="name">
-                    <span class="label label-purple">Adding Photos</span> <strong
-                            class="indent">User</strong> Comment <strong> &nbsp;</strong>
-                    </span>
-                        <span class="time"><i class="icon-time"></i> 12 minutes ago</span>
-                    </div>
-                    <div class="content">
-                        <ul class="thumbnails padded">
-                            <li class="col-md-3">
-                                <a href="#" class="thumbnail">
-                                    <img src="http://placehold.it/240x100" alt="">
-                                </a>
-                            </li>
-                            <li class="col-md-3">
-                                <a href="#" class="thumbnail">
-                                    <img src="http://placehold.it/240x100" alt="">
-                                </a>
-                            </li>
-                            <li class="col-md-3">
-                                <a href="#" class="thumbnail">
-                                    <img src="http://placehold.it/240x100" alt="">
-                                </a>
-                            </li>
-                            <li class="col-md-3">
-                                <a href="#" class="thumbnail">
-                                    <img src="http://placehold.it/240x100" alt="">
-                                </a>
-                            </li>
-                            <li class="col-md-3">
-                                <a href="#" class="thumbnail">
-                                    <img src="http://placehold.it/240x100" alt="">
-                                </a>
-                            </li>
-                            <li class="col-md-3">
-                                <a href="#" class="thumbnail">
-                                    <img src="http://placehold.it/240x100" alt="">
-                                </a>
-                            </li>
-
-                        </ul>
-                    </div>
-                </li>
-                <li class="arrow-box-left gray">
-                    <div class="avatar"><img class="avatar-small" src="{% static 'images/avatar1.png' %}"></div>
-                    <div class="info">
-                    <span class="name">
-                    <span class="label label-purple">Adding Photos</span> <strong
-                            class="indent">User</strong> Comment <strong> &nbsp;</strong>
-                    </span>
-                        <span class="time"><i class="icon-time"></i> 12 minutes ago</span>
-                    </div>
-                    <div class="content">
-                        <ul class="thumbnails padded">
-                            <li class="col-md-3">
-                                <a href="#" class="thumbnail">
-                                    <img src="http://placehold.it/240x100" alt="">
-                                </a>
-                            </li>
-                            <li class="col-md-3">
-                                <a href="#" class="thumbnail">
-                                    <img src="http://placehold.it/240x100" alt="">
-                                </a>
-                            </li>
-                            <li class="col-md-3">
-                                <a href="#" class="thumbnail">
-                                    <img src="http://placehold.it/240x100" alt="">
-                                </a>
-                            </li>
-                            <li class="col-md-3">
-                                <a href="#" class="thumbnail">
-                                    <img src="http://placehold.it/240x100" alt="">
-                                </a>
-                            </li>
-                            <li class="col-md-3">
-                                <a href="#" class="thumbnail">
-                                    <img src="http://placehold.it/240x100" alt="">
-                                </a>
-                            </li>
-                            <li class="col-md-3">
-                                <a href="#" class="thumbnail">
-                                    <img src="http://placehold.it/240x100" alt="">
-                                </a>
-                            </li>
-
-                        </ul>
-                    </div>
-                </li>
+                            <span class="time"><i class="icon-time"></i> {{ object.grouper }} </span>
+                        </div>
+                        <div class="content">
+                            <ul class="thumbnails padded">
+                                {% for photo in object.list %}
+                                    <li class="col-md-3">
+                                        <a href="#" class="thumbnail">
+                                            <img src="{{ photo.thumb.url }}" style="width: 240px;height: 100px;" alt="">
+                                        </a>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </li>
+                {% endfor %}
             </ul>
 
 
