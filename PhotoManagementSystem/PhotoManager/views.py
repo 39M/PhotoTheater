@@ -136,12 +136,12 @@ class BaseView(View):
 
     def set_gallery(self, request):
         photo_list = []
-        for photo in Photo.objects.filter(album__user=request.user)[:5]:
+        for photo in Photo.objects.filter(album__user=request.user).order_by('upload_date')[:10]:
             photo_list.append({
                 'id': photo.id,
                 'scr': photo.source.url,
                 'location': photo.location_text,
-                'description': photo.name,
+                'description': photo.description,
             })
 
         self.context.update({
@@ -174,7 +174,10 @@ class BaseView(View):
                 'SITE': {
                     'TITLE': WEBSITE_TITLE
                 },
-            }
+            },
+            'photo_number': Photo.objects.all().count(),
+            'photo_number_this_month': Photo.objects.filter(upload_date__month=datetime.now().month).count(),
+            'photo_number_uncomment': Photo.objects.filter(comment__isnull=True).count(),
         })
 
 
@@ -291,6 +294,7 @@ class Home(BaseView):
                 noticeText = '部分格式错误的照片上传失败！'
                 continue
 
+            img.close()
             photo.save()
 
         if not valid:
