@@ -2,38 +2,41 @@
 {% load staticfiles %}
 {% block content %}
     <script src="{% static 'javascripts/jquery.min.js' %}"></script>
-    <script src='https://api.mapbox.com/mapbox.js/v2.2.3/mapbox.js'></script>
-    <link href='https://api.mapbox.com/mapbox.js/v2.2.3/mapbox.css' rel='stylesheet' />
-<div id="map" style="width: 100%;height: 600px;"></div>
+    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.11.4/mapbox-gl.js'></script>
+    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.11.4/mapbox-gl.css' rel='stylesheet' />
+    <div id="map" style="width: 100%;height: 600px;"></div>
     <script>
-// Provide your access token
-    L.mapbox.accessToken = 'pk.eyJ1IjoibGl1OTQ2IiwiYSI6ImNpZmR6cDM2aTY3eXpzNG03OW16Y29qcXQifQ.CO_oNudpBtnPN26dIu3Wug';
+        // Provide your access token
+        mapboxgl.accessToken = 'pk.eyJ1IjoibGl1OTQ2IiwiYSI6ImNpZmR6cDM2aTY3eXpzNG03OW16Y29qcXQifQ.CO_oNudpBtnPN26dIu3Wug';
 
 
-    var imageUrl = 'https://farm4.staticflickr.com/3731/14101168818_932d707f90_o.jpg'
-    $(function(){
-        slideShow();
-        var imageUrl = 'http://img3.imgtn.bdimg.com/it/u=4020231131,2179294898&fm=21&gp=0.jpg',
-        imageBounds = L.latLngBounds([
-        [45.712216, 126.82655],
-        [45.773941, 126.92544]]);
-        rand = [45.712216, 126.82655];
+        var imageUrl = 'https://farm4.staticflickr.com/3731/14101168818_932d707f90_o.jpg'
+        $(function () {
+            slideShow();
+            var imageUrl = 'http://img3.imgtn.bdimg.com/it/u=4020231131,2179294898&fm=21&gp=0.jpg'
+            var rand = [126.82655,45.712216];
+            var map = new mapboxgl.Map({
+                container: 'map',
+                style: 'mapbox://styles/mapbox/streets-v8',
+                center: [126.82655,45.712216],
+                zoom: 3
+            });
 
-        var map= L.mapbox.map('map', 'mapbox.streets');
-        for(var i=0;i<10;i++){
-            rand[0]+= Math.random()-0.5;
-            rand[1]+= Math.random()-0.5;
+            var tooltip = new Array();
+            for (var i = 0; i < 10; i++) {
+                rand[0] += Math.random() - 0.5;
+                rand[1] += Math.random() - 0.5;
 
-            imageBounds = L.latLngBounds([
-            rand,
-            [rand[0]+0.10, rand[1]+0.18]]);
-            map.fitBounds(imageBounds);
-            var overlay = L.imageOverlay(imageUrl, imageBounds)
-            .addTo(map);
-        }
 
-    });
+                tooltip.push(new mapboxgl.Popup({closeOnClick: false})
+                        .setLngLat(rand)
+                        .setHTML('<img style="width:80px" src="'+imageUrl+'" />')
+                        .addTo(map))
+            }
 
-</script>
+
+        });
+
+    </script>
 
 {% endblock %}

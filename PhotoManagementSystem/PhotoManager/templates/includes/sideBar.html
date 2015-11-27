@@ -8,69 +8,27 @@
     <ul class="nav navbar-collapse collapse navbar-collapse-primary">
 
 
-        <li class="active">
+        <li class="{% if view == 'home' %}active{% endif %}">
             <span class="glow"></span>
-            <a href="/test?v=home">
+            <a href="/home">
                 <i class="icon-dashboard icon-2x"></i>
                 <span>上传历史</span>
             </a>
         </li>
-
-        <li class="dark-nav ">
-
+        <li class="{% if view == 'timeline' %}active{% endif %}">
             <span class="glow"></span>
-
-
-            <a class="accordion-toggle collapsed " data-toggle="collapse" href="/test?v=timelineSimple">
+            <a href="/timeline">
                 <i class="icon-beaker icon-2x"></i>
-                    <span>
-                      时间回味
-                      <i class="icon-caret-down"></i>
-                    </span>
-
+                <span>时间回味</span>
             </a>
-
-            <ul id="yJ6h3Npe7C" class="collapse ">
-
-                <li class="">
-                    <a href="http://beer2code.com/themes/core-admin-3/pages/ui_lab/buttons.html">
-                        <i class="icon-hand-up"></i> 2013
-                    </a>
-                </li>
-
-                <li class="">
-                    <a href="http://beer2code.com/themes/core-admin-3/pages/ui_lab/general.html">
-                        <i class="icon-beaker"></i> 2012
-                    </a>
-                </li>
-
-                <li class="">
-                    <a href="http://beer2code.com/themes/core-admin-3/pages/ui_lab/icons.html">
-                        <i class="icon-info-sign"></i> 2011
-                    </a>
-                </li>
-
-                <li class="">
-                    <a href="http://beer2code.com/themes/core-admin-3/pages/ui_lab/grid.html">
-                        <i class="icon-th-large"></i> 2010
-                    </a>
-                </li>
-
-            </ul>
-
         </li>
-
-
-        <li class="">
+        <li class="{% if view == 'map' %}active{% endif %}">
             <span class="glow"></span>
-            <a href="/test?v=map">
+            <a href="/map">
                 <i class="icon-edit icon-2x"></i>
                 <span>地图</span>
             </a>
         </li>
-
-
-
 
 
     </ul>

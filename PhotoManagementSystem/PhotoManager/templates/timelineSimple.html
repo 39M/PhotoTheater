@@ -16,7 +16,7 @@
             {% for year in objects_by_Year %}
                 <div>
                 <h3 id="{{ year.grouper }}">{{ year.grouper }}</h3>
-                {% for yeardata in year.list %}
+
                     {% regroup year.list by shot_date|date:"m" as objects_by_Month %}
                     {% for month in objects_by_Month %}
                         <li>
@@ -28,7 +28,7 @@
                         </span></p>
                         </li>
                     {% endfor %}
-                {% endfor %}
+
             </div>
             {% endfor %}
         </ul>

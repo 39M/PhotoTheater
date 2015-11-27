@@ -18,56 +18,90 @@
         body {
             margin: 0px;
             height: 824px;
+            background: #0a0d0e;
+            overflow: hidden;
+        }
+        .clearfix li {
+            float: left;
+            width: 20%;
+            margin-bottom: 5px;
+            text-align: center;
+            list-style: none;
+        }
+
+        .padded, .separate-sections {
+            color: whitesmoke;
+        }
+
+        .padded input[type='text'] {
+            width: 100%;
+        }
+        .padded textarea {
+            width: 100%;
+        }
+        .input .clearfix input {
+            width: 20% !important;
         }
     </style>
     <div class="info">
-
-
         <ul class="padded separate-sections">
+            <li>
+                <a style="margin-bottom:10px;float:right;display: block;height: 26px;width: 28px;background: url(/static/filter/img/bt-fechar-zoomvisualizer.png) no-repeat 0 0 #313131;"
+                   onclick="history.back(-1)"></a>
+            </li>
 
             <li class="input">
                 <input type="text" placeholder="照片名称" name="name" value="{{ name }}">
             </li>
 
-            <li class="input">
-                <input type="text" placeholder="">
+            <li>
+                <label>新建相册</label>
+                <input id="selectnewalbum" type="checkbox" class="iButton-icons" checked="checked"
+                       name="newalbum" new='true' onchange="selectchanged()"/>
+                <script>
+                    function selectchanged() {
+                        console.log($('#selectnewalbum').attr('new'))
+                        if ('true' === $('#selectnewalbum').attr('new')) {
+                            $('#newalbum').hide();
+                            $('#oldalbum').show();
+                            $('#selectnewalbum').attr('new', 'false');
+                        } else {
+                            $('#newalbum').show();
+                            $('#oldalbum').hide();
+                            $('#selectnewalbum').attr('new', 'true');
+                        }
+                    }
+                </script>
+            </li>
+            <li id="newalbum">
+                <input type="text" placeholder="新建相册名称" name="newalbumname"/>
+            </li>
+            <li id="oldalbum" style="display: none;">
+
+                <select class="chzn-select" name="albumname">
+                    {% for Album in album_list %}
+                        <option value="{{ Album.id }}">{{ Album.name }}</option>
+                    {% endfor %}
+                </select>
             </li>
 
-            <li class="input">
-                <input type="text" placeholder=""/>
-            </li>
-            <li>
-                <label>位置选择：</label>
 
-            </li>
             <li>
-                <style>
-                    .clearfix li {
-                        float: left;
-                        width: 20%;
-                        margin-bottom: 5px;
-                        text-align: center;
-                        list-style: none;
-                    }
-                    .padded ,.separate-sections{
-                        color: whitesmoke;
-                    }
-                    .padded input[type='text']{
-                        width: 100%;
-                    }
-                    .input .clearfix input {
-                        width: 20% !important;
-                    }
-                </style>
-                <ul class="clearfix">
-                    {% include "includes/emotion.html" %}
-                </ul>
+                <label>位置选择</label>
+
             </li>
             <li>
                 <input class="datepicker fill-up" type="text" placeholder="拍摄日期">
             </li>
             <li>
-
+                <ul class="clearfix">
+                    {% include "includes/emotion.html" %}
+                </ul>
+            </li>
+            <li class="input">
+                <textarea type="text" placeholder="照片评论">{{ description }}</textarea>
+            </li>
+            <li>
                 <button class="btn btn-sm btn-blue">保存</button>
                 <button class="btn btn-sm btn-red">删除</button>
             </li>

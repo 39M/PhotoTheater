@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>jQuery全屏相册插件zoomVisualizer - 站长素材</title>
+<title>图片修改子frame -- </title>
 <link rel="stylesheet" media="screen" type="text/css" href="{% static 'filter/zoom-visualizer.css' %}">
 <script src="{% static 'filter/js/jquery.min.js' %}"></script>
 <script src="{% static 'filter/js/jquery-ui.min.js' %}"></script>
@@ -18,7 +18,7 @@ jQuery(document).ready(function() {
         object: '#zoom-visualizer',
         resizeInitial: true,
         centerThumbs: true,
-        loader: "img/ajax-loader-overlay.gif",
+        loader: "/static/filter/img/ajax-loader-overlay.gif",
         sliderOrientation: "vertical",
         positionZoom: {
             left: 10,
@@ -81,7 +81,7 @@ select {
 	text-align: left
 }
 body {
-	background: #f7f6f6;
+	background: #000;
 	font-family: 'Roboto', sans-serif;
 	font-size: 14px;
 	line-height: 20px;
@@ -102,7 +102,7 @@ body {
           <div class="tooltip">
             <p>Close</p>
             <span></span> </div>
-          <a href="" class="fechar tooltip-caller"></a>
+          <a href="" class=""></a>
           <div class="clear"></div>
         </div>
         <div id="zoom">
@@ -138,7 +138,7 @@ body {
     </div>
 
     <div class="footer">
-      <a href="#" id="aba-lista"><span>Hide Thumbnails</span></a>
+      <a href="#" id="aba-lista" onclick="return false;"><span>添加滤镜</span></a>
       <div id="listagem-imagens">
         <div>
             <a class="item-zoom-image ativo" href="{% static 'filter/example/origin.jpg' %}" alt="0">
