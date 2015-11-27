@@ -1,10 +1,12 @@
 # coding=utf-8
 import os
 import random
-from django.utils import timezone
 from datetime import datetime
 from django.core.files import File
 from PhotoManager.models import *
+from pytz import timezone
+
+TIME_ZONE = timezone('Asia/Shanghai')
 
 Comment.objects.all().delete()
 Photo.objects.all().delete()
@@ -39,7 +41,7 @@ for img in files:
         album=albums[random.randint(0, len(albums) - 1)],
         name=img.split('.')[0],
         description=img.split('.')[0],
-        shot_date=datetime.strptime(date_str, '%Y-%m-%d'),
+        shot_date=TIME_ZONE.localize(datetime.strptime(date_str, '%Y-%m-%d')),
         latitude=random.uniform(45, 46),
         longitude=random.uniform(126, 127),
     )
