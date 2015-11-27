@@ -52,9 +52,11 @@
         "SITE":{
             "TITLE":""  // 网站名称
         },
-        
-    }
+    },
+    "photo_number_this_month": 本月提交数
     
+    "photo_number":共有照片
+    "photo_number_uncomment":还未评价
 }
 
 ```
@@ -63,14 +65,8 @@
 
 ``` js 
 {
-    "history":
-    [
-        {
-            "update_time":"" // 过短的时间转换成 ...之前
-            "photos":[      // 张数控制上限，转换小图片
-                "url1","urls","..."
-            ]
-        }
+    "photo_list":[
+        时间倒序的photo对象
     ]
     
 }
@@ -101,19 +97,15 @@
     "timeLine":
     [
     {
-        timeGroup:"2013",
-        timeItem:
-        [
-        {
-            updateGroup:"4月",
-            photoList:
-            [
-                "url1","url2",....
-            ]
-        }
-        ]
+       时间倒序的photo对象
     }
     ]
 }
+
+```
+
+- map (需展示) 继承[base] 引用[]
+
+```
 
 ```
