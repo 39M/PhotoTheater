@@ -165,16 +165,21 @@ class BaseView(View):
         })
 
     def set_base(self, request):
-        if not self.simple_view:
-            self.set_side_bar(request)
-            self.set_nav_bar(request)
-
         self.context.update({
             'CONFIG': {
                 'SITE': {
                     'TITLE': WEBSITE_TITLE
                 },
             },
+        })
+
+        if self.simple_view:
+            return
+
+        self.set_side_bar(request)
+        self.set_nav_bar(request)
+
+        self.context.update({
             'photo_number': Photo.objects.all().count(),
             'photo_number_this_month': Photo.objects.filter(upload_date__month=datetime.now().month).count(),
             'photo_number_uncomment': Photo.objects.filter(comment__isnull=True).count(),
@@ -356,6 +361,45 @@ class Map(BaseView):
         self.context.update(csrf(request))
         print self.context
         return render(request, 'map.html', self.context)
+
+
+class PhotoView(BaseView):
+    """ Single photo display view """
+
+    def __init__(self, **kwargs):
+        super(PhotoView, self).__init__(**kwargs)
+        self.simple_view = True
+
+    def get(self, request):
+        super(PhotoView, self).get(request)
+
+        # Check if id exist
+        if not ('id' in request.GET):
+            return redirect('/home/')
+
+        # Check if photo with the id exist
+        photo = Photo.objects.filter(id=request.GET['id'])
+        if not photo:
+            return redirect('/home/')
+        else:
+            photo = photo[0]
+
+        self.context.update({
+            'album_list': Album.objects.filter(user=request.user).order_by('name'),
+            'photo': photo,
+        })
+
+        self.context = Context(self.context)
+        self.context.update(csrf(request))
+        return render(request, 'photo.html', self.context)
+
+    def post(self, request):
+        print request.POST
+
+        # self.context = Context(self.context)
+        # self.context.update(csrf(request))
+        # return render(request, 'photo.html', self.context)
+        return redirect('/photo/?id=' + request.GET['id'])
 
 
 class SignUp(BaseView):

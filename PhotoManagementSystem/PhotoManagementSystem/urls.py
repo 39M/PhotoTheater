@@ -43,6 +43,7 @@ urlpatterns = [
     url(r'^home/$', login_required(views.Home.as_view())),
     url(r'^timeline/$', login_required(views.TimeLine.as_view())),
     url(r'^map/$', login_required(views.Map.as_view())),
+    url(r'^photo/$', login_required(views.PhotoView.as_view())),
     url(r'^signup/$', views.SignUp.as_view()),
     url(r'^signin/$', views.SignIn.as_view()),
     url(r'^signout/$', login_required(views.SignOut.as_view())),
