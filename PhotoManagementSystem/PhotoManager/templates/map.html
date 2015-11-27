@@ -2,7 +2,7 @@
 {% block title %}
     照片地图
 {% endblock %}
-{% block page_description %} page_description {% endblock %}
+{% block page_description %} 照片地图 {% endblock %}
 {% load staticfiles %}
 {% block content %}
     <script src="{% static 'javascripts/jquery.min.js' %}"></script>
@@ -13,32 +13,21 @@
         // Provide your access token
         mapboxgl.accessToken = 'pk.eyJ1IjoibGl1OTQ2IiwiYSI6ImNpZmR6cDM2aTY3eXpzNG03OW16Y29qcXQifQ.CO_oNudpBtnPN26dIu3Wug';
 
-
-        var imageUrl = 'https://farm4.staticflickr.com/3731/14101168818_932d707f90_o.jpg'
         $(function () {
             slideShow();
-            var imageUrl = 'http://img3.imgtn.bdimg.com/it/u=4020231131,2179294898&fm=21&gp=0.jpg'
-            var rand = [126.82655,45.712216];
             var map = new mapboxgl.Map({
                 container: 'map',
                 style: 'mapbox://styles/mapbox/streets-v8',
                 center: [126.82655,45.712216],
-                zoom: 3
+                zoom: 10
             });
-
-            var tooltip = new Array();
-            for (var i = 0; i < 10; i++) {
-                rand[0] += Math.random() - 0.5;
-                rand[1] += Math.random() - 0.5;
-
-
-                tooltip.push(new mapboxgl.Popup({closeOnClick: false})
-                        .setLngLat(rand)
-                        .setHTML('<img style="width:80px" src="'+imageUrl+'" />')
-                        .addTo(map))
-            }
-
-
+            var tooltip = [];
+            {% for photo in photo_list %}
+            tooltip.push(new mapboxgl.Popup({closeOnClick: false})
+                    .setLngLat([{{ photo.longitude }},{{ photo.latitude }}])
+                    .setHTML('<a href="/photo/{{ photo.id }}"><img style="width:80px" src="{{ photo.thumb.url }}" />')
+                    .addTo(map));
+            {% endfor %}
         });
 
     </script>

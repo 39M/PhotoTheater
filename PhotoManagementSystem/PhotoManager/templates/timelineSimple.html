@@ -10,7 +10,7 @@
 
             {% regroup photo_list by shot_date|date:"Y" as objects_by_Year %}
             {% for year in objects_by_Year %}
-            <li><label for="{{ year.grouper }}">{{ year.grouper }}</label></li>
+            <li {% if forloop.first %} class="current" {% endif %}><label for="{{ year.grouper }}">{{ year.grouper }}</label></li>
             {% endfor %}
         </ul>
 
@@ -26,7 +26,9 @@
                         <span>{{ month.grouper }}</span>
                         <p><span>
                             {% for photo in month.list %}
+                                <a href="/photo/{{ photo.id }}">
                                 <img src="{{ photo.thumb.url }}" style="width: 120px;height: 128px;" class="img-thumbnail">
+                                </a>
                             {% endfor %}
                         </span></p>
                         </li>
