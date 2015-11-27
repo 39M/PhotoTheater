@@ -119,14 +119,15 @@ body{
 <body>
 
 <div id="gallery">
-
-	<a href="/test?v=filter" class="show_decpic">
-		<img src="{% static 'images/flowing-rock.jpg' %}" alt="Flowing Rock" width="200" height="124" title="" alt="" rel="<h4>{ location }}</h4>{ description }}"/>
-	</a>
-	
-	<a href="#">
+    <a href="#"  class="show_decpic">
 		<img src="{% static 'images/grass-blades.jpg' %}" alt="Grass Blades" width="200" height="124" title="" alt="" rel="<h4>{ location }}</h4>{ description }}"/>
 	</a>
+    {% for photo in SlideShow %}
+	<a href="/photo/{{ photo.id }}">
+		<img src="{{ photo.scr }}" alt="Flowing Rock" width="200" height="124" title="" alt="" rel="<h4>{{ photo.location }}</h4>{{ photo.description }}"/>
+	</a>
+	{% endfor %}
+
 
 	<div class="caption"><div class="content"></div></div>
 </div>

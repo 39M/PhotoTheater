@@ -11,8 +11,8 @@
     [
         {
             "id":"", //跳转
-            "src":"",
-            "location":"",
+            "thumb.url":"",
+            "location":"", // 地理编码
             "description":""
         },
         ...
@@ -92,6 +92,7 @@
 
 
 - timeline 继承[base] 引用[]
+
 ``` js 
 {
     "timeLine":
@@ -106,6 +107,46 @@
 
 - map (需展示) 继承[base] 引用[]
 
+
+```
+{
+    photo_list:
+    [
+        时间倒序的photo对象#之后考虑做成按地点group
+    ]
+}
 ```
 
+- photo/id
+
+```
+{
+    photo:{
+        id:
+    },
+}
+
+```
+
+- filter/id
+
+```
+{
+    photo:{
+        id:
+    },
+    filters:
+    [
+        {
+            name:
+            example:url // 目前存在static/filter/example里，可以从这里生成列表
+        }
+    ]
+}
+```
+
+- photofilter/id/filter
+```
+返回图片
+filter为空传原图
 ```
