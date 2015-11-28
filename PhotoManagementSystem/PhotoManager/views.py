@@ -370,15 +370,13 @@ class PhotoView(BaseView):
         super(PhotoView, self).__init__(**kwargs)
         self.simple_view = True
 
-    def get(self, request):
+    def get(self, request,id=0):
         super(PhotoView, self).get(request)
 
-        # Check if id exist
-        if not ('id' in request.GET):
-            return redirect('/home/')
+
 
         # Check if photo with the id exist
-        photo = Photo.objects.filter(album__user=request.user, id=request.GET['id'])
+        photo = Photo.objects.filter(album__user=request.user, id=id)
         if not photo:
             return redirect('/home/')
         else:
@@ -399,7 +397,7 @@ class PhotoView(BaseView):
         # self.context = Context(self.context)
         # self.context.update(csrf(request))
         # return render(request, 'photo.html', self.context)
-        return redirect('/photo/?id=' + request.GET['id'])
+        return redirect('/photo/' + request.GET['id'])
 
 
 class SignUp(BaseView):
@@ -543,3 +541,41 @@ class Test(View):
         context = Context(request.GET)
         context.update(csrf(request))
         return render(request, request.GET['v'] + '.html', context)
+
+
+class PhotoFilter(BaseView):
+
+    def __init__(self,**kwargs):
+        super(PhotoFilter,self).__init__(**kwargs)
+        self.simple_view = True
+    def get(self, request,id=0):
+        return HttpResponseRedirect('/static/images/grass-blades.jpg')
+
+class Filter(BaseView):
+
+    def __init__(self,**kwargs):
+        super(Filter,self).__init__(**kwargs)
+        self.simple_view = True
+    def get(self, request,id=0):
+        self.context.update({
+            'filter':
+                [
+                    {
+                        'name':"1977",
+                        'example':"/static/filter/example/1977.jpg"
+                    },{
+                        'name':"noname",
+                        'example':"/static/filter/example/origin.jpg"
+                    },{
+                        'name':"noname1",
+                        'example':"/static/filter/example/noname1.jpg"
+                    },
+                ]
+        })
+        self.context.update({
+            'id':id
+        })
+        self.context = Context(self.context)
+        self.context.update(csrf(request))
+        return render(request,'filter.html',self.context)
+

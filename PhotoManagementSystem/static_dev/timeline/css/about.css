@@ -6,9 +6,9 @@ table{border-collapse:collapse;border-spacing:0;}
 caption,th{font-weight:normal;text-align:left;}
 fieldset,img{border:0;}
 ul li{list-style:none;}
-h1,h2,h3,h4,h5,h6{font-size:100%;}
-h5{font-size:18px;margin-bottom:20px;color:#666;}
-h5 span{font-size:12px;color:#ccc;font-weight:normal;}
+.content h1,.content h2,.content h3,.content h4,.content h5,.content h6{font-size:100%;}
+.content h5{font-size:18px;margin-bottom:20px;color:#666;}
+.content h5 span{font-size:12px;color:#ccc;font-weight:normal;}
 blockquote:before,blockquote:after,q:before,q:after{content:"";}
 html{-webkit-text-size-adjust:none;-ms-text-size-adjust:none;}
 body{word-wrap:break-word;background: #F0F0F0;}
