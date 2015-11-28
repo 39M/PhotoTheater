@@ -422,7 +422,7 @@ class PhotoFilter(BaseView):
         super(PhotoFilter, self).__init__(**kwargs)
         self.simple_view = True
 
-    def get(self, request, id=0, filter=""):
+    def get(self, request, photo_id=0, filter_type=""):
         return HttpResponseRedirect('/static/images/grass-blades.jpg')
 
 
@@ -431,7 +431,7 @@ class Filter(View):
         super(Filter, self).__init__(**kwargs)
         self.context = {}
 
-    def get(self, request, id=0):
+    def get(self, request, photo_id=0):
         self.context = {}
         self.context.update({
             'filters':
@@ -449,7 +449,7 @@ class Filter(View):
                 ]
         })
         self.context.update({
-            'id': id
+            'id': photo_id
         })
         self.context = Context(self.context)
         self.context.update(csrf(request))
