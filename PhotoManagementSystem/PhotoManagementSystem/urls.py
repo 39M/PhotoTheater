@@ -43,7 +43,7 @@ urlpatterns = [
     url(r'^home/$', login_required(views.Home.as_view())),
     url(r'^timeline/$', login_required(views.TimeLine.as_view())),
     url(r'^map/$', login_required(views.Map.as_view())),
-    url(r'^photo/(?P<id>[0-9]+)/$', login_required(views.PhotoView.as_view())),
+    url(r'^photo/(?P<photo_id>[0-9]+)/$', login_required(views.PhotoView.as_view())),
     url(r'^filter/(?P<id>[0-9]+)',login_required(views.Filter.as_view())),
     url(r'^photofilter/(?P<id>[0-9]+)/(?P<filter>[a-z0-9]+)',login_required(views.PhotoFilter.as_view())),
     url(r'^signup/$', views.SignUp.as_view()),
