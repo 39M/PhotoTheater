@@ -205,7 +205,7 @@ class Home(BaseView):
         })
 
         # Send photo list
-        photo_list = Photo.objects.filter(album__user=request.user).order_by('-shot_date')
+        photo_list = Photo.objects.filter(album__user=request.user).order_by('-upload_date')
         self.context.update({
             'photo_list': photo_list
         })
@@ -299,7 +299,7 @@ class Home(BaseView):
                 noticeText = '部分格式错误的照片上传失败！'
                 continue
 
-            img.close()
+            # img.close()
             photo.save()
 
         if not valid:
@@ -378,7 +378,7 @@ class PhotoView(BaseView):
             return redirect('/home/')
 
         # Check if photo with the id exist
-        photo = Photo.objects.filter(id=request.GET['id'])
+        photo = Photo.objects.filter(album__user=request.user, id=request.GET['id'])
         if not photo:
             return redirect('/home/')
         else:

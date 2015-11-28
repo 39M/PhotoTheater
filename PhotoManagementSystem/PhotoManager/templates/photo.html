@@ -6,7 +6,7 @@
     <script>
 
     </script>
-    <iframe height="100%" style="border: 0px;" width="80%" src="/test?v=filter"></iframe>
+    <iframe height="100%" style="border: 0px;" width="80%" src="/filter/?id={{ photo.id }}"></iframe>
     <style>
         .info {
             display: block;
@@ -54,7 +54,7 @@
             </li>
 
             <li class="input">
-                <input type="text" placeholder="照片名称" name="name" value="{{ name }}">
+                <input type="text" placeholder="照片名称" name="name" value="{{ photo.name }}">
             </li>
 
             <li>
@@ -102,7 +102,7 @@
                 </ul>
             </li>
             <li class="input">
-                <textarea type="text" placeholder="照片评论">{{ description }}</textarea>
+                <textarea type="text" placeholder="照片评论">{{ photo.description }}</textarea>
             </li>
             <li>
                 <button class="btn btn-sm btn-blue">保存</button>
