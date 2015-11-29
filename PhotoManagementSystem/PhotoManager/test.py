@@ -1,3 +1,3 @@
-from Library import basic
+from Library import gauss
 
-basic.detail()
+gauss.gauss()

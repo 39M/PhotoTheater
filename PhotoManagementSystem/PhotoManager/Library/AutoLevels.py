@@ -30,7 +30,7 @@ def f_color(l, percent):
 
     return l_out
 
-graph = Image.open('source.jpg')
+graph = Image.open('../PhotoManager/source.jpg')
 size = graph.size
 width = size[0]
 height = size[1]
