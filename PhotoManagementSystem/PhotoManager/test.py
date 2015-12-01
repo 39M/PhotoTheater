@@ -1,3 +1,3 @@
-from Library import gauss
+from Library import _1977
 
-gauss.gauss()
+_1977._1977()
