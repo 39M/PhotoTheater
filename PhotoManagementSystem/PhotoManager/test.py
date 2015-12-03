@@ -1,3 +1,3 @@
-from Library import _1977
+from Library import BlackWhite
 
-_1977._1977()
+BlackWhite.blackwhite()

@@ -40,7 +40,7 @@ processAR = [81, 81, 81, 81, 81, 81, 81, 81, 81, 81, 81, 81, 81, 81, 81, 81, 81,
 
 
 def _1977():
-    graph = Image.open('source.jpg')
+    graph = Image.open('../PhotoManager/source.jpg')
     size = graph.size
     width = size[0]
     height = size[1]
