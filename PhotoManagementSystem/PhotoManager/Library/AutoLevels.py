@@ -49,4 +49,4 @@ def autolevel():
     result = ny.uint8(result * 255)
 
     result = Image.fromarray(result).convert('RGB')
-    result.save('result.jpg')
+    result.save('../PhotoManager/result.jpg')

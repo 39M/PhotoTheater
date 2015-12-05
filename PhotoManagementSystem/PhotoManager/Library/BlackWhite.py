@@ -25,4 +25,4 @@ def blackwhite():
             result[row, col] = max(0, min(255, xd * max_dic[index[2]] + dn * max_mid[index[1]][index[2]] + n))
 
     result = Image.fromarray(result).convert('RGB')
-    result.save('result.jpg')
+    result.save('../PhotoManager/result.jpg')

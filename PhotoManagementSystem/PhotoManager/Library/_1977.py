@@ -54,4 +54,4 @@ def _1977():
             result[row, col, 2] = processAB[source[row, col, 2]]
 
     result = Image.fromarray(ny.uint8(result)).convert('RGB')
-    result.save('result.jpg')
+    result.save('../PhotoManager/result.jpg')

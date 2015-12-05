@@ -29,4 +29,4 @@ def gauss():
     gaussin = gaussin.filter(MyGaussianBlur(radius=width * height / 52 / 67))
 
     result = Image.fromarray(ny.uint8(gaussin)).convert('RGB')
-    result.save('result.jpg')
+    result.save('../PhotoManager/result.jpg')

@@ -1,3 +1,3 @@
-from Library import BlackWhite
+from Library import glow
 
-BlackWhite.blackwhite()
+glow.glow()
