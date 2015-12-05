@@ -148,15 +148,6 @@ class BaseView(View):
             'SlideShow': photo_list
         })
 
-    def set_side_bar(self, request):
-        self.set_gallery(request)
-
-        # self.context.update({
-        #     'runTime': {
-        #         'ViewName': ''
-        #     }
-        # })
-
     def set_nav_bar(self, request):
         self.context.update({
             'user': {
@@ -176,13 +167,14 @@ class BaseView(View):
         if self.simple_view:
             return
 
-        self.set_side_bar(request)
+        self.set_gallery(request)
         self.set_nav_bar(request)
 
         self.context.update({
-            'photo_number': Photo.objects.all().count(),
-            'photo_number_this_month': Photo.objects.filter(upload_date__month=datetime.now().month).count(),
-            'photo_number_uncomment': Photo.objects.filter(comment__isnull=True).count(),
+            'photo_number': Photo.objects.filter(album__user=request.user).count(),
+            'photo_number_this_month': Photo.objects.filter(album__user=request.user,
+                                                            upload_date__month=datetime.now().month).count(),
+            'photo_number_uncomment': Photo.objects.filter(album__user=request.user, comment__isnull=True).count(),
         })
 
 
@@ -198,16 +190,10 @@ class Home(BaseView):
         super(Home, self).get(request)
         self.context.update(get_page_info('home'))
 
-        # Send album list
-        album_list = Album.objects.filter(user=request.user).order_by('name')
+        # Send album and photo list
         self.context.update({
-            'album_list': album_list
-        })
-
-        # Send photo list
-        photo_list = Photo.objects.filter(album__user=request.user).order_by('-upload_date')
-        self.context.update({
-            'photo_list': photo_list
+            'album_list': Album.objects.filter(user=request.user).order_by('name'),
+            'photo_list': Photo.objects.filter(album__user=request.user).order_by('-upload_date')
         })
 
         self.context = Context(self.context)
@@ -217,97 +203,132 @@ class Home(BaseView):
 
     def post(self, request):
         data = request.POST
-        print data
         user = request.user
+        print data
 
+        # Init variables
         album = 0
         valid = True
-        noticeText = ' '
+        noticeText = ''
+        noticeTitle = ''
+
+        # Validate
         if data['photo_list'] == '[]':
             noticeText = u'未选择任何照片！'
             valid = False
-        else:
-            # New album or select album
-            if 'newalbum' in data:
-                if not data['newalbumname']:
-                    noticeText = u'相册名不能为空！'
-                    valid = False
-                elif Album.objects.filter(name=data['newalbumname']):
-                    noticeText = u'相册名已存在！'
-                    valid = False
-                else:
-                    album = Album.objects.create(
-                        user=user,
-                        name=data['newalbumname'],
-                    )
-            else:
-                print 'Album id = ' + data['albumname']
-                album = Album.objects.get(id=data['albumname'])
-
-        if not valid:
-            noticeType = 'warn'
-            noticeTitle = u'保存失败'
-            return redirect('/home/?noticeType=%s&noticeTitle=%s&noticeText=%s' % (noticeType, noticeTitle, noticeText))
-
-        # Create photos
-        photo_list = json.loads(data['photo_list'])
-        for name in photo_list:
-            photo = Photo(
-                album=album,
-                name=name.split('.')[0],
-            )
-
-            if 'emotion' in data:
-                photo.emotion = data['emotion']
-
-            if 'comment' in data:
-                photo.description = data['comment']
-
-            # Save image source
-            img = File(open('media/temp/' + name, 'rb'))
-            img.name = name.replace('_' + name.split('_')[-1], '')
-            photo.origin_source = img
-            photo.source = img
-
-            # PIL processing
-            img = Image.open('media/temp/' + name)
-            # Get shot date
-            try:
-                exif = {
-                    ExifTags.TAGS[k]: v
-                    for k, v in img._getexif().items()
-                    if k in ExifTags.TAGS
-                    }
-                print exif
-                shot_date = datetime.strptime(exif['DateTime'], '%Y:%m:%d %H:%M:%S')
-            except:
-                shot_date = datetime.strptime('1970:01:01', '%Y:%m:%d')
-
-            photo.shot_date = TIME_ZONE.localize(shot_date)
-
-            try:
-                # Create thumb
-                img.thumbnail((240, 100), Image.ANTIALIAS)
-                img.save('media/temp/' + name + '.thumbnail', 'JPEG')
-                # Save thumb
-                img = File(open('media/temp/' + name + '.thumbnail', 'rb'))
-                img.name = name.replace('_' + name.split('_')[-1], '')
-                photo.thumb = img
-            except:
-                print 'Photo ' + name + ' created failed'
+        elif 'newalbum' in data:
+            if not data['newalbumname']:
+                noticeText = u'相册名不能为空！'
                 valid = False
-                noticeText = '部分格式错误的照片上传失败！'
-                continue
-
-            # img.close()
-            photo.save()
+            elif Album.objects.filter(user=request.user, name=data['newalbumname']):
+                noticeText = u'相册名已存在！'
+                valid = False
+            else:
+                # Create new album
+                album = Album.objects.create(
+                    user=user,
+                    name=data['newalbumname'],
+                )
+        else:
+            # Select album
+            print 'Album id = ' + data['albumname']
+            album = Album.objects.filter(user=request.user, id=data['albumname'])
+            if album:
+                album = album[0]
+            else:
+                noticeText = u'未知错误：相册id：' + data['albumname']
+                valid = False
 
         if not valid:
-            noticeType = 'warn'
-            noticeTitle = u'警告'
-            return redirect('/home/?noticeType=%s&noticeTitle=%s&noticeText=%s' % (noticeType, noticeTitle, noticeText))
+            # Not valid with form
+            noticeTitle = u'保存失败'
+        else:
+            # Create photos
+            photo_list = json.loads(data['photo_list'])
+            for name in photo_list:
+                photo = Photo(
+                    album=album,
+                    name=name.split('.')[0],
+                )
 
-        return redirect('/home/')
+                if 'emotion' in data:
+                    photo.emotion = data['emotion']
+
+                if 'comment' in data:
+                    photo.description = data['comment']
+
+                # Save image source
+                img = File(open('media/temp/' + name, 'rb'))
+                img.name = name.replace('_' + name.split('_')[-1], '')
+                photo.origin_source = img
+                photo.source = img
+
+                # PIL processing
+                img = Image.open('media/temp/' + name)
+                # Get shot date
+                try:
+                    exif = {
+                        ExifTags.TAGS[k]: v
+                        for k, v in img._getexif().items()
+                        if k in ExifTags.TAGS
+                        }
+                    print exif
+                    shot_date = datetime.strptime(exif['DateTime'], '%Y:%m:%d %H:%M:%S')
+                except:
+                    shot_date = datetime.strptime('1970:01:01', '%Y:%m:%d')
+
+                photo.shot_date = TIME_ZONE.localize(shot_date)
+
+                try:
+                    # Create thumb
+                    img.thumbnail((240, 100), Image.ANTIALIAS)
+                    img.save('media/temp/' + name + '.thumbnail', 'JPEG')
+                    # Save thumb
+                    img = File(open('media/temp/' + name + '.thumbnail', 'rb'))
+                    img.name = name.replace('_' + name.split('_')[-1], '')
+                    photo.thumb = img
+                except:
+                    # Create thumb failed
+                    print 'Photo ' + name + ' created failed'
+                    valid = False
+                    noticeText = '部分格式错误的照片上传失败！'
+                    continue
+
+                photo.save()
+
+            if not valid:
+                # Upload error
+                noticeTitle = u'警告'
+
+        # Upload fail
+        if not valid:
+            super(Home, self).get(request)
+            self.context.update(get_page_info('home'))
+            self.context.update(data)
+
+            # Send album and photo list
+            self.context.update({
+                'album_list': Album.objects.filter(user=user).order_by('name'),
+                'photo_list': Photo.objects.filter(album__user=user).order_by('-upload_date')
+            })
+
+            noticeType = 'warn'
+            self.context.update({
+                'noticeType': noticeType,
+                'noticeTitle': noticeTitle,
+                'noticeText': noticeText,
+            })
+
+            self.context = Context(self.context)
+            self.context.update(csrf(request))
+            print self.context
+            return render(request, 'home.html', self.context)
+
+        # Upload success
+        noticeType = 'success'
+        noticeTitle = u'上传成功！'
+        noticeText = ' '
+        return redirect('/home/?noticeType=%s&noticeTitle=%s&noticeText=%s' % (noticeType, noticeTitle, noticeText))
 
 
 class PhotoUpload(View):
@@ -333,9 +354,8 @@ class TimeLine(BaseView):
         self.context.update(get_page_info('timeline'))
 
         # Send photo list data
-        photo_list = Photo.objects.filter(album__user=request.user).order_by('-shot_date')
         self.context.update({
-            'photo_list': photo_list
+            'photo_list': Photo.objects.filter(album__user=request.user).order_by('-shot_date')
         })
 
         self.context = Context(self.context)
@@ -352,9 +372,8 @@ class Map(BaseView):
         self.context.update(get_page_info('map'))
 
         # Send photo list data
-        photo_list = Photo.objects.filter(album__user=request.user).order_by('-shot_date')
         self.context.update({
-            'photo_list': photo_list
+            'photo_list': Photo.objects.filter(album__user=request.user).order_by('-shot_date')
         })
 
         self.context = Context(self.context)
@@ -370,13 +389,11 @@ class PhotoView(BaseView):
         super(PhotoView, self).__init__(**kwargs)
         self.simple_view = True
 
-    def get(self, request,id=0):
+    def get(self, request, photo_id=0):
         super(PhotoView, self).get(request)
 
-
-
         # Check if photo with the id exist
-        photo = Photo.objects.filter(album__user=request.user, id=id)
+        photo = Photo.objects.filter(album__user=request.user, id=photo_id)
         if not photo:
             return redirect('/home/')
         else:
@@ -391,13 +408,52 @@ class PhotoView(BaseView):
         self.context.update(csrf(request))
         return render(request, 'photo.html', self.context)
 
-    def post(self, request):
+    def post(self, request, photo_id):
         print request.POST
 
         # self.context = Context(self.context)
         # self.context.update(csrf(request))
         # return render(request, 'photo.html', self.context)
-        return redirect('/photo/' + request.GET['id'])
+        return redirect('/photo/' + photo_id)
+
+
+class PhotoFilter(BaseView):
+    def __init__(self, **kwargs):
+        super(PhotoFilter, self).__init__(**kwargs)
+        self.simple_view = True
+
+    def get(self, request, photo_id=0, filter_type=""):
+        return HttpResponseRedirect('/static/images/grass-blades.jpg')
+
+
+class Filter(View):
+    def __init__(self, **kwargs):
+        super(Filter, self).__init__(**kwargs)
+        self.context = {}
+
+    def get(self, request, photo_id=0):
+        self.context = {}
+        self.context.update({
+            'filters':
+                [
+                    {
+                        'name': "1977",
+                        'example': "/static/filter/example/1977.jpg"
+                    }, {
+                    'name': "noname",
+                    'example': "/static/filter/example/origin.jpg"
+                }, {
+                    'name': "noname1",
+                    'example': "/static/filter/example/noname1.jpg"
+                },
+                ]
+        })
+        self.context.update({
+            'id': photo_id
+        })
+        self.context = Context(self.context)
+        self.context.update(csrf(request))
+        return render(request, 'filter.html', self.context)
 
 
 class SignUp(BaseView):
@@ -473,9 +529,6 @@ class SignIn(BaseView):
         if request.user.is_authenticated():
             return redirect('/home/')
 
-        # Check notice info
-        # context = get_notice_info(request.GET)
-
         self.context = Context(self.context)
         self.context.update(csrf(request))
         return render(request, 'login.html', self.context)
@@ -499,7 +552,6 @@ class SignIn(BaseView):
                 redirect_url = '/home/'
                 if 'next' in request.GET:
                     redirect_url = request.GET['next']
-
                 return redirect(redirect_url + '?noticeType=%s&noticeTitle=%s&noticeText=%s' % (
                     noticeType, noticeTitle, noticeText))
             else:
@@ -541,41 +593,3 @@ class Test(View):
         context = Context(request.GET)
         context.update(csrf(request))
         return render(request, request.GET['v'] + '.html', context)
-
-
-class PhotoFilter(BaseView):
-
-    def __init__(self,**kwargs):
-        super(PhotoFilter,self).__init__(**kwargs)
-        self.simple_view = True
-    def get(self, request,id=0,filter=""):
-        return HttpResponseRedirect('/static/images/grass-blades.jpg')
-
-class Filter(BaseView):
-
-    def __init__(self,**kwargs):
-        super(Filter,self).__init__(**kwargs)
-        self.simple_view = True
-    def get(self, request,id=0):
-        self.context.update({
-            'filters':
-                [
-                    {
-                        'name':"1977",
-                        'example':"/static/filter/example/1977.jpg"
-                    },{
-                        'name':"noname",
-                        'example':"/static/filter/example/origin.jpg"
-                    },{
-                        'name':"noname1",
-                        'example':"/static/filter/example/noname1.jpg"
-                    },
-                ]
-        })
-        self.context.update({
-            'id':id
-        })
-        self.context = Context(self.context)
-        self.context.update(csrf(request))
-        return render(request,'filter.html',self.context)
-

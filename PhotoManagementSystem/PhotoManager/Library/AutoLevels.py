@@ -3,7 +3,7 @@ import numpy as ny
 import math
 
 
-def f_color(l, percent):
+def f_color(l, percent, height, width):
     l_sort = ny.zeros([height, width])
     l_sort[:, :] = l[:, :]
     l_sort = l_sort.flatten()
@@ -30,21 +30,23 @@ def f_color(l, percent):
 
     return l_out
 
-graph = Image.open('source.jpg')
-size = graph.size
-width = size[0]
-height = size[1]
 
-source = ny.array(graph, 'f')
-result = source / 255
-R = result[:, :, 0]
-G = result[:, :, 1]
-B = result[:, :, 2]
-percent = 0.001
-result[:, :, 0] = f_color(R, percent)
-result[:, :, 1] = f_color(G, percent)
-result[:, :, 2] = f_color(B, percent)
-result = ny.uint8(result * 255)
+def autolevel():
+    graph = Image.open('../PhotoManager/source.jpg')
+    size = graph.size
+    width = size[0]
+    height = size[1]
 
-result = Image.fromarray(result).convert('RGB')
-result.save('result.jpg')
+    source = ny.array(graph, 'f')
+    result = source / 255
+    R = result[:, :, 0]
+    G = result[:, :, 1]
+    B = result[:, :, 2]
+    percent = 0.001
+    result[:, :, 0] = f_color(R, percent, height, width)
+    result[:, :, 1] = f_color(G, percent, height, width)
+    result[:, :, 2] = f_color(B, percent, height, width)
+    result = ny.uint8(result * 255)
+
+    result = Image.fromarray(result).convert('RGB')
+    result.save('../PhotoManager/result.jpg')
