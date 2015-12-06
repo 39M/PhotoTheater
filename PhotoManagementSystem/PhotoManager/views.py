@@ -302,33 +302,42 @@ class Home(BaseView):
 
         # Upload fail
         if not valid:
-            super(Home, self).get(request)
-            self.context.update(get_page_info('home'))
-            self.context.update(data)
-
-            # Send album and photo list
-            self.context.update({
-                'album_list': Album.objects.filter(user=user).order_by('name'),
-                'photo_list': Photo.objects.filter(album__user=user).order_by('-upload_date')
-            })
-
             noticeType = 'warn'
-            self.context.update({
-                'noticeType': noticeType,
-                'noticeTitle': noticeTitle,
-                'noticeText': noticeText,
-            })
 
-            self.context = Context(self.context)
-            self.context.update(csrf(request))
-            print self.context
-            return render(request, 'home.html', self.context)
+            # super(Home, self).get(request)
+            # self.context.update(get_page_info('home'))
+            # self.context.update(data)
+            #
+            # # Send album and photo list
+            # self.context.update({
+            #     'album_list': Album.objects.filter(user=user).order_by('name'),
+            #     'photo_list': Photo.objects.filter(album__user=user).order_by('-upload_date')
+            # })
+            #
+            # noticeType = 'warn'
+            # self.context.update({
+            #     'noticeType': noticeType,
+            #     'noticeTitle': noticeTitle,
+            #     'noticeText': noticeText,
+            # })
+            #
+            # self.context = Context(self.context)
+            # self.context.update(csrf(request))
+            # print self.context
+            # return render(request, 'home.html', self.context)
 
         # Upload success
-        noticeType = 'success'
-        noticeTitle = u'上传成功！'
-        noticeText = ' '
-        return redirect('/home/?noticeType=%s&noticeTitle=%s&noticeText=%s' % (noticeType, noticeTitle, noticeText))
+        else:
+            noticeType = 'success'
+            noticeTitle = u'上传成功！'
+            noticeText = ' '
+
+        return HttpResponse(str({
+            'noticeType': noticeType,
+            'noticeTitle': noticeTitle,
+            'noticeText': noticeText,
+        }))
+        # return redirect('/home/?noticeType=%s&noticeTitle=%s&noticeText=%s' % (noticeType, noticeTitle, noticeText))
 
 
 class PhotoUpload(View):
@@ -409,12 +418,82 @@ class PhotoView(BaseView):
         return render(request, 'photo.html', self.context)
 
     def post(self, request, photo_id):
+        data = request.POST
+        user = request.user
+        noticeText = u''
         print request.POST
 
-        # self.context = Context(self.context)
-        # self.context.update(csrf(request))
-        # return render(request, 'photo.html', self.context)
-        return redirect('/photo/' + photo_id)
+        photo = Photo.objects.filter(album__user=user, id=data['id'])
+        for i in [1]:
+            if not photo:
+                noticeText = u'照片不存在！'
+                break
+            else:
+                photo = photo[0]
+                if not data['name']:
+                    noticeText = u'照片名不能为空！'
+                    break
+
+                if 'newalbum' in data:
+                    if not data['newalbumname']:
+                        noticeText = u'相册名不能为空！'
+                        break
+                    elif Album.objects.filter(user=user, name=data['newalbumname']):
+                        noticeText = u'相册名已存在！'
+                        break
+                    else:
+                        # Create new album
+                        album = Album.objects.create(
+                            user=user,
+                            name=data['newalbumname'],
+                        )
+                else:
+                    # Select album
+                    print 'Album id = ' + data['albumname']
+                    album = Album.objects.filter(user=user, id=data['albumname'])
+                    if album:
+                        album = album[0]
+                    else:
+                        noticeText = u'未知错误：相册id：' + data['albumname']
+                        break
+
+                photo.name = data['name']
+                photo.album = album
+                photo.latitude = data['lat']
+                photo.longitude = data['lng']
+                # photo.shot_date =
+                # photo.emotion =
+                # photo.description =
+                photo.save()
+
+        if noticeText:
+            super(PhotoView, self).get(request)
+            self.context.update(data)
+
+            # Send album and photo list
+            self.context.update({
+                'album_list': Album.objects.filter(user=user).order_by('name'),
+                'photo': photo
+            })
+
+            noticeType = 'warn'
+            noticeTitle = u'保存失败'
+            self.context.update({
+                'noticeType': noticeType,
+                'noticeTitle': noticeTitle,
+                'noticeText': noticeText,
+            })
+
+            self.context = Context(self.context)
+            self.context.update(csrf(request))
+            print self.context
+            return render(request, 'photo.html', self.context)
+
+        noticeType = 'success'
+        noticeTitle = u'保存成功'
+        noticeText = u' '
+        return redirect('/photo/' + photo_id + '?noticeType=%s&noticeTitle=%s&noticeText=%s' % (
+            noticeType, noticeTitle, noticeText))
 
 
 class PhotoFilter(BaseView):
@@ -439,13 +518,15 @@ class Filter(View):
                     {
                         'name': "1977",
                         'example': "/static/filter/example/1977.jpg"
-                    }, {
-                    'name': "noname",
-                    'example': "/static/filter/example/origin.jpg"
-                }, {
-                    'name': "noname1",
-                    'example': "/static/filter/example/noname1.jpg"
-                },
+                    },
+                    {
+                        'name': "noname",
+                        'example': "/static/filter/example/origin.jpg"
+                    },
+                    {
+                        'name': "noname1",
+                        'example': "/static/filter/example/noname1.jpg"
+                    },
                 ]
         })
         self.context.update({

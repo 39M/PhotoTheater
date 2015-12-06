@@ -13,7 +13,6 @@ Including another URLconf
     1. Add an import:  from blog import urls as blog_urls
     2. Add a URL to urlpatterns:  url(r'^blog/', include(blog_urls))
 """
-import json
 from django.conf import settings
 from django.conf.urls import include, url
 from django.conf.urls.static import static
@@ -26,13 +25,12 @@ from PhotoManager.models import *
 
 def showReq(request):
     ret = "<h1>GET</h1><br>"
-    for i in request.GET :
-        ret += i + " : " + request.GET[i]+"<br>"
+    for i in request.GET:
+        ret += i + " : " + request.GET[i] + "<br>"
 
     ret += "<h1>POST</h1><br>"
-    for i in request.POST :
-        ret += i + " : " + request.POST[i]+"<br>"
-
+    for i in request.POST:
+        ret += i + " : " + request.POST[i] + "<br>"
 
     return HttpResponse(ret)
 
@@ -50,7 +48,6 @@ urlpatterns = [
     url(r'^signin/$', views.SignIn.as_view()),
     url(r'^signout/$', login_required(views.SignOut.as_view())),
 
-
     url(r'^uploadPhoto$', views.PhotoUpload.as_view()),
     url(r'^test/$', views.Test.as_view()),
     url(r'^test/album/', include(views.RestView(model=Album, field=["user", "name", "create_date", "update_date"]).urlGroup())),
@@ -58,5 +55,5 @@ urlpatterns = [
     url(r'^test/showReq',showReq),
 ]
 urlpatterns += staticfiles_urlpatterns()
-# urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+# urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
