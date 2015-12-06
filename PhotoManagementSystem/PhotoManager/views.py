@@ -332,7 +332,7 @@ class Home(BaseView):
             noticeTitle = u'上传成功！'
             noticeText = ' '
 
-        return HttpResponse(str({
+        return HttpResponse(json.dumps({
             'noticeType': noticeType,
             'noticeTitle': noticeTitle,
             'noticeText': noticeText,

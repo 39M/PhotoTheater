@@ -11,8 +11,9 @@
     <div class="content">
         <div class="box-content">
             <div class="row">
-                <form class="fill-up" method="post" action="">{% csrf_token %}
-                    <input type="hidden" name="photo_list" value="[]" id="photo_list" />
+                <form id="form" class="fill-up" method="post" action="">{% csrf_token %}
+                    <input type="hidden" name="photo_list" value="[]" id="photo_list"/>
+
                     <div class="col-lg-6">
                         <style>
                             #box {
@@ -103,8 +104,33 @@
                             </li>
                         </ul>
                         <div class="form-actions">
-                            <button type="submit" class="btn btn-blue">&nbsp;&nbsp;&nbsp;保&nbsp;&nbsp;存&nbsp;&nbsp;&nbsp;</button>
+                            <button onclick="ajaxSubmit()" type="button" class="btn btn-blue">&nbsp;&nbsp;&nbsp;保&nbsp;&nbsp;存&nbsp;&nbsp;&nbsp;</button>
                         </div>
+                        <script>
+                            function ajaxSubmit() {
+                                $.ajax({
+                                    cache: true,
+                                    type: "POST",
+                                    url: '/home/',
+                                    data: $('#form').serialize(),// 你的formid
+                                    async: false,
+                                    error: function (request) {
+                                        console.log(request.responseText);
+                                    },
+                                    success: function (origindata) {
+                                        var data = JSON.parse(origindata);
+                                        if (data.noticeType === 'success') {
+                                            window.location.href = '/home/?noticeType=success&noticeTitle=上传成功&noticeText=%20';
+                                        } else {
+                                            Growl[data.noticeType]({
+                                                title: data.noticeTitle,
+                                                text: data.noticeText
+                                            });
+                                        }
+                                    }
+                                });
+                            }
+                        </script>
                     </div>
                 </form>
             </div>
