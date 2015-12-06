@@ -300,34 +300,11 @@ class Home(BaseView):
                 # Upload error
                 noticeTitle = u'警告'
 
-        # Upload fail
         if not valid:
+            # Upload fail
             noticeType = 'warn'
-
-            # super(Home, self).get(request)
-            # self.context.update(get_page_info('home'))
-            # self.context.update(data)
-            #
-            # # Send album and photo list
-            # self.context.update({
-            #     'album_list': Album.objects.filter(user=user).order_by('name'),
-            #     'photo_list': Photo.objects.filter(album__user=user).order_by('-upload_date')
-            # })
-            #
-            # noticeType = 'warn'
-            # self.context.update({
-            #     'noticeType': noticeType,
-            #     'noticeTitle': noticeTitle,
-            #     'noticeText': noticeText,
-            # })
-            #
-            # self.context = Context(self.context)
-            # self.context.update(csrf(request))
-            # print self.context
-            # return render(request, 'home.html', self.context)
-
-        # Upload success
         else:
+            # Upload success
             noticeType = 'success'
             noticeTitle = u'上传成功！'
             noticeText = ' '
@@ -337,7 +314,6 @@ class Home(BaseView):
             'noticeTitle': noticeTitle,
             'noticeText': noticeText,
         }))
-        # return redirect('/home/?noticeType=%s&noticeTitle=%s&noticeText=%s' % (noticeType, noticeTitle, noticeText))
 
 
 class PhotoUpload(View):
@@ -461,39 +437,27 @@ class PhotoView(BaseView):
                 photo.album = album
                 photo.latitude = data['lat']
                 photo.longitude = data['lng']
-                # photo.shot_date =
-                # photo.emotion =
-                # photo.description =
+                print data['shot_date']
+                print type(data['shot_date'])
+                # photo.shot_date = data['shot_date']
+                if 'emotion' in data:
+                    photo.emotion = data['emotion']
+                photo.description = data['description']
                 photo.save()
 
         if noticeText:
-            super(PhotoView, self).get(request)
-            self.context.update(data)
-
-            # Send album and photo list
-            self.context.update({
-                'album_list': Album.objects.filter(user=user).order_by('name'),
-                'photo': photo
-            })
-
             noticeType = 'warn'
             noticeTitle = u'保存失败'
-            self.context.update({
-                'noticeType': noticeType,
-                'noticeTitle': noticeTitle,
-                'noticeText': noticeText,
-            })
+        else:
+            noticeType = 'success'
+            noticeTitle = u'保存成功'
+            noticeText = u' '
 
-            self.context = Context(self.context)
-            self.context.update(csrf(request))
-            print self.context
-            return render(request, 'photo.html', self.context)
-
-        noticeType = 'success'
-        noticeTitle = u'保存成功'
-        noticeText = u' '
-        return redirect('/photo/' + photo_id + '?noticeType=%s&noticeTitle=%s&noticeText=%s' % (
-            noticeType, noticeTitle, noticeText))
+        return HttpResponse(json.dumps(({
+            'noticeType': noticeType,
+            'noticeTitle': noticeTitle,
+            'noticeText': noticeText,
+        })))
 
 
 class PhotoFilter(BaseView):
