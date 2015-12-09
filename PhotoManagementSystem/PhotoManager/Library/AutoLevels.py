@@ -42,7 +42,7 @@ def autolevel():
     R = result[:, :, 0]
     G = result[:, :, 1]
     B = result[:, :, 2]
-    percent = 0.001
+    percent = 0.1
     result[:, :, 0] = f_color(R, percent, height, width)
     result[:, :, 1] = f_color(G, percent, height, width)
     result[:, :, 2] = f_color(B, percent, height, width)
