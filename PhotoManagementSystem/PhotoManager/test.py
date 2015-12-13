@@ -1,3 +1,4 @@
-from Library import OldMovie
+from Library import OldPhoto, processing
 
-OldMovie.oldmovie()
+OldPhoto.oldphoto()
+processing.processing()
