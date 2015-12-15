@@ -288,7 +288,7 @@ class Home(BaseView):
 
                 try:
                     # Create thumb
-                    img.thumbnail((240, 100), Image.ANTIALIAS)
+                    img.thumbnail((480, 200), Image.ANTIALIAS)
                     img.save('media/temp/' + name + '.thumbnail', 'JPEG')
                     # Save thumb
                     img = File(open('media/temp/' + name + '.thumbnail', 'rb'))
