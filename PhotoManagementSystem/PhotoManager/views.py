@@ -115,8 +115,15 @@ def get_notice_info(data):
 
 
 def get_page_info(viewName):
+    title = {
+        'home':'照片上传',
+        'timeline':'时间轴',
+        'map':'照片地图',
+        'album':'相册',
+    }
     context = {
-        'view': viewName
+        'view': viewName,
+        'title': title[viewName],
     }
     return context
 
