@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}
+    相册
+{% endblock %}
+{% block page_description %} 照片管理 {% endblock %}
+{% load staticfiles %}
+{% block content %}
+    <link href="{% static 'timeline/css/about.css' %}" rel="stylesheet" type="text/css">
+    <div style="width: 80%;    margin-left: 10%;">
+        <ul class="event_year">
+
+            {% regroup photo_list by album as objects_by_album %}
+            {% for album in objects_by_album %}
+            <li {% if forloop.first %} class="current" {% endif %}><label for="{{ album.grouper.name }}">{{ album.grouper.name }}</label></li>
+            {% endfor %}
+        </ul>
+
+        <ul class="event_list">
+            {% regroup photo_list by album as objects_by_album %}
+            {% for album in objects_by_album %}
+                <div>
+                <h3 id="{{ album.grouper.name }}">{{ album.grouper.name }}</h3>
+                        <li>
+                        <span> </span>
+                        <p><span>
+                            {% for photo in album.list %}
+                                <a href="/photo/{{ photo.id }}">
+                                <img src="{{ photo.thumb.url }}" style="width: 120px;height: 128px;" class="img-thumbnail">
+                                </a>
+                            {% endfor %}
+                        </span></p>
+                        </li>
+            </div>
+            {% endfor %}
+        </ul>
+
+        <div class="clearfix"></div>
+
+    </div>
+    <script>
+        $(function () {
+            $('label').click(function () {
+                $('.event_year>li').removeClass('current');
+                $(this).parent('li').addClass('current');
+                var year = $(this).attr('for');
+                $('#' + year).parent().prevAll('div').slideUp(800);
+                $('#' + year).parent().slideDown(800).nextAll('div').slideDown(800);
+            });
+        });
+    </script>
+    </div>
+{% endblock %}

@@ -373,6 +373,23 @@ class TimeLine(BaseView):
         return render(request, 'timelineSimple.html', self.context)
 
 
+class AlbumClass(BaseView):
+    """ Time line view """
+
+    def get(self, request):
+        super(AlbumClass, self).get(request)
+        self.context.update(get_page_info('album'))
+
+        # Send photo list data
+        self.context.update({
+            'photo_list': Photo.objects.filter(album__user=request.user).order_by('-album_id','update_date')
+        })
+
+        self.context = Context(self.context)
+        self.context.update(csrf(request))
+        print self.context
+        return render(request, 'albumClass.html', self.context)
+
 class Map(BaseView):
     """ Map view """
 
