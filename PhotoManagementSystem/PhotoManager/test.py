@@ -1,4 +1,3 @@
-from Library import OldPhoto, processing
+from Library import spin, sketch, SundanceKid, BlackWhite2
 
-OldPhoto.oldphoto()
-processing.processing()
+BlackWhite2.blackwhite2()
