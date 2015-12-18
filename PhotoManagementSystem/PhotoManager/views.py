@@ -109,7 +109,7 @@ def get_notice_info(data):
     if 'noticeType' in data and 'noticeTitle' in data and 'noticeText' in data:
         return {'noticeType': data['noticeType'],
                 'noticeTitle': data['noticeTitle'],
-                'noticeText': data['noticeText'], }
+                'noticeText': data['noticeText'],}
     else:
         return {}
 
@@ -226,8 +226,8 @@ class Home(BaseView):
             else:
                 # Create new album
                 album = Album.objects.create(
-                    user=user,
-                    name=data['newalbumname'],
+                        user=user,
+                        name=data['newalbumname'],
                 )
         else:
             # Select album
@@ -247,8 +247,8 @@ class Home(BaseView):
             photo_list = json.loads(data['photo_list'])
             for name in photo_list:
                 photo = Photo(
-                    album=album,
-                    name=name.split('.')[0],
+                        album=album,
+                        name=name.split('.')[0],
                 )
 
                 if 'emotion' in data:
@@ -420,8 +420,8 @@ class PhotoView(BaseView):
                     else:
                         # Create new album
                         album = Album.objects.create(
-                            user=user,
-                            name=data['newalbumname'],
+                                user=user,
+                                name=data['newalbumname'],
                         )
                 else:
                     # Select album
@@ -542,7 +542,7 @@ class SignUp(BaseView):
             noticeTitle = u'注册成功'
             noticeText = ' '
             return redirect(
-                '/signin/?noticeType=%s&noticeTitle=%s&noticeText=%s' % (noticeType, noticeTitle, noticeText))
+                    '/signin/?noticeType=%s&noticeTitle=%s&noticeText=%s' % (noticeType, noticeTitle, noticeText))
 
         # Sign up fail, return warning info
         noticeType = 'warn'
@@ -628,7 +628,7 @@ class SignOut(View):
         noticeTitle = u'已退出登录'
         noticeText = ' '
         return redirect(
-            '/signin/?noticeType=%s&noticeTitle=%s&noticeText=%s' % (noticeType, noticeTitle, noticeText))
+                '/signin/?noticeType=%s&noticeTitle=%s&noticeText=%s' % (noticeType, noticeTitle, noticeText))
 
 
 class Test(View):
