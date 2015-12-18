@@ -1,3 +1,3 @@
-from Library import spin, sketch, SundanceKid, BlackWhite2
+from Library import spherize
 
-BlackWhite2.blackwhite2()
+spherize.spherize()
