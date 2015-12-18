@@ -57,8 +57,8 @@ class MyGaussianBlur(ImageFilter.Filter):
             return image.gaussian_blur(self.radius)
 
 
-def _1977():
-    graph = Image.open('../PhotoManager/source.jpg')
+def _1977(src, dst):
+    graph = Image.open(src)
     size = graph.size
     width = size[0]
     height = size[1]
@@ -72,7 +72,7 @@ def _1977():
             result[row, col, 2] = processAB[source[row, col, 2]]
 
     result = Image.fromarray(ny.uint8(result)).convert('RGB')
-    result.save('../PhotoManager/result.jpg')
+    result.save(dst)
 
 
 def f_color(l, percent, height, width):
@@ -103,8 +103,8 @@ def f_color(l, percent, height, width):
     return l_out
 
 
-def autolevel():
-    graph = Image.open('../PhotoManager/source.jpg')
+def autolevel(src, dst):
+    graph = Image.open(src)
     size = graph.size
     width = size[0]
     height = size[1]
@@ -121,11 +121,11 @@ def autolevel():
     result = ny.uint8(result * 255)
 
     result = Image.fromarray(result).convert('RGB')
-    result.save('../PhotoManager/result.jpg')
+    result.save(dst)
 
 
-def blackwhite():
-    graph = Image.open('../PhotoManager/source.jpg')
+def blackwhite(src, dst):
+    graph = Image.open(src)
     size = graph.size
     width = size[0]
     height = size[1]
@@ -147,11 +147,11 @@ def blackwhite():
             result[row, col] = max(0, min(255, xd * max_dic[index[2]] + dn * max_mid[index[1]][index[2]] + n))
 
     result = Image.fromarray(result).convert('RGB')
-    result.save('../PhotoManager/result.jpg')
+    result.save(dst)
 
 
-def blackwhite2():
-    graph = Image.open('../PhotoManager/source.jpg')
+def blackwhite2(src, dst):
+    graph = Image.open(src)
     size = graph.size
     width = size[0]
     height = size[1]
@@ -180,11 +180,11 @@ def blackwhite2():
             result[x, y] = max(0, min(255, result[x, y]))
 
     result = Image.fromarray(ny.uint8(result)).convert('RGB')
-    result.save('../PhotoManager/result.jpg')
+    result.save(dst)
 
 
-def gauss():
-    graph = Image.open('../PhotoManager/source.jpg')
+def gauss(src, dst):
+    graph = Image.open(src)
     size = graph.size
     width = size[0]
     height = size[1]
@@ -194,11 +194,11 @@ def gauss():
     gaussin = gaussin.filter(MyGaussianBlur(radius=width * height / 52 / 67))
 
     result = Image.fromarray(ny.uint8(gaussin)).convert('RGB')
-    result.save('../PhotoManager/result.jpg')
+    result.save(dst)
 
 
-def glow():
-    graph = Image.open('../PhotoManager/source.jpg')
+def glow(src, dst):
+    graph = Image.open(src)
     size = graph.size
     width = size[0]
     height = size[1]
@@ -222,11 +222,11 @@ def glow():
                     Result[row, col, k] = min(255, max(0, value))
 
     result = Image.fromarray(ny.uint8(Result)).convert('RGB')
-    result.save('../PhotoManager/result.jpg')
+    result.save(dst)
 
 
-def oil():
-    graph = Image.open('../PhotoManager/source.jpg')
+def oil(src, dst):
+    graph = Image.open(src)
     size = graph.size
     width = size[0]
     height = size[1]
@@ -246,7 +246,7 @@ def oil():
             hnew = width if hnew == 0 else hnew
             result[h][w] = source[hnew][wnew]
 
-    Image.fromarray(result).save('../PhotoManager/result.jpg')
+    Image.fromarray(result).save(dst)
 
 
 def mode(base, mix):
@@ -259,8 +259,8 @@ def mode(base, mix):
     return min(255, max(0, res))
 
 
-def oldmovie():
-    graph = Image.open('../PhotoManager/source.jpg')
+def oldmovie(src, dst):
+    graph = Image.open(src)
     mask = Image.open('../PhotoManager/Library/mask.png')
     size = graph.size
     width = size[0]
@@ -285,11 +285,11 @@ def oldmovie():
             result[row, col, 2] = mode(r, mask[row, col, 2])
 
     result = Image.fromarray(ny.uint8(result)).convert('RGB')
-    result.save('../PhotoManager/result.jpg')
+    result.save(dst)
 
 
-def oldphoto():
-    graph = Image.open('../PhotoManager/source.jpg')
+def oldphoto(src, dst):
+    graph = Image.open(src)
     size = graph.size
     width = size[0]
     height = size[1]
@@ -302,11 +302,11 @@ def oldphoto():
     Result[:, :, 2] = 0.272 * source[:, :, 0] + 0.534 * source[:, :, 1] + 0.131 * source[:, :, 2]
 
     result = Image.fromarray(ny.uint8(Result/1.4)).convert('RGB')
-    result.save('../PhotoManager/result.jpg')
+    result.save(dst)
 
 
-def processing():
-    graph = Image.open('../PhotoManager/source.jpg')
+def processing(src, dst):
+    graph = Image.open(src)
     size = graph.size
     width = size[0]
     height = size[1]
@@ -338,11 +338,11 @@ def processing():
             result[row, col, 2] = b
 
     result = Image.fromarray(ny.uint8(result)).convert('RGB')
-    result.save('../PhotoManager/result.jpg')
+    result.save(dst)
 
 
-def sketch():
-    graph = Image.open('../PhotoManager/source.jpg')
+def sketch(src, dst):
+    graph = Image.open(src)
     size = graph.size
     width = size[0]
     height = size[1]
@@ -394,11 +394,11 @@ def sketch():
             out[i, j] = int(min(temp, 255))
 
     result = Image.fromarray(ny.uint8(out)).convert('RGB')
-    result.save('../PhotoManager/result.jpg')
+    result.save(dst)
 
 
-def spherize():
-    graph = Image.open('../PhotoManager/source.jpg')
+def spherize(src, dst):
+    graph = Image.open(src)
     size = graph.size
     width = size[0]
     height = size[1]
@@ -427,11 +427,11 @@ def spherize():
             pOut[row, col, 2] = pIn[newY, newX, 2]
 
     result = Image.fromarray(ny.uint8(pOut)).convert('RGB')
-    result.save('../PhotoManager/result.jpg')
+    result.save(dst)
 
 
-def spin():
-    graph = Image.open('../PhotoManager/source.jpg')
+def spin(src, dst):
+    graph = Image.open(src)
     size = graph.size
     width = size[0]
     height = size[1]
@@ -471,11 +471,11 @@ def spin():
                 Image_new[i, j, D] = Sum_Pixel / validPoint
 
     result = Image.fromarray(ny.uint8(Image_new)).convert('RGB')
-    result.save('../PhotoManager/result.jpg')
+    result.save(dst)
 
 
-def sundancekid():
-    graph = Image.open('../PhotoManager/source.jpg')
+def sundancekid(src, dst):
+    graph = Image.open(src)
 
     source = ny.double(ny.array(graph))
     result = source
@@ -486,4 +486,4 @@ def sundancekid():
         result[:, :, dim] = 122 * temp + 61
 
     result = Image.fromarray(ny.uint8(result)).convert('RGB')
-    result.save('../PhotoManager/result.jpg')
+    result.save(dst)
