@@ -231,12 +231,12 @@ class Home(BaseView):
                 )
         else:
             # Select album
-            print 'Album id = ' + data['albumname']
             album = Album.objects.filter(user=request.user, id=data['albumname'])
             if album:
                 album = album[0]
             else:
                 noticeText = u'未知错误：相册id：' + data['albumname']
+                print 'Error album id = ' + data['albumname']
                 valid = False
 
         if not valid:
@@ -259,7 +259,8 @@ class Home(BaseView):
 
                 # Save image source
                 img = File(open('media/temp/' + name, 'rb'))
-                img.name = name.replace('_' + name.split('_')[-1], '')
+                hash_code = '_' + name.split('_')[-1] + '.'
+                img.name = hash_code.join(name[:name.rfind('_')].split('.'))
                 photo.origin_source = img
                 photo.source = img
 
@@ -272,7 +273,6 @@ class Home(BaseView):
                         for k, v in img._getexif().items()
                         if k in ExifTags.TAGS
                         }
-                    print exif
                     shot_date = datetime.strptime(exif['DateTime'], '%Y:%m:%d %H:%M:%S')
                 except:
                     shot_date = datetime.strptime('1970:01:01', '%Y:%m:%d')
@@ -476,6 +476,14 @@ class Filter(View):
 
     def get(self, request, photo_id=0):
         self.context = {}
+
+        # Check if photo with the id exist
+        photo = Photo.objects.filter(album__user=request.user, id=photo_id)
+        if not photo:
+            return redirect('/home/')
+        else:
+            photo = photo[0]
+
         self.context.update({
             'filters':
                 [
