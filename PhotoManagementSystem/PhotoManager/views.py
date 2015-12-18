@@ -260,7 +260,8 @@ class Home(BaseView):
                 # Save image source
                 img = File(open('media/temp/' + name, 'rb'))
                 hash_code = '_' + name.split('_')[-1] + '.'
-                img.name = hash_code.join(name[:name.rfind('_')].split('.'))
+                file_name = hash_code.join(name[:name.rfind('_')].split('.'))
+                img.name = file_name
                 photo.origin_source = img
                 photo.source = img
 
@@ -285,7 +286,7 @@ class Home(BaseView):
                     img.save('media/temp/' + name + '.thumbnail', 'JPEG')
                     # Save thumb
                     img = File(open('media/temp/' + name + '.thumbnail', 'rb'))
-                    img.name = name.replace('_' + name.split('_')[-1], '')
+                    img.name = file_name
                     photo.thumb = img
                 except:
                     # Create thumb failed
@@ -483,6 +484,8 @@ class Filter(View):
             return redirect('/home/')
         else:
             photo = photo[0]
+
+        print photo.source.name
 
         self.context.update({
             'filters':
