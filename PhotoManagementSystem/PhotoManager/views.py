@@ -11,7 +11,7 @@ from django.template import Context, RequestContext
 from django.template.context_processors import csrf
 from django.views.generic import *
 from django.views.generic.edit import *
-from PIL import Image, ExifTags
+from PIL import Image, ImageFilter, ExifTags
 from PhotoManager.models import *
 from config import *
 from datetime import datetime
@@ -174,7 +174,6 @@ class BaseView(View):
             'photo_number': Photo.objects.filter(album__user=request.user).count(),
             'photo_number_this_month': Photo.objects.filter(album__user=request.user,
                                                             upload_date__month=datetime.now().month).count(),
-            'photo_number_uncomment': Photo.objects.filter(album__user=request.user, comment__isnull=True).count(),
         })
 
 
@@ -461,19 +460,63 @@ class PhotoView(BaseView):
         })))
 
 
+def blur(src, dst):
+    im = Image.open(src)
+    im = im.convert("RGB")
+    result = im.filter(ImageFilter.BLUR)
+    result.save(dst)
+
+
+FILTER_TYPE = ['blur']
+
+
 class PhotoFilter(BaseView):
     def __init__(self, **kwargs):
         super(PhotoFilter, self).__init__(**kwargs)
         self.simple_view = True
 
+    @staticmethod
+    def filter_file_name(pure_name, filter_name):
+        return ('_' + filter_name + '.').join(pure_name.split('.'))
+
     def get(self, request, photo_id=0, filter_type=""):
-        return HttpResponseRedirect('/static/images/grass-blades.jpg')
+        print request
+        photo = Photo.objects.filter(album__user=request.user, id=photo_id)
+        if not photo:
+            return HttpResponseRedirect('/static/images/grass-blades.jpg')
+        else:
+            photo = photo[0]
+
+        if filter_type == 'origin':
+            return HttpResponseRedirect(photo.source.url)
+
+        if filter_type not in FILTER_TYPE:
+            return HttpResponseRedirect('/static/images/grass-blades.jpg')
+
+        pure_name = photo.source.name
+        pure_name = pure_name[pure_name.rfind('/') + 1:]
+        filter_path = photo.source.path
+        filter_path = filter_path[:filter_path.rfind('.')]
+        target_name = ('_' + filter_type + '.').join(pure_name.split('.'))
+        target_path = os.path.join(filter_path, target_name)
+        image_url = photo.source.name
+        image_url = image_url[:image_url.rfind('.')]
+        image_url = '/media/' + image_url + '/'
+        if not os.path.exists(target_path):
+            blur(photo.origin_source.path, target_path)
+
+        return HttpResponseRedirect(image_url + target_name)
+
 
 
 class Filter(View):
     def __init__(self, **kwargs):
         super(Filter, self).__init__(**kwargs)
         self.context = {}
+
+    @staticmethod
+    def thumb_name(pure_name, filter_name):
+        return ('_' + filter_name + '_thumb.').join(pure_name.split('.'))
 
     def get(self, request, photo_id=0):
         self.context = {}
@@ -485,28 +528,35 @@ class Filter(View):
         else:
             photo = photo[0]
 
-        print photo.source.name
+        pure_name = photo.source.name
+        pure_name = pure_name[pure_name.rfind('/') + 1:]
+        filter_path = photo.source.path
+        filter_path = filter_path[:filter_path.rfind('.')]
+        if not os.path.isdir(filter_path):
+            # Generate filter thumbs
+            os.makedirs(filter_path)
+            thumb_path = photo.thumb.path
+            blur(thumb_path, os.path.join(filter_path, self.thumb_name(pure_name, FILTER_TYPE[0])))
+
+        thumb_url = photo.source.name
+        thumb_url = thumb_url[:thumb_url.rfind('.')]
+        thumb_url = '/media/' + thumb_url + '/'
+        filters = [{
+            'name': 'origin',
+            'example': photo.thumb.url,
+        }]
+        for filter_name in FILTER_TYPE:
+            filters.append({
+                'name': filter_name,
+                'example': thumb_url + self.thumb_name(pure_name, filter_name),
+            })
+        print filters
 
         self.context.update({
-            'filters':
-                [
-                    {
-                        'name': "1977",
-                        'example': "/static/filter/example/1977.jpg"
-                    },
-                    {
-                        'name': "noname",
-                        'example': "/static/filter/example/origin.jpg"
-                    },
-                    {
-                        'name': "noname1",
-                        'example': "/static/filter/example/noname1.jpg"
-                    },
-                ]
+            'filters': filters,
+            'id': photo_id,
         })
-        self.context.update({
-            'id': photo_id
-        })
+
         self.context = Context(self.context)
         self.context.update(csrf(request))
         return render(request, 'filter.html', self.context)

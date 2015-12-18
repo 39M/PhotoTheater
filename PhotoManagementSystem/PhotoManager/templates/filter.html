@@ -141,8 +141,8 @@ body {
       <a href="#" id="aba-lista" onclick="return false;"><span>添加滤镜</span></a>
       <div id="listagem-imagens">
         <div>
-            <a class="item-zoom-image ativo" href="/photofilter/{{ id }}/origin" alt="0">
-              <img style="width: 80px" src="{% static 'filter/example/origin.jpg' %}"> </a>
+{#            <a class="item-zoom-image ativo" href="/photofilter/{{ id }}/origin" alt="0">#}
+{#              <img style="width: 80px" src="{% static 'filter/example/origin.jpg' %}"> </a>#}
             {% for f in filters %}
             <a class="item-zoom-image" href="/photofilter/{{ id }}/{{ f.name }}" alt="{{ forloop.counter }}">
               <img style="width: 80px" src="{{f.example}}"> </a>
