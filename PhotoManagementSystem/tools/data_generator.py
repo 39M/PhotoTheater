@@ -9,7 +9,12 @@ from pytz import timezone
 TIME_ZONE = timezone('Asia/Shanghai')
 
 Comment.objects.all().delete()
-Photo.objects.all().delete()
+photos = Photo.objects.all()
+for photo in photos:
+    photo.source.delete()
+    photo.origin_source.delete()
+    photo.thumb.delete()
+    photo.delete()
 Album.objects.all().delete()
 
 user = User.objects.filter(username='admin')[0]
@@ -23,8 +28,6 @@ for i in range(4):
     a = Album(
         user=user,
         name='Album' + str(i + 1),
-        # create_date=timezone.now(),
-        # update_date=timezone.now(),
     )
     a.save()
 albums = Album.objects.filter(user=user)
@@ -48,8 +51,5 @@ for img in files:
     p.source = tmp
     p.origin_source = tmp
     p.thumb = tmp
-    # p.source.save(img, File(open('tools/'+img, 'r')))
-    # p.thumb.save(img, File(open('tools/'+img, 'r')))
-    # p.origin_source.save(img, File(open('tools/'+img, 'r')))
     p.save()
     tmp.close()
