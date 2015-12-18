@@ -1,3 +1,3 @@
-from Library import spherize
+from Library import beeps
 
-spherize.spherize()
+beeps.Beeps()

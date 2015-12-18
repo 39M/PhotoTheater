@@ -48,10 +48,12 @@ import tempfile
 from collections import Iterable
 from cStringIO import StringIO
 
+
 class File(object):
     """an object representing a local file"""
     path = None
     content = None
+
     def __init__(self, path):
         self.path = path
         self._get_content()
