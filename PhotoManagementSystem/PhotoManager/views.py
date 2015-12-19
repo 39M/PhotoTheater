@@ -140,7 +140,7 @@ class BaseView(View):
         for photo in Photo.objects.filter(album__user=request.user).order_by('upload_date')[:10]:
             photo_list.append({
                 'id': photo.id,
-                'scr': photo.source.url,
+                'scr': photo.thumb.url,
                 'location': photo.location_text,
                 'description': photo.description,
             })
@@ -288,6 +288,7 @@ class Home(BaseView):
                     img = File(open('media/temp/' + name + '.thumbnail', 'rb'))
                     img.name = file_name
                     photo.thumb = img
+                    photo.origin_thumb = img
                 except:
                     # Create thumb failed
                     print 'Photo ' + name + ' created failed'
@@ -454,6 +455,10 @@ class PhotoView(BaseView):
                         photo.source.delete()
                         target = File(open(photo.origin_source.path, 'rb'))
                         photo.source = target
+
+                        photo.thumb.delete()
+                        target = File(open(photo.origin_thumb.path, 'rb'))
+                        photo.thumb = target
                     elif filter_type in FILTER_TYPE:
                         pure_name = photo.source.name
                         pure_name = pure_name[pure_name.rfind('/') + 1:]
@@ -470,6 +475,12 @@ class PhotoView(BaseView):
                             noticeText = u'滤镜尚未处理完毕!'
                             print 'Not done yet filter type: ' + filter_type
                             break
+
+                        target_thumb = os.path.join(filter_path, Filter.thumb_name(pure_name, filter_type))
+                        target = File(open(target_thumb, 'rb'))
+                        photo.thumb.delete()
+                        photo.thumb = target
+                        photo.thumb.name = pure_name
                     else:
                         noticeText = u'所选滤镜不合法！'
                         print 'Error filter type: ' + filter_type
@@ -515,7 +526,7 @@ class PhotoFilter(BaseView):
             photo = photo[0]
 
         if filter_type == 'origin':
-            return HttpResponseRedirect(photo.source.url)
+            return HttpResponseRedirect(photo.origin_source.url)
 
         if filter_type not in FILTER_TYPE:
             print 'No filter with type' + filter_type
@@ -580,7 +591,7 @@ class Filter(View):
         thumb_url = '/media/' + thumb_url + '/'
         filters = [{
             'name': 'origin',
-            'example': photo.thumb.url,
+            'example': photo.origin_thumb.url,
         }]
         for filter_name in FILTER_TYPE:
             filters.append({
