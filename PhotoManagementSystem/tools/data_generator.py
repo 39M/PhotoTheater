@@ -9,7 +9,6 @@ from PIL import Image
 
 TIME_ZONE = timezone('Asia/Shanghai')
 
-Comment.objects.all().delete()
 photos = Photo.objects.all()
 for photo in photos:
     photo.source.delete()
@@ -18,7 +17,11 @@ for photo in photos:
     photo.delete()
 Album.objects.all().delete()
 
-user = User.objects.filter(username='admin')[0]
+user = User.objects.filter(username='admin')
+if user:
+    user = user[0]
+else:
+    user = User.objects.create_superuser(username='admin', email='', password='admin')
 
 Album.objects.create(
         user=user,
@@ -67,6 +70,7 @@ for img in files:
         thumb = File(open('tools/thumb/' + img + '.thumbnail', 'rb'))
         thumb.name = tmp.name
         p.thumb = thumb
+        p.origin_thumb = thumb
         p.save()
 
     except:
