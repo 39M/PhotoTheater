@@ -57,7 +57,7 @@ class MyGaussianBlur(ImageFilter.Filter):
             return image.gaussian_blur(self.radius)
 
 
-def _1977(src, dst):
+def filter1977(src, dst):
     graph = Image.open(src)
     size = graph.size
     width = size[0]
