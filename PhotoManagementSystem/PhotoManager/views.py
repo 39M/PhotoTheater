@@ -15,9 +15,10 @@ from PIL import Image, ImageFilter, ExifTags
 from PhotoManager.models import *
 from config import *
 from datetime import datetime
+from pytz import timezone
+from Library import filter_lib
 import os
 import json
-from pytz import timezone
 
 TIME_ZONE = timezone('Asia/Shanghai')
 
@@ -443,6 +444,38 @@ class PhotoView(BaseView):
                 if 'emotion' in data:
                     photo.emotion = data['emotion']
                 photo.description = data['description']
+
+                '''Save filter start'''
+                if 'filter' in data:
+                # if True:
+                    filter_type = data['filter']
+                    # filter_type = 'origin'
+                    if filter_type == 'origin':
+                        photo.source.delete()
+                        target = File(open(photo.origin_source.path, 'rb'))
+                        photo.source = target
+                    elif filter_type in FILTER_TYPE:
+                        pure_name = photo.source.name
+                        pure_name = pure_name[pure_name.rfind('/') + 1:]
+                        filter_path = photo.source.path
+                        filter_path = filter_path[:filter_path.rfind('.')]
+                        target_name = ('_' + filter_type + '.').join(pure_name.split('.'))
+                        target_path = os.path.join(filter_path, target_name)
+                        if os.path.exists(target_path):
+                            target = File(open(target_path, 'rb'))
+                            photo.source.delete()
+                            photo.source = target
+                            photo.source.name = pure_name
+                        else:
+                            noticeText = u'滤镜尚未处理完毕!'
+                            print 'Not done yet filter type: ' + filter_type
+                            break
+                    else:
+                        noticeText = u'所选滤镜不合法！'
+                        print 'Error filter type: ' + filter_type
+                        break
+                '''Save filter end'''
+
                 photo.save()
 
         if noticeText:
@@ -460,14 +493,11 @@ class PhotoView(BaseView):
         })))
 
 
-def blur(src, dst):
-    im = Image.open(src)
-    im = im.convert("RGB")
-    result = im.filter(ImageFilter.BLUR)
-    result.save(dst)
+FILTER_TYPE = ['filter1977', 'autolevel', 'blackwhite', 'blackwhite2', 'gauss', 'glow', ]
 
 
-FILTER_TYPE = ['blur']
+# 'oil', 'oldphoto', 'processing', 'sketch', 'spherize',
+# 'spin', 'sundancekid']
 
 
 class PhotoFilter(BaseView):
@@ -475,14 +505,11 @@ class PhotoFilter(BaseView):
         super(PhotoFilter, self).__init__(**kwargs)
         self.simple_view = True
 
-    @staticmethod
-    def filter_file_name(pure_name, filter_name):
-        return ('_' + filter_name + '.').join(pure_name.split('.'))
-
     def get(self, request, photo_id=0, filter_type=""):
         print request
         photo = Photo.objects.filter(album__user=request.user, id=photo_id)
         if not photo:
+            print 'No photo with id ' + str(photo_id)
             return HttpResponseRedirect('/static/images/grass-blades.jpg')
         else:
             photo = photo[0]
@@ -491,6 +518,7 @@ class PhotoFilter(BaseView):
             return HttpResponseRedirect(photo.source.url)
 
         if filter_type not in FILTER_TYPE:
+            print 'No filter with type' + filter_type
             return HttpResponseRedirect('/static/images/grass-blades.jpg')
 
         pure_name = photo.source.name
@@ -503,10 +531,12 @@ class PhotoFilter(BaseView):
         image_url = image_url[:image_url.rfind('.')]
         image_url = '/media/' + image_url + '/'
         if not os.path.exists(target_path):
-            blur(photo.origin_source.path, target_path)
+            try:
+                eval('filter_lib.' + filter_type)(photo.origin_source.path, target_path)
+            except:
+                print 'Create' + filter_type + 'filter Error'
 
         return HttpResponseRedirect(image_url + target_name)
-
 
 
 class Filter(View):
@@ -532,11 +562,18 @@ class Filter(View):
         pure_name = pure_name[pure_name.rfind('/') + 1:]
         filter_path = photo.source.path
         filter_path = filter_path[:filter_path.rfind('.')]
+
+        # Generate filter thumbs
         if not os.path.isdir(filter_path):
-            # Generate filter thumbs
             os.makedirs(filter_path)
-            thumb_path = photo.thumb.path
-            blur(thumb_path, os.path.join(filter_path, self.thumb_name(pure_name, FILTER_TYPE[0])))
+        thumb_path = photo.thumb.path
+        for filter_name in FILTER_TYPE:
+            target_name = os.path.join(filter_path, self.thumb_name(pure_name, filter_name))
+            if not os.path.exists(target_name):
+                try:
+                    eval('filter_lib.' + filter_name)(thumb_path, target_name)
+                except:
+                    print 'Create' + filter_name + 'thumb Error'
 
         thumb_url = photo.source.name
         thumb_url = thumb_url[:thumb_url.rfind('.')]
