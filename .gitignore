@@ -60,6 +60,7 @@ target/
 .idea
 
 # site-package
+PhotoManagementSystem/media/
 PhotoManagementSystem/site-packages/
 PhotoManagementSystem/tools/
 PhotoManagementSystem/db.sqlite3
