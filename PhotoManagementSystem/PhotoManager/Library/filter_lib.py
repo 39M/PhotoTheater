@@ -261,7 +261,7 @@ def mode(base, mix):
 
 def oldmovie(src, dst):
     graph = Image.open(src)
-    mask = Image.open('../PhotoManager/Library/mask.png')
+    mask = Image.open('PhotoManager/Library/mask.png')
     size = graph.size
     width = size[0]
     height = size[1]
