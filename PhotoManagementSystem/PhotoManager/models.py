@@ -3,26 +3,6 @@ from django.contrib.auth.models import User
 from django.utils import timezone
 
 
-class Comment(models.Model):
-    # the photo commented
-    photo = models.ForeignKey('Photo')
-    # comment content
-    content = models.TextField()
-    # comment date
-    date = models.DateTimeField(editable=False)
-    # comment update date
-    update_date = models.DateTimeField()
-
-    def __str__(self):
-        return self.content
-
-    def save(self, *args, **kwargs):
-        if not self.id:
-            self.date = timezone.now()
-        self.update_date = timezone.now()
-        super(Comment, self).save(*args, **kwargs)
-
-
 class Photo(models.Model):
     # photo album
     album = models.ForeignKey('Album')
@@ -44,12 +24,16 @@ class Photo(models.Model):
     emotion = models.CharField(max_length=16, default='')
     # photo description
     description = models.CharField(max_length=1024, default='')
+    # photo filter type
+    filter_type = models.CharField(max_length=64, default='')
     # photo newest file
-    source = models.ImageField(upload_to='photos/%Y/%m/%d')
+    source = models.ImageField(upload_to='photos')
     # photo origin file
-    origin_source = models.ImageField(upload_to='photos/%Y/%m/%d/origin')
+    origin_source = models.ImageField(upload_to='photos/origin')
     # photo thumb
-    thumb = models.ImageField(upload_to='photos/%Y/%m/%d/thumb')
+    thumb = models.ImageField(upload_to='photos/thumb')
+    # photo origin thumb
+    origin_thumb = models.ImageField(upload_to='photos/thumb/origin')
 
     def __str__(self):
         return self.name
