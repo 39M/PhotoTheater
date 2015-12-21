@@ -1,3 +1,4 @@
+# coding=utf-8
 from PIL import Image, ImageFilter
 import numpy as ny
 import math
@@ -813,7 +814,7 @@ def baozou(src, dst):
         width = size[0]
         height = size[1]
 
-        template = Image.open('../PhotoManager/Library/template.jpg')
+        template = Image.open('PhotoManager/Library/template.jpg')
         temp = (width + height) * 2
         template = template.resize([temp, temp])
         per = 0.30
