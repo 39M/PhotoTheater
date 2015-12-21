@@ -121,6 +121,10 @@ def get_page_info(viewName):
         'timeline': u'时间轴',
         'map': u'照片地图',
         'album': u'相册',
+        'photoview': u'照片编辑',
+        'search': u'搜索',
+        'signup': u'注册',
+        'signin': u'登录',
     }
     context = {
         'view': viewName,
@@ -403,6 +407,7 @@ class PhotoView(BaseView):
 
     def get(self, request, photo_id=0):
         super(PhotoView, self).get(request)
+        self.context.update(get_page_info('photoview'))
 
         # Check if photo with the id exist
         photo = Photo.objects.filter(album__user=request.user, id=photo_id)
@@ -658,6 +663,7 @@ class SignUp(BaseView):
 
     def get(self, request):
         super(SignUp, self).get(request)
+        self.context.update(get_page_info('signup'))
 
         # Check if had signed in
         if request.user.is_authenticated():
@@ -669,6 +675,7 @@ class SignUp(BaseView):
 
     def post(self, request):
         super(SignUp, self).get(request)
+        self.context.update(get_page_info('signup'))
 
         username = request.POST['username']
         password = request.POST['password']
@@ -717,6 +724,7 @@ class SignIn(BaseView):
 
     def get(self, request):
         super(SignIn, self).get(request)
+        self.context.update(get_page_info('signin'))
 
         # Check if had signed in
         if request.user.is_authenticated():
@@ -728,6 +736,7 @@ class SignIn(BaseView):
 
     def post(self, request):
         super(SignIn, self).get(request)
+        self.context.update(get_page_info('signin'))
 
         username = request.POST['username']
         password = request.POST['password']
