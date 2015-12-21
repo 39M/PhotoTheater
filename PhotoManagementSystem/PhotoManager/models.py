@@ -25,7 +25,7 @@ class Photo(models.Model):
     # photo description
     description = models.CharField(max_length=1024, default='')
     # photo filter type
-    filter_type = models.CharField(max_length=64, default='')
+    filter_type = models.CharField(max_length=64, default='origin')
     # photo newest file
     source = models.ImageField(upload_to='photos')
     # photo origin file
