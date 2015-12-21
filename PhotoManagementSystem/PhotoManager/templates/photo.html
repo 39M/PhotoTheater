@@ -51,8 +51,9 @@
         }
     </style>
     <div class="info">
-    <form id="form" action="" method="post">{% csrf_token %}
+
         <ul class="padded separate-sections">
+        <form id="form" action="" method="post">{% csrf_token %}
             <li>
                 <a style="margin-bottom:10px;float:right;display: block;height: 26px;width: 28px;background: url(/static/filter/img/bt-fechar-zoomvisualizer.png) no-repeat 0 0 #313131;"
                    onclick="history.back(-1)"></a>
@@ -129,12 +130,68 @@
             <li class="input">
                 <textarea type="text" name="description" placeholder="照片评论">{{ photo.description }}</textarea>
             </li>
+        </form>
             <li>
-                <button class="btn btn-sm btn-blue" onclick="$('#form').submit()" >保存</button>
-                <button class="btn btn-sm btn-red" >删除</button>
+                <button id="updateBtn" class="btn btn-sm btn-blue"  >保存</button>
+                <button id='deleteBtn' class="btn btn-sm btn-red" >删除</button>
+                <script>
+                    $(function(){
+                        $('#updateBtn').unbind('click');
+                        $('#deleteBtn').unbind('click');
+                        $('#updateBtn').bind('click',updatePhotoInfo);
+                        $('#deleteBtn').bind('click',deletePhoto);
+
+                        function updatePhotoInfo (){
+                            $.ajax({
+                                    cache: true,
+                                    type: "POST",
+                                    url: '/photo/{{ photo.id }}',
+                                    data: $('#form').serialize(),// 你的formid
+                                    async: false,
+                                    error: function (request) {
+                                        console.log(request.responseText);
+                                    },
+                                    success: function (origindata) {
+                                        var data = JSON.parse(origindata);
+                                        if (data.noticeType === 'success') {
+                                            window.location.href = '/home/?noticeType=success&noticeTitle=上传成功&noticeText=%20';
+                                        } else {
+                                            Growl[data.noticeType]({
+                                                title: data.noticeTitle,
+                                                text: data.noticeText
+                                            });
+                                        }
+                                    }
+                                });
+                        }
+                        function deletePhoto(){
+                            $.ajax({
+                                    cache: true,
+                                    type: "POST",
+                                    url: '/photodelete/{{ photo.id }}',
+                                    async: false,
+                                    error: function (request) {
+                                        console.log(request.responseText);
+                                    },
+                                    success: function (origindata) {
+                                        var data = JSON.parse(origindata);
+                                        if (data.noticeType === 'success') {
+                                            window.location.href = '/home/?noticeType=success&noticeTitle=删除成功&noticeText=%20';
+                                        } else {
+                                            Growl[data.noticeType]({
+                                                title: data.noticeTitle,
+                                                text: data.noticeText
+                                            });
+                                        }
+                                    }
+                                });
+                        }
+                        }
+                    })
+                </script>
             </li>
 
         </ul>
-</form>
+
     </div>
 {% endblock %}

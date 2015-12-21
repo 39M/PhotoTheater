@@ -520,6 +520,11 @@ class PhotoView(BaseView):
             noticeType, noticeTitle, noticeText))
 
 
+
+class PhotoDeleteView(BaseView):
+    def get(self, request,photo_id):
+        pass
+
 class PhotoFilter(BaseView):
     def __init__(self, **kwargs):
         super(PhotoFilter, self).__init__(**kwargs)

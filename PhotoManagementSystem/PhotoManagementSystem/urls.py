@@ -43,6 +43,7 @@ urlpatterns = [
     url(r'^albumclass/$', login_required(views.AlbumClass.as_view())),
     url(r'^map/$', login_required(views.Map.as_view())),
     url(r'^photo/(?P<photo_id>[0-9]+)/$', login_required(views.PhotoView.as_view())),
+    url(r'^photodelete/(?P<photo_id>[0-9]+)/$', login_required(views.PhotoDeleteView.as_view())),
     url(r'^filter/(?P<photo_id>[0-9]+)',login_required(views.Filter.as_view())),
     url(r'^photofilter/(?P<photo_id>[0-9]+)/(?P<filter_type>[a-z0-9]+)',login_required(views.PhotoFilter.as_view())),
     url(r'^signup/$', views.SignUp.as_view()),
