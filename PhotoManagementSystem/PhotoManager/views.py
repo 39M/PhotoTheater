@@ -117,10 +117,10 @@ def get_notice_info(data):
 
 def get_page_info(viewName):
     title = {
-        'home': '照片上传',
-        'timeline': '时间轴',
-        'map': '照片地图',
-        'album': '相册',
+        'home': u'照片上传',
+        'timeline': u'时间轴',
+        'map': u'照片地图',
+        'album': u'相册',
     }
     context = {
         'view': viewName,
@@ -300,7 +300,7 @@ class Home(BaseView):
                     # Create thumb failed
                     print 'Photo ' + name + ' created failed'
                     valid = False
-                    noticeText = '部分格式错误的照片上传失败！'
+                    noticeText = u'部分格式错误的照片上传失败！'
                     continue
 
                 photo.save()
@@ -520,7 +520,7 @@ class PhotoView(BaseView):
         else:
             noticeType = 'success'
             noticeTitle = u'保存成功'
-            noticeText = u' '
+            noticeText = ' '
 
         return HttpResponse(json.dumps(({
             'noticeType': noticeType,
