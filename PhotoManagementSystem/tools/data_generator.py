@@ -1,9 +1,13 @@
 # coding=utf-8
 import os
+
+print os.path.abspath(os.path.curdir)
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "PhotoManagementSystem.settings")
+from PhotoManager.models import *
+
 import random
 from datetime import datetime
 from django.core.files import File
-from PhotoManager.models import *
 from pytz import timezone
 from PIL import Image
 
@@ -11,9 +15,6 @@ TIME_ZONE = timezone('Asia/Shanghai')
 
 photos = Photo.objects.all()
 for photo in photos:
-    photo.source.delete()
-    photo.origin_source.delete()
-    photo.thumb.delete()
     photo.delete()
 Album.objects.all().delete()
 

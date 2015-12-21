@@ -44,6 +44,13 @@ class Photo(models.Model):
         self.update_date = timezone.now()
         super(Photo, self).save(*args, **kwargs)
 
+    def delete(self, using=None):
+        self.origin_source.delete()
+        self.source.delete()
+        self.origin_thumb.delete()
+        self.thumb.delete()
+        super(Photo, self).delete()
+
 
 class Album(models.Model):
     # album owner

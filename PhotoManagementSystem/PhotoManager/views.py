@@ -117,10 +117,10 @@ def get_notice_info(data):
 
 def get_page_info(viewName):
     title = {
-        'home':'照片上传',
-        'timeline':'时间轴',
-        'map':'照片地图',
-        'album':'相册',
+        'home': '照片上传',
+        'timeline': '时间轴',
+        'map': '照片地图',
+        'album': '相册',
     }
     context = {
         'view': viewName,
@@ -367,13 +367,14 @@ class AlbumClass(BaseView):
 
         # Send photo list data
         self.context.update({
-            'photo_list': Photo.objects.filter(album__user=request.user).order_by('-album_id','update_date')
+            'photo_list': Photo.objects.filter(album__user=request.user).order_by('-album_id', 'update_date')
         })
 
         self.context = Context(self.context)
         self.context.update(csrf(request))
         print self.context
         return render(request, 'albumClass.html', self.context)
+
 
 class Map(BaseView):
     """ Map view """
@@ -472,7 +473,7 @@ class PhotoView(BaseView):
 
                 '''Save filter start'''
                 if 'filter' in data:
-                # if True:
+                    # if True:
                     filter_type = data['filter']
                     # filter_type = 'origin'
                     if filter_type == 'origin':
@@ -528,17 +529,26 @@ class PhotoView(BaseView):
         })))
 
 
-FILTER_TYPE = ['filter1977', 'autolevel', 'blackwhite', 'blackwhite2', 'gauss', 'glow', ]
+FILTER_TYPE = ['filter1977', 'blackwhite', 'blackwhite2', 'gauss', 'glow',
+               'oldmovie', 'oldphoto', 'processing', 'spherize', 'sundancekid', ]
 
 
-# 'oil', 'oldphoto', 'processing', 'sketch', 'spherize',
-# 'spin', 'sundancekid']
-
+# 'beeps', 'baozou', 'enlarge']
 
 
 class PhotoDeleteView(BaseView):
-    def get(self, request,photo_id):
-        pass
+    def __init__(self, **kwargs):
+        super(PhotoDeleteView, self).__init__(**kwargs)
+        self.simple_view = True
+
+    def get(self, request, photo_id=0):
+        photo = Photo.objects.filter(album__user=request.user, id=photo_id)
+        if not photo:
+            print 'No photo with id ' + str(photo_id)
+            return HttpResponse('Fail')
+        photo[0].delete()
+        return HttpResponse('OK')
+
 
 class PhotoFilter(BaseView):
     def __init__(self, **kwargs):
