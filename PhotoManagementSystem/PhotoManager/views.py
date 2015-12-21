@@ -117,10 +117,14 @@ def get_notice_info(data):
 
 def get_page_info(viewName):
     title = {
-        'home':'照片上传',
-        'timeline':'时间轴',
-        'map':'照片地图',
-        'album':'相册',
+        'home': u'照片上传',
+        'timeline': u'时间轴',
+        'map': u'照片地图',
+        'album': u'相册',
+        'photoview': u'照片编辑',
+        'search': u'搜索',
+        'signup': u'注册',
+        'signin': u'登录',
     }
     context = {
         'view': viewName,
@@ -300,7 +304,7 @@ class Home(BaseView):
                     # Create thumb failed
                     print 'Photo ' + name + ' created failed'
                     valid = False
-                    noticeText = '部分格式错误的照片上传失败！'
+                    noticeText = u'部分格式错误的照片上传失败！'
                     continue
 
                 photo.save()
@@ -367,13 +371,14 @@ class AlbumClass(BaseView):
 
         # Send photo list data
         self.context.update({
-            'photo_list': Photo.objects.filter(album__user=request.user).order_by('-album_id','update_date')
+            'photo_list': Photo.objects.filter(album__user=request.user).order_by('-album_id', 'update_date')
         })
 
         self.context = Context(self.context)
         self.context.update(csrf(request))
         print self.context
         return render(request, 'albumClass.html', self.context)
+
 
 class Map(BaseView):
     """ Map view """
@@ -402,6 +407,7 @@ class PhotoView(BaseView):
 
     def get(self, request, photo_id=0):
         super(PhotoView, self).get(request)
+        self.context.update(get_page_info('photoview'))
 
         # Check if photo with the id exist
         photo = Photo.objects.filter(album__user=request.user, id=photo_id)
@@ -472,7 +478,7 @@ class PhotoView(BaseView):
 
                 '''Save filter start'''
                 if 'filter' in data:
-                # if True:
+                    # if True:
                     filter_type = data['filter']
                     # filter_type = 'origin'
                     if filter_type == 'origin':
@@ -509,8 +515,8 @@ class PhotoView(BaseView):
                         noticeText = u'所选滤镜不合法！'
                         print 'Error filter type: ' + filter_type
                         break
+                    photo.filter_type = filter_type
                 '''Save filter end'''
-
                 photo.save()
 
         if noticeText:
@@ -519,7 +525,7 @@ class PhotoView(BaseView):
         else:
             noticeType = 'success'
             noticeTitle = u'保存成功'
-            noticeText = u' '
+            noticeText = ' '
 
         return HttpResponse(json.dumps(({
             'noticeType': noticeType,
@@ -528,17 +534,26 @@ class PhotoView(BaseView):
         })))
 
 
-FILTER_TYPE = ['filter1977', 'autolevel', 'blackwhite', 'blackwhite2', 'gauss', 'glow', ]
+FILTER_TYPE = ['filter1977', 'blackwhite', 'blackwhite2', 'gauss', 'glow',
+               'oldmovie', 'oldphoto', 'processing', 'spherize', 'sundancekid', ]
 
 
-# 'oil', 'oldphoto', 'processing', 'sketch', 'spherize',
-# 'spin', 'sundancekid']
-
+# 'beeps', 'baozou', 'enlarge']
 
 
 class PhotoDeleteView(BaseView):
-    def get(self, request,photo_id):
-        pass
+    def __init__(self, **kwargs):
+        super(PhotoDeleteView, self).__init__(**kwargs)
+        self.simple_view = True
+
+    def get(self, request, photo_id=0):
+        photo = Photo.objects.filter(album__user=request.user, id=photo_id)
+        if not photo:
+            print 'No photo with id ' + str(photo_id)
+            return HttpResponse('Fail')
+        photo[0].delete()
+        return HttpResponse('OK')
+
 
 class PhotoFilter(BaseView):
     def __init__(self, **kwargs):
@@ -631,7 +646,7 @@ class Filter(View):
 
         self.context.update({
             'filters': filters,
-            'id': photo_id,
+            'photo': photo,
         })
 
         self.context = Context(self.context)
@@ -648,6 +663,7 @@ class SignUp(BaseView):
 
     def get(self, request):
         super(SignUp, self).get(request)
+        self.context.update(get_page_info('signup'))
 
         # Check if had signed in
         if request.user.is_authenticated():
@@ -659,6 +675,7 @@ class SignUp(BaseView):
 
     def post(self, request):
         super(SignUp, self).get(request)
+        self.context.update(get_page_info('signup'))
 
         username = request.POST['username']
         password = request.POST['password']
@@ -707,6 +724,7 @@ class SignIn(BaseView):
 
     def get(self, request):
         super(SignIn, self).get(request)
+        self.context.update(get_page_info('signin'))
 
         # Check if had signed in
         if request.user.is_authenticated():
@@ -718,6 +736,7 @@ class SignIn(BaseView):
 
     def post(self, request):
         super(SignIn, self).get(request)
+        self.context.update(get_page_info('signin'))
 
         username = request.POST['username']
         password = request.POST['password']

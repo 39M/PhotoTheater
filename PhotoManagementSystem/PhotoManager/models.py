@@ -25,7 +25,7 @@ class Photo(models.Model):
     # photo description
     description = models.CharField(max_length=1024, default='')
     # photo filter type
-    filter_type = models.CharField(max_length=64, default='')
+    filter_type = models.CharField(max_length=64, default='origin')
     # photo newest file
     source = models.ImageField(upload_to='photos')
     # photo origin file
@@ -43,6 +43,13 @@ class Photo(models.Model):
             self.upload_date = timezone.now()
         self.update_date = timezone.now()
         super(Photo, self).save(*args, **kwargs)
+
+    def delete(self, using=None):
+        self.origin_source.delete()
+        self.source.delete()
+        self.origin_thumb.delete()
+        self.thumb.delete()
+        super(Photo, self).delete()
 
 
 class Album(models.Model):
