@@ -515,8 +515,8 @@ class PhotoView(BaseView):
                         noticeText = u'所选滤镜不合法！'
                         print 'Error filter type: ' + filter_type
                         break
+                    photo.filter_type = filter_type
                 '''Save filter end'''
-
                 photo.save()
 
         if noticeText:
@@ -646,7 +646,7 @@ class Filter(View):
 
         self.context.update({
             'filters': filters,
-            'id': photo_id,
+            'photo': photo,
         })
 
         self.context = Context(self.context)
