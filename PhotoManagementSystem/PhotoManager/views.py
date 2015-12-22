@@ -148,7 +148,7 @@ class BaseView(View):
 
     def set_gallery(self, request):
         photo_list = []
-        for photo in Photo.objects.filter(album__user=request.user).order_by('upload_date')[:10]:
+        for photo in Photo.objects.filter(album__user=request.user).order_by('-upload_date')[:10]:
             photo_list.append({
                 'id': photo.id,
                 'scr': photo.thumb.url,
