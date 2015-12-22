@@ -10,7 +10,7 @@
     <script>
 
     </script>
-    <iframe height="100%" style="border: 0px;" width="80%" src="/filter/{{ photo.id }}"></iframe>
+    <iframe height="100%" id="iframeId" name="iframeName" style="border: 0px;" width="80%" src="/filter/{{ photo.id }}"></iframe>
     <style>
         .info {
             display: block;
@@ -110,7 +110,7 @@
                     var map = new mapboxgl.Map({
                         container: 'map', // container id
                         style: 'mapbox://styles/mapbox/streets-v8', //stylesheet location
-                        center: [{{ photo.longitude }},{{ photo.latitude }}], // starting position
+                        center: [{{ photo.longitude |default_if_none:'126.5' }},{{ photo.latitude |default_if_none:'45.0' }}], // starting position
                         zoom: 8 // starting zoom
                     });
                     map.on('mousemove', function (e) {
@@ -130,23 +130,21 @@
             <li class="input">
                 <textarea type="text" name="description" placeholder="照片评论">{{ photo.description }}</textarea>
             </li>
+            <input id="filterInput" name="filter" value="{{ photo.filter_type }}" type="hidden"/>
         </form>
             <li>
-                <button id="updateBtn" class="btn btn-sm btn-blue"  >保存</button>
-                <button id='deleteBtn' class="btn btn-sm btn-red" >删除</button>
+                <button id="updateBtn" onclick="updatePhotoInfo()" class="btn btn-sm btn-blue"  >保存</button>
+                <button id='deleteBtn' onclick="deletePhoto()" class="btn btn-sm btn-red" >删除</button>
                 <script>
-                    $(function(){
-                        $('#updateBtn').unbind('click');
-                        $('#deleteBtn').unbind('click');
-                        $('#updateBtn').bind('click',updatePhotoInfo);
-                        $('#deleteBtn').bind('click',deletePhoto);
+                    function updatePhotoInfo (){
+                        var filter = $(window.frames["iframeName"].document).find(".ativo");
+                        $('#filterInput').val(filter.attr('filter'));
 
-                        function updatePhotoInfo (){
                             $.ajax({
                                     cache: true,
                                     type: "POST",
-                                    url: '/photo/{{ photo.id }}',
-                                    data: $('#form').serialize(),// 你的formid
+                                    url: '/photo/{{ photo.id }}/',
+                                    data: $('#form').serialize(),
                                     async: false,
                                     error: function (request) {
                                         console.log(request.responseText);
@@ -168,10 +166,10 @@
                             $.ajax({
                                     cache: true,
                                     type: "POST",
-                                    url: '/photodelete/{{ photo.id }}',
+                                    url: '/photodelete/{{ photo.id }}/',
                                     async: false,
                                     error: function (request) {
-                                        console.log(request.responseText);
+                                        window.document = (request.responseText);
                                     },
                                     success: function (origindata) {
                                         var data = JSON.parse(origindata);
@@ -186,8 +184,12 @@
                                     }
                                 });
                         }
-                        }
-                    })
+                    $(function (){
+{#                        $('#updateBtn').unbind('click');#}
+{#                        $('#deleteBtn').unbind('click');#}
+                        $('#updateBtn').bind('click',updatePhotoInfo);
+                        $('#deleteBtn').bind('click',deletePhoto);
+                    });
                 </script>
             </li>
 
