@@ -39,9 +39,10 @@ urlpatterns = [
 
     url(r'^$', views.index),
     url(r'^home/$', login_required(views.Home.as_view())),
-    url(r'^timeline/$', login_required(views.TimeLine.as_view())),
     url(r'^albumclass/$', login_required(views.AlbumClass.as_view())),
+    url(r'^timeline/$', login_required(views.TimeLine.as_view())),
     url(r'^map/$', login_required(views.Map.as_view())),
+    url(r'^search/$', login_required(views.Search.as_view())),
     url(r'^photo/(?P<photo_id>[0-9]+)/$', login_required(views.PhotoView.as_view())),
     url(r'^photodelete/(?P<photo_id>[0-9]+)/$', login_required(views.PhotoDeleteView.as_view())),
     url(r'^filter/(?P<photo_id>[0-9]+)',login_required(views.Filter.as_view())),

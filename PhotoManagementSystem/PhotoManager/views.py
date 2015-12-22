@@ -398,6 +398,27 @@ class Map(BaseView):
         return render(request, 'map.html', self.context)
 
 
+class Search(BaseView):
+    """ Search View"""
+
+    def get(self, request):
+        super(Search, self).get(request)
+        self.context.update(get_page_info('search'))
+
+        query = request.GET['query']
+        if not query:
+            redirect('/')
+
+        self.context.update({
+            'photo_list': Photo.objects.filter(album__user=request.user, name__contains=query).order_by('-shot_date')
+        })
+
+        self.context = Context(self.context)
+        self.context.update(csrf(request))
+        print self.context
+        return render(request, 'find.html', self.context)
+
+
 class PhotoView(BaseView):
     """ Single photo display view """
 
@@ -469,9 +490,7 @@ class PhotoView(BaseView):
                 photo.album = album
                 photo.latitude = data['lat']
                 photo.longitude = data['lng']
-                print data['shot_date']
-                print type(data['shot_date'])
-                # photo.shot_date = data['shot_date']
+                photo.shot_date = datetime.strptime(data['shot_date'], '%m/%d/%Y')
                 if 'emotion' in data:
                     photo.emotion = data['emotion']
                 photo.description = data['description']
@@ -550,9 +569,17 @@ class PhotoDeleteView(BaseView):
         photo = Photo.objects.filter(album__user=request.user, id=photo_id)
         if not photo:
             print 'No photo with id ' + str(photo_id)
-            return HttpResponse('Fail')
+            return HttpResponse(json.dumps(({
+                'noticeType': 'error',
+                'noticeTitle': '照片不存在！',
+                'noticeText': ' ',
+            })))
         photo[0].delete()
-        return HttpResponse('OK')
+        return HttpResponse(json.dumps(({
+            'noticeType': 'success',
+            'noticeTitle': '照片删除成功！',
+            'noticeText': ' ',
+        })))
 
 
 class PhotoFilter(BaseView):
