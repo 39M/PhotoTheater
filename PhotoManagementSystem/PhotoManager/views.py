@@ -279,7 +279,14 @@ class Home(BaseView):
                 photo.source = img
 
                 # PIL processing
-                img = Image.open('media/temp/' + name)
+                try:
+                    img = Image.open('media/temp/' + name)
+                except:
+                    print 'Photo ' + name + ' created failed'
+                    valid = False
+                    photo_format_valid = False
+                    noticeText = u'部分格式错误的照片上传失败！'
+                    continue
                 # Get shot date
                 try:
                     exif = {
