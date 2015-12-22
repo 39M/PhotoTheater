@@ -502,15 +502,19 @@ class PhotoView(BaseView):
 
                 photo.name = data['name']
                 photo.album = album
-                photo.latitude = data['lat']
-                photo.longitude = data['lng']
-                photo.shot_date = datetime.strptime(data['shot_date'], '%m/%d/%Y')
+                if data['lat'] == 'None':
+                    photo.latitude = None
+                    photo.longitude = None
+                else:
+                    photo.latitude = data['lat']
+                    photo.longitude = data['lng']
+                photo.shot_date = TIME_ZONE.localize(datetime.strptime(data['shot_date'], '%m/%d/%Y'))
                 if 'emotion' in data:
                     photo.emotion = data['emotion']
                 photo.description = data['description']
 
                 '''Save filter start'''
-                if 'filter' in data:
+                if ('filter' in data) and (data['filter'] != photo.filter_type):
                     # if True:
                     filter_type = data['filter']
                     # filter_type = 'origin'
