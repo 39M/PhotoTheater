@@ -90,7 +90,8 @@
 
                 <select class="chzn-select" name="albumname">
                     {% for Album in album_list %}
-                        <option value="{{ Album.id }}" {% if Album.id == Photo.album_id %} selected="selected" {% endif %} >
+                        <option value="{{ Album.id }}"
+                                {% if Album.id == photo.album.id %} selected="selected" {% endif %} >
                             {{ Album.name }}
                         </option>
                     {% endfor %}

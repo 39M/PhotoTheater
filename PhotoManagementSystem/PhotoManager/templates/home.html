@@ -30,7 +30,7 @@
                                 {% for photo in object.list %}
                                     <li class="col-md-3">
                                         <a href="/photo/{{ photo.id }}" class="thumbnail">
-                                            <img src="{{ photo.thumb.url }}" style="width: 240px;height: 100px;" alt="">
+                                            <img src="{{ photo.thumb.url }}?ud={{ photo.update_date |date:'f:s' }}" style="width: 240px;height: 100px;" alt="">
                                         </a>
                                     </li>
                                 {% endfor %}

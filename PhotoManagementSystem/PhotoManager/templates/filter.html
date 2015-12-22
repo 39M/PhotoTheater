@@ -144,7 +144,7 @@ body {
 {#            <a class="item-zoom-image ativo" href="/photofilter/{{ id }}/origin" alt="0">#}
 {#              <img style="width: 80px" src="{% static 'filter/example/origin.jpg' %}"> </a>#}
             {% for f in filters %}
-            <a class="item-zoom-image {% if f.name == photo.filter_type %}ativo{% endif %}" filter="{{ f.name }}" href="/photofilter/{{ photo.id }}/{{ f.name }}" alt="{{ forloop.counter }}" >
+            <a class="item-zoom-image {% if f.name == photo.filter_type %}ativo{% endif %}" filter="{{ f.name }}" href="/photofilter/{{ photo.id }}/{{ f.name }}?ud={{ photo.update_date |date:'f:s' }}" alt="{{ forloop.counter }}" >
               <img style="width: 160px" src="{{ f.example }}" > </a>
             {% endfor %}
             <div class="clear"></div>

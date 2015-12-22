@@ -25,7 +25,7 @@
                         <p><span>
                             {% for photo in month.list %}
                                 <a href="/photo/{{ photo.id }}">
-                                <img src="{{ photo.thumb.url }}" style="width: 120px;height: 128px;" class="img-thumbnail">
+                                <img src="{{ photo.thumb.url }}?ud={{ photo.update_date |date:'f:s' }}" style="width: 120px;height: 128px;" class="img-thumbnail">
                                 </a>
                             {% endfor %}
                         </span></p>

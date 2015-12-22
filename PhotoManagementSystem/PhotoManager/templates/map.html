@@ -25,7 +25,7 @@
             {% for photo in photo_list %}
             tooltip.push(new mapboxgl.Popup({closeOnClick: false})
                     .setLngLat([{{ photo.longitude }},{{ photo.latitude }}])
-                    .setHTML('<a href="/photo/{{ photo.id }}"><img style="width:80px" src="{{ photo.thumb.url }}" />')
+                    .setHTML('<a href="/photo/{{ photo.id }}"><img style="width:80px" src="{{ photo.thumb.url }}?ud={{ photo.update_date |date:'f:s' }}" />')
                     .addTo(map));
             {% endfor %}
         });
