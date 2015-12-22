@@ -407,7 +407,7 @@ class Search(BaseView):
 
         query = request.GET['query']
         if not query:
-            redirect('/')
+            return redirect('/')
 
         self.context.update({
             'photo_list': Photo.objects.filter(album__user=request.user, name__contains=query).order_by('-shot_date'),
