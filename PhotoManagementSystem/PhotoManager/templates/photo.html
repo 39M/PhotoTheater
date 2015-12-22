@@ -165,7 +165,7 @@
                         function deletePhoto(){
                             $.ajax({
                                     cache: true,
-                                    type: "POST",
+                                    type: "GET",
                                     url: '/photodelete/{{ photo.id }}/',
                                     async: false,
                                     error: function (request) {
