@@ -257,6 +257,7 @@ class Home(BaseView):
         else:
             # Create photos
             photo_list = json.loads(data['photo_list'])
+            photo_list = set(photo_list)
             for name in photo_list:
                 photo = Photo(
                         album=album,
