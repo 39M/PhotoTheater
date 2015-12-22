@@ -51,7 +51,12 @@
         }
     </style>
     <div class="info">
-
+        <style>
+            form li{
+                margin-top: 5px;
+                margin-bottom: 10px;
+            }
+        </style>
         <ul class="padded separate-sections">
         <form id="form" action="" method="post">{% csrf_token %}
             <li>
@@ -60,6 +65,7 @@
             </li>
 
             <li class="input">
+                <label>照片名称</label>
                 <input type="text" placeholder="照片名称" name="name" value="{{ photo.name }}">
                 <input type="hidden" name="id" value="{{ photo.id }}">
             </li>
@@ -121,14 +127,17 @@
                 })
             </script>
             <li>
+                <label>修改拍摄日期</label>
                 <input class="datepicker fill-up" type="text" name="shot_date" placeholder="拍摄日期" value="{{ photo.shot_date|date:"m/d/Y" }}">
             </li>
             <li>
+                <label>心情</label>
                 <ul class="clearfix">
                     {% include "includes/emotion.html" %}
                 </ul>
             </li>
             <li class="input">
+                <label>照片评论</label>
                 <textarea type="text" name="description" placeholder="照片评论">{{ photo.description }}</textarea>
             </li>
             <input id="filterInput" name="filter" value="{{ photo.filter_type }}" type="hidden"/>
