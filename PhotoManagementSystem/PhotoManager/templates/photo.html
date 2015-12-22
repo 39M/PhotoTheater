@@ -162,7 +162,7 @@
                                     success: function (origindata) {
                                         var data = JSON.parse(origindata);
                                         if (data.noticeType === 'success') {
-                                            window.location.href = '/home/?noticeType=success&noticeTitle=上传成功&noticeText=%20';
+                                            window.location.href = '/home/?noticeType=success&noticeTitle=修改成功&noticeText=%20';
                                         } else {
                                             Growl[data.noticeType]({
                                                 title: data.noticeTitle,

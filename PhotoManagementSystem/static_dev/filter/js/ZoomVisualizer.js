@@ -318,7 +318,7 @@
 			$("#aba-lista",wrapper_geral).click(function(){
 				//---------------
 				if($(".footer",wrapper_geral).hasClass("closed")){
-					$(this).find("span").text("打开滤镜列表");
+					$(this).find("span").text("关闭滤镜列表");
 					$(".footer",wrapper_geral).animate({height:135},0);
 					$("#listagem-imagens",wrapper_geral).show();
 					$(" .footer",wrapper_geral).removeClass("closed");
