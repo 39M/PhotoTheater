@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block page_description %} 照片搜索 {% endblock %}
+{% load staticfiles %}
+{% block content %}
+
+    <div class="box">
+        <div class="box-header">
+            <div class="title">搜索 {{ query | default:"query" }}</div>
+        </div>
+
+        <div class="box-content">
+            <!-- find me in partials/gallery -->
+
+            <div id="thumbs">
+                {% for photo in photo_list %}
+                <a
+                   value="{{ photo.id }}"
+                   style="background-image:url({{ photo.thumb.url }})"
+                   title="{{ photo.name }}"></a>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <script>
+    $(function(){
+        $('#thumbs a').click(function(){
+            var locate = $(this).attr('value');
+            window.location = "/photo/" + locate;
+        })
+    })
+    </script>
+{% endblock %}

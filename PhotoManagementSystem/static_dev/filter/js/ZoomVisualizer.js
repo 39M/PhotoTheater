@@ -318,12 +318,12 @@
 			$("#aba-lista",wrapper_geral).click(function(){
 				//---------------
 				if($(".footer",wrapper_geral).hasClass("closed")){
-					$(this).find("span").text("Ocultar miniaturas");
+					$(this).find("span").text("打开滤镜列表");
 					$(".footer",wrapper_geral).animate({height:135},0);
 					$("#listagem-imagens",wrapper_geral).show();
 					$(" .footer",wrapper_geral).removeClass("closed");
 				}else{
-					$(this).find("span").text("Show Thumbnails");
+					$(this).find("span").text("添加滤镜");
 					$(".footer",wrapper_geral).animate({height:10},0);
 					$("#listagem-imagens",wrapper_geral).hide();
 					$(".footer",wrapper_geral).addClass("closed");
