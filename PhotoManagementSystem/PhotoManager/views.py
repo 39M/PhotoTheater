@@ -402,7 +402,7 @@ class Map(BaseView):
 
         # Send photo list data
         self.context.update({
-            'photo_list': Photo.objects.filter(album__user=request.user).order_by('-shot_date')
+            'photo_list': Photo.objects.filter(album__user=request.user, latitude__isnull=False).order_by('-shot_date')
         })
 
         self.context = Context(self.context)
