@@ -410,7 +410,8 @@ class Search(BaseView):
             redirect('/')
 
         self.context.update({
-            'photo_list': Photo.objects.filter(album__user=request.user, name__contains=query).order_by('-shot_date')
+            'photo_list': Photo.objects.filter(album__user=request.user, name__contains=query).order_by('-shot_date'),
+            'query': query,
         })
 
         self.context = Context(self.context)
