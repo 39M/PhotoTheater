@@ -220,6 +220,7 @@ class Home(BaseView):
         # Init variables
         album = 0
         valid = True
+        photo_format_valid = True
         noticeText = ''
         noticeTitle = ''
 
@@ -304,6 +305,7 @@ class Home(BaseView):
                     # Create thumb failed
                     print 'Photo ' + name + ' created failed'
                     valid = False
+                    photo_format_valid = False
                     noticeText = u'部分格式错误的照片上传失败！'
                     continue
 
@@ -315,7 +317,10 @@ class Home(BaseView):
 
         if not valid:
             # Upload fail
-            noticeType = 'warn'
+            if photo_format_valid:
+                noticeType = 'warn'
+            else:
+                noticeType = 'info'
         else:
             # Upload success
             noticeType = 'success'
