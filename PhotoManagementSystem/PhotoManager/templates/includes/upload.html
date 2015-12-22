@@ -122,7 +122,7 @@
                                         if (data.noticeType === 'success') {
                                             window.location.href = '/home/?noticeType=success&noticeTitle=上传成功&noticeText=%20';
                                         }else if(data.noticeType === 'info'){
-                                            window.location.href = '/home/?noticeType=info&noticeTitle=部分上传成功&noticeText='+data.noticeText;
+                                            window.location.href = '/home/?noticeType=warn&noticeTitle=部分上传成功&noticeText='+data.noticeText;
                                         }else {
                                             Growl[data.noticeType]({
                                                 title: data.noticeTitle,
