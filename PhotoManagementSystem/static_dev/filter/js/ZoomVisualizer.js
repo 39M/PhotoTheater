@@ -365,7 +365,7 @@
 			$(wrapper_geral.find(".footer .item-zoom-image")).each(function(index, element) {
 				
 				if(index == index_ativo){
-					$(element).addClass('ativo');
+					//$(element).addClass('ativo');
 				}
 				
 				$(element).attr("alt",index);

@@ -132,7 +132,7 @@ body {
 
     <div class="content"> <a href="" id="next"></a>
       <div class="wrapper" style="width: 1415px; height: 362px;">
-      	<img src="/photofilter/{{ photo.id }}/{{ f.name }}" class="dragme">
+      	<img src="/photofilter/{{ photo.id }}/{{ photo.filter_type }}" class="dragme">
       </div>
       <a href="" id="before"></a>
     </div>
@@ -144,8 +144,8 @@ body {
 {#            <a class="item-zoom-image ativo" href="/photofilter/{{ id }}/origin" alt="0">#}
 {#              <img style="width: 80px" src="{% static 'filter/example/origin.jpg' %}"> </a>#}
             {% for f in filters %}
-            <a class="item-zoom-image" href="/photofilter/{{ photo.id }}/{{ f.name }}" alt="{{ forloop.counter }}">
-              <img style="width: 160px" src="{{ f.example }}"> </a>
+            <a class="item-zoom-image {% if f.name == photo.filter_type %}ativo{% endif %}" href="/photofilter/{{ photo.id }}/{{ f.name }}" alt="{{ forloop.counter }}" >
+              <img style="width: 160px" src="{{ f.example }}" > </a>
             {% endfor %}
             <div class="clear"></div>
         </div>
