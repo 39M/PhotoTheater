@@ -77,13 +77,13 @@
                 <script>
                     function selectchanged() {
                         console.log($('#selectnewalbum').attr('new'))
-                        if ('true' === $('#selectnewalbum').attr('new')) {
-                            $('#newalbum').hide();
-                            $('#oldalbum').show();
-                            $('#selectnewalbum').attr('new', 'false');
-                        } else {
+                        if ('true' === $('#selectnewalbum').attr('new').toString()) {
                             $('#newalbum').show();
                             $('#oldalbum').hide();
+                            $('#selectnewalbum').attr('new', 'false');
+                        } else {
+                            $('#newalbum').hide();
+                            $('#oldalbum').show();
                             $('#selectnewalbum').attr('new', 'true');
                         }
                     }
