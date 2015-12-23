@@ -118,6 +118,7 @@
                                         console.log(request.responseText);
                                     },
                                     success: function (origindata) {
+                                        console.log(origindata);
                                         var data = JSON.parse(origindata);
                                         if (data.noticeType === 'success') {
                                             window.location.href = '/home/?noticeType=success&noticeTitle=上传成功&noticeText=%20';

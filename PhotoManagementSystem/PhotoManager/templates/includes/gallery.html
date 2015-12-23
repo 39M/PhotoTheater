@@ -118,7 +118,7 @@ body{
 <div id="gallery">
     {% for photo in SlideShow %}
 	<a href="/photo/{{ photo.id }}" {% if forloop.first %}class="show_decpic"{% endif %} >
-		<img src="{{ photo.scr }}" alt="Flowing Rock" width="200" height="124" title="" alt="" rel="<h4>{{ photo.location }}</h4>{{ photo.description }}"/>
+		<img src="{{ photo.scr }}" alt="Flowing Rock" width="200" height="124" title="" alt="" rel="<h4>{{ photo.name }}</h4>{{ photo.description }}"/>
 	</a>
 	{% endfor %}
 	<div class="caption"><div class="content"></div></div>
