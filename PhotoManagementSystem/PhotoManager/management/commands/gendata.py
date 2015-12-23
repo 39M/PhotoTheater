@@ -66,6 +66,10 @@ class Command(BaseCommand):
                 # Create thumb
                 thumb.thumbnail((480, 200), Image.ANTIALIAS)
                 thumb.save('tools/thumb/' + img + '.thumbnail', 'JPEG')
+<<<<<<< HEAD
+                # thumb.close()
+=======
+>>>>>>> origin/master
                 # Save thumb
                 thumb = File(open('tools/thumb/' + img + '.thumbnail', 'rb'))
                 thumb.name = tmp.name
