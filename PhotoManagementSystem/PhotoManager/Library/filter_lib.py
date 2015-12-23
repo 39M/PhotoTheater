@@ -792,7 +792,7 @@ def baozou(src, dst):
                 result[x, y] = max(0, min(255, result[x, y]))
         result = Image.fromarray(ny.uint8(result))
 
-        template = Image.open('../PhotoManager/Library/template.jpg')
+        template = Image.open('PhotoManager/Library/template.jpg')
         temp = (width + height) * 2
         template = template.resize([temp, temp])
         per = 0.30
