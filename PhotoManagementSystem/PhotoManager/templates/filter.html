@@ -136,10 +136,28 @@ body {
       </div>
       <a href="" id="before"></a>
     </div>
-
+    <style>
+            ::-webkit-scrollbar-thumb:vertical
+            {
+                height: 0px;
+                background-color: #999999;
+                -webkit-border-radius: 0px;
+            }
+            ::-webkit-scrollbar-thumb:horizontal
+            {
+                width: 0px;
+                background-color: #CCCCCC;
+                -webkit-border-radius: 0px;
+            }
+            ::-webkit-scrollbar {
+                height: 0px;
+                background-color: #999999;
+                -webkit-border-radius: 0px;
+            }
+        </style>
     <div class="footer">
       <a href="#" id="aba-lista" onclick="return false;"><span>关闭滤镜列表</span></a>
-      <div id="listagem-imagens">
+      <div id="listagem-imagens" class="listagemimagens">
         <div>
 {#            <a class="item-zoom-image ativo" href="/photofilter/{{ id }}/origin" alt="0">#}
 {#              <img style="width: 80px" src="{% static 'filter/example/origin.jpg' %}"> </a>#}
@@ -150,6 +168,7 @@ body {
             <div class="clear"></div>
         </div>
       </div>
+
     </div>
 
   </div>

@@ -119,7 +119,7 @@
 				if(_width > $(window).width())
 				{
 					$('#listagem-imagens > div',wrapper_geral).width(_width+5);
-					$('#listagem-imagens',wrapper_geral).css({ overflow:"scroll"});
+					$('#listagem-imagens',wrapper_geral).css({ overflowY:"hidden"});
 					_width = $(window).width() - 10;
 				}
 				
