@@ -1,9 +1,8 @@
-# coding=utf-8
 from PIL import Image, ImageFilter
 import numpy as ny
 import math
 import random
-import facepp
+import facep
 
 
 def blur(src, dst):
@@ -576,21 +575,11 @@ class Beeps(object):
         pass
 
     def main(self, src, dst):
-        API_KEY = 'e6999ac68d52bfb7ba47e3f2f779a225'
-        API_SECRET = '8yEc6T_9GCIFQl6UFzl6mJ2jL1YkCFWc'
 
-        api = facepp.API(API_KEY, API_SECRET)
-
-        IMAGE = src
-
-        # Detect face in the picture and find out his position and attributes
-
-        face = api.detection.detect(img=facepp.File(IMAGE), mode='oneface')
         graph = Image.open(src)
-        if len(face['face']) > 0:
-            face_id = face['face'][0]['face_id']
-
-            land_mark = api.detection.landmark(api_key=API_KEY, api_secret=API_SECRET, face_id=face_id)
+        resultjson = facep.detect(src)
+        if resultjson != -1:
+            land_mark = resultjson
 
             # Operate area
             size = graph.size
@@ -767,21 +756,10 @@ def beeps(src, dst):
 
 
 def baozou(src, dst):
-    API_KEY = 'e6999ac68d52bfb7ba47e3f2f779a225'
-    API_SECRET = '8yEc6T_9GCIFQl6UFzl6mJ2jL1YkCFWc'
-
-    api = facepp.API(API_KEY, API_SECRET)
-
-    IMAGE = src
-
-    # Detect face in the picture and find out his position and attributes
-
-    face = api.detection.detect(img=facepp.File(IMAGE), mode='oneface')
     graph = Image.open(src)
-    if len(face['face']) > 0:
-        face_id = face['face'][0]['face_id']
-
-        land_mark = api.detection.landmark(api_key=API_KEY, api_secret=API_SECRET, face_id=face_id)
+    resultjson = facep.detect(src)
+    if resultjson != -1:
+        land_mark = resultjson
 
         # Operate area
         size = graph.size
@@ -835,22 +813,10 @@ def baozou(src, dst):
 
 def enlarge(src, dst):
     # -*- coding: utf-8 -*-
-
-    API_KEY = 'e6999ac68d52bfb7ba47e3f2f779a225'
-    API_SECRET = '8yEc6T_9GCIFQl6UFzl6mJ2jL1YkCFWc'
-
-    api = facepp.API(API_KEY, API_SECRET)
-
-    IMAGE = src
-
-    # Detect face in the picture and find out his position and attributes
-
-    face = api.detection.detect(img=facepp.File(IMAGE), mode='oneface')
     graph = Image.open(src)
-    if len(face['face']) > 0:
-        face_id = face['face'][0]['face_id']
-
-        land_mark = api.detection.landmark(api_key=API_KEY, api_secret=API_SECRET, face_id=face_id, type='25P')
+    resultjson = facep.detect(src)
+    if resultjson != -1:
+        land_mark = resultjson
 
         # Operate area
         size = graph.size

@@ -535,10 +535,10 @@ class PhotoView(BaseView):
 
 
 FILTER_TYPE = ['filter1977', 'blackwhite', 'blackwhite2', 'gauss', 'glow',
-               'oldmovie', 'oldphoto', 'processing', 'spherize', 'sundancekid', ]
+               'oldmovie', 'oldphoto', 'processing', 'spherize', 'sundancekid',
 
 
-# 'beeps', 'baozou', 'enlarge']
+ 'beeps', 'baozou', 'enlarge']
 
 
 class PhotoDeleteView(BaseView):
