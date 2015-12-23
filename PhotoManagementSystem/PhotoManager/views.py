@@ -152,7 +152,7 @@ class BaseView(View):
             photo_list.append({
                 'id': photo.id,
                 'scr': photo.thumb.url,
-                'location': photo.location_text,
+                'name': photo.name,
                 'description': photo.description,
             })
 
