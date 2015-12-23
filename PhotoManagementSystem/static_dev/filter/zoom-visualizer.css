@@ -49,7 +49,7 @@
 #zoom-visualizer .content #before{display: block;width:28px ;height:28px ;position: absolute;background: url(img/icon-before.png) no-repeat 0 0 #313131; top: 50%; left:50px; z-index:9999;}
 
 #zoom-visualizer .footer {background-color: #303030; height: 135px; position: fixed; width: 100%; bottom: 0;}
-#zoom-visualizer .footer div a {float: left;width: 67px;height: 104px; margin: 4px 5px 5px 0;position: relative; opacity:.3;}
+#zoom-visualizer .footer div a {float: left;width: 160px;height: 104px; margin: 4px 5px 5px 0;position: relative; opacity:.3;}
 #zoom-visualizer .footer div a span {width: 67px;height: 104px;position: absolute;top: 0}
 #zoom-visualizer .footer div a.ativo,#zoom-visualizer .footer a:hover{ opacity:1;}  
 #zoom-visualizer .footer #listagem-imagens > div { margin-top:13px;}

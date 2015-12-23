@@ -1,19 +1,18 @@
 {% extends "base.html" %}
-{% block page_description %} 照片分类管理 {% endblock %}
+{% block page_description %} 照片搜索 {% endblock %}
 {% load staticfiles %}
 {% block content %}
-    {% regroup photo_list by album as objects_by_album %}
-    {% for album in objects_by_album %}
+
     <div class="box">
         <div class="box-header">
-            <div class="title">{{ album.grouper.name }}</div>
+            <div class="title">搜索 {{ query | default:"query" }}</div>
         </div>
 
         <div class="box-content">
             <!-- find me in partials/gallery -->
 
             <div id="thumbs">
-                {% for photo in album.list %}
+                {% for photo in photo_list %}
                 <a
                    value="{{ photo.id }}"
                    style="background-image:url({{ photo.thumb.url }})"
@@ -22,8 +21,7 @@
             </div>
         </div>
     </div>
-    {% endfor %}
-    </div>
+
     <script>
     $(function(){
         $('#thumbs a').click(function(){

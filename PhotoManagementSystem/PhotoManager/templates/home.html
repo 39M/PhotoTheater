@@ -20,8 +20,7 @@
                         <div class="avatar"><img class="avatar-small" src="{% static 'images/avatar1.png' %}"></div>
                         <div class="info">
                     <span class="name">
-                    <span class="label label-purple">Adding Photos</span> <strong
-                            class="indent">User</strong> Comment <strong> &nbsp;</strong>
+                    <span class="label label-purple">添加历史</span>
                     </span>
                             <span class="time"><i class="icon-time"></i> {{ object.grouper }} </span>
                         </div>
@@ -30,7 +29,7 @@
                                 {% for photo in object.list %}
                                     <li class="col-md-3">
                                         <a href="/photo/{{ photo.id }}" class="thumbnail">
-                                            <img src="{{ photo.thumb.url }}" style="width: 240px;height: 100px;" alt="">
+                                            <img src="{{ photo.thumb.url }}?ud={{ photo.update_date |date:'f:s' }}" style="width: 240px;height: 100px;" alt="">
                                         </a>
                                     </li>
                                 {% endfor %}

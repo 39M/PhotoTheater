@@ -148,7 +148,7 @@ class BaseView(View):
 
     def set_gallery(self, request):
         photo_list = []
-        for photo in Photo.objects.filter(album__user=request.user).order_by('upload_date')[:10]:
+        for photo in Photo.objects.filter(album__user=request.user).order_by('-upload_date')[:10]:
             photo_list.append({
                 'id': photo.id,
                 'scr': photo.thumb.url,
@@ -220,6 +220,7 @@ class Home(BaseView):
         # Init variables
         album = 0
         valid = True
+        photo_format_valid = True
         noticeText = ''
         noticeTitle = ''
 
@@ -256,6 +257,7 @@ class Home(BaseView):
         else:
             # Create photos
             photo_list = json.loads(data['photo_list'])
+            photo_list = set(photo_list)
             for name in photo_list:
                 photo = Photo(
                         album=album,
@@ -277,7 +279,14 @@ class Home(BaseView):
                 photo.source = img
 
                 # PIL processing
-                img = Image.open('media/temp/' + name)
+                try:
+                    img = Image.open('media/temp/' + name)
+                except:
+                    print 'Photo ' + name + ' created failed'
+                    valid = False
+                    photo_format_valid = False
+                    noticeText = u'部分格式错误的照片上传失败！'
+                    continue
                 # Get shot date
                 try:
                     exif = {
@@ -304,6 +313,7 @@ class Home(BaseView):
                     # Create thumb failed
                     print 'Photo ' + name + ' created failed'
                     valid = False
+                    photo_format_valid = False
                     noticeText = u'部分格式错误的照片上传失败！'
                     continue
 
@@ -315,7 +325,10 @@ class Home(BaseView):
 
         if not valid:
             # Upload fail
-            noticeType = 'warn'
+            if photo_format_valid:
+                noticeType = 'warn'
+            else:
+                noticeType = 'info'
         else:
             # Upload success
             noticeType = 'success'
@@ -389,13 +402,35 @@ class Map(BaseView):
 
         # Send photo list data
         self.context.update({
-            'photo_list': Photo.objects.filter(album__user=request.user).order_by('-shot_date')
+            'photo_list': Photo.objects.filter(album__user=request.user, latitude__isnull=False).order_by('-shot_date')
         })
 
         self.context = Context(self.context)
         self.context.update(csrf(request))
         print self.context
         return render(request, 'map.html', self.context)
+
+
+class Search(BaseView):
+    """ Search View"""
+
+    def get(self, request):
+        super(Search, self).get(request)
+        self.context.update(get_page_info('search'))
+
+        query = request.GET['query']
+        if not query:
+            return redirect('/')
+
+        self.context.update({
+            'photo_list': Photo.objects.filter(album__user=request.user, name__contains=query).order_by('-shot_date'),
+            'query': query,
+        })
+
+        self.context = Context(self.context)
+        self.context.update(csrf(request))
+        print self.context
+        return render(request, 'find.html', self.context)
 
 
 class PhotoView(BaseView):
@@ -467,17 +502,19 @@ class PhotoView(BaseView):
 
                 photo.name = data['name']
                 photo.album = album
-                photo.latitude = data['lat']
-                photo.longitude = data['lng']
-                print data['shot_date']
-                print type(data['shot_date'])
-                # photo.shot_date = data['shot_date']
+                if data['lat'] == 'None':
+                    photo.latitude = None
+                    photo.longitude = None
+                else:
+                    photo.latitude = data['lat']
+                    photo.longitude = data['lng']
+                photo.shot_date = TIME_ZONE.localize(datetime.strptime(data['shot_date'], '%m/%d/%Y'))
                 if 'emotion' in data:
                     photo.emotion = data['emotion']
                 photo.description = data['description']
 
                 '''Save filter start'''
-                if 'filter' in data:
+                if ('filter' in data) and (data['filter'] != photo.filter_type):
                     # if True:
                     filter_type = data['filter']
                     # filter_type = 'origin'
@@ -550,9 +587,17 @@ class PhotoDeleteView(BaseView):
         photo = Photo.objects.filter(album__user=request.user, id=photo_id)
         if not photo:
             print 'No photo with id ' + str(photo_id)
-            return HttpResponse('Fail')
+            return HttpResponse(json.dumps(({
+                'noticeType': 'error',
+                'noticeTitle': '照片不存在！',
+                'noticeText': ' ',
+            })))
         photo[0].delete()
-        return HttpResponse('OK')
+        return HttpResponse(json.dumps(({
+            'noticeType': 'success',
+            'noticeTitle': '照片删除成功！',
+            'noticeText': ' ',
+        })))
 
 
 class PhotoFilter(BaseView):
