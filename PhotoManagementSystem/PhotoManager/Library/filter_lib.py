@@ -766,11 +766,22 @@ def baozou(src, dst):
         width = size[0]
         height = size[1]
 
-        source = ny.array(graph)
-        result = ny.matrix(0.3 * source[:, :, 1] + 0.59 * source[:, :, 2] + 0.11 * source[:, :, 2])
-        npercent = 2
+        left_eyebrow_left_corner = int(land_mark['result'][0]['landmark']['left_eyebrow_left_corner']['x'] * width / 100) / 2 * 2
+        left_eyebrow_upper_middle = int(land_mark['result'][0]['landmark']['left_eyebrow_upper_middle']['y'] * height / 100 * 0.97) / 2 * 2
+        contour_right7x = int(land_mark['result'][0]['landmark']['contour_right7']['x'] * width / 100) / 2 * 2
+        contour_right7y = int(land_mark['result'][0]['landmark']['contour_right7']['y'] * height / 100) / 2 * 2
+
+        box = (left_eyebrow_left_corner, left_eyebrow_upper_middle, contour_right7x, contour_right7y)
+        result = graph.crop(box)
+        result = ny.array(result)
+        result = ny.matrix(0.3 * result[:, :, 1] + 0.59 * result[:, :, 2] + 0.11 * result[:, :, 2])
+        R = Image.fromarray(ny.uint8(result)).convert('RGB')
+        size = R.size
+        width = size[0]
+        height = size[1]
+        # npercent = 2
         # average = 128
-        brightness = sum(sum(result).T) / width / height / 128 / 4
+        brightness = sum(sum(result).T) / width / height / 128 / 2.8
         # result += brightness * 0.9
         result /= brightness
         # result = average + (result - average) * npercent
@@ -779,20 +790,9 @@ def baozou(src, dst):
                 if result[x, y] > 220:
                     result[x, y] *= (result[x, y] * 2.0 / 255)
                 result[x, y] = max(0, min(255, result[x, y]))
-        result = Image.fromarray(ny.uint8(result)).convert('RGB')
+        result = Image.fromarray(ny.uint8(result))
 
-        left_eyebrow_left_corner = int(land_mark['result'][0]['landmark']['left_eyebrow_left_corner']['x'] * width / 100) / 2 * 2
-        left_eyebrow_upper_middle = int(land_mark['result'][0]['landmark']['left_eyebrow_upper_middle']['y'] * height / 100 * 0.97) / 2 * 2
-        contour_right7x = int(land_mark['result'][0]['landmark']['contour_right7']['x'] * width / 100) / 2 * 2
-        contour_right7y = int(land_mark['result'][0]['landmark']['contour_right7']['y'] * height / 100) / 2 * 2
-
-        box = (left_eyebrow_left_corner, left_eyebrow_upper_middle, contour_right7x, contour_right7y)
-        result = result.crop(box)
-        size = result.size
-        width = size[0]
-        height = size[1]
-
-        template = Image.open('PhotoManager/Library/template.jpg')
+        template = Image.open('../PhotoManager/Library/template.jpg')
         temp = (width + height) * 2
         template = template.resize([temp, temp])
         per = 0.30
