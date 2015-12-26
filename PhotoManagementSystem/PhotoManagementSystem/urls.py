@@ -23,19 +23,9 @@ from django.http import HttpResponse
 from PhotoManager import views
 from PhotoManager.models import *
 
-def showReq(request):
-    ret = "<h1>GET</h1><br>"
-    for i in request.GET:
-        ret += i + " : " + request.GET[i] + "<br>"
-
-    ret += "<h1>POST</h1><br>"
-    for i in request.POST:
-        ret += i + " : " + request.POST[i] + "<br>"
-
-    return HttpResponse(ret)
 
 urlpatterns = [
-    url(r'^admin/', include(admin.site.urls)),
+    # url(r'^admin/', include(admin.site.urls)),
 
     url(r'^$', views.index),
     url(r'^home/$', login_required(views.Home.as_view())),
@@ -52,10 +42,6 @@ urlpatterns = [
     url(r'^signout/$', login_required(views.SignOut.as_view())),
 
     url(r'^uploadPhoto$', views.PhotoUpload.as_view()),
-    url(r'^test/$', views.Test.as_view()),
-    url(r'^test/album/', include(views.RestView(model=Album, field=["user", "name", "create_date", "update_date"]).urlGroup())),
-    url(r'^test/photo/', include(views.RestView(model=Photo, field=["album", "name", "shot_date", "upload_date", "update_date", "latitude", "longitude", "location_text", "emotion", "origin_source", "source"]).urlGroup())),
-    url(r'^test/showReq',showReq),
 ]
 urlpatterns += staticfiles_urlpatterns()
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
