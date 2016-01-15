@@ -15,6 +15,13 @@ A photo management website build with django.
 
 ----  
 
+## Screen Shot  
+![1](./ScreenShot/map.png)  
+  
+![1](./ScreenShot/filter.png)  
+
+----
+
 ## Development Environment  
 Django: 1.8.5  
 Python Lib: NumPy, Pillow, Requests, pytz  
